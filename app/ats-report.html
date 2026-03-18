@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container": "#f1ede7",
+                        "inverse-surface": "#31302d",
+                        "surface-container-low": "#f7f3ed",
+                        "surface-container-highest": "#e6e2dc",
+                        "surface-bright": "#fdf9f3",
+                        "on-tertiary-container": "#17412d",
+                        "on-secondary-fixed-variant": "#4d4068",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dddad4",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#deccfd",
+                        "primary": "#9d4223",
+                        "on-surface": "#1c1c18",
+                        "on-secondary-fixed": "#21143a",
+                        "tertiary-container": "#81ad94",
+                        "on-tertiary-fixed": "#002113",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#a4d1b6",
+                        "surface-variant": "#e6e2dc",
+                        "outline": "#89726b",
+                        "on-primary-fixed-variant": "#7e2b0d",
+                        "primary-fixed-dim": "#ffb59d",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#d0bfef",
+                        "primary-fixed": "#ffdbd0",
+                        "on-background": "#1c1c18",
+                        "on-primary-fixed": "#390b00",
+                        "secondary": "#655781",
+                        "outline-variant": "#dcc1b8",
+                        "on-tertiary-fixed-variant": "#254f3a",
+                        "surface": "#fdf9f3",
+                        "surface-container-high": "#ebe8e2",
+                        "on-secondary-container": "#62547e",
+                        "inverse-primary": "#ffb59d",
+                        "tertiary-fixed": "#bfedd1",
+                        "inverse-on-surface": "#f4f0ea",
+                        "on-primary-container": "#6c1e02",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#9d4223",
+                        "tertiary": "#3d6751",
+                        "primary-container": "#f4845f",
+                        "background": "#fdf9f3",
+                        "secondary-fixed": "#eaddff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#56423c"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdf9f3;
+            color: #1c1c18;
+        }
+        .nav-link-active {
+            color: #9d4223;
+            font-weight: 700;
+            position: relative;
+        }
+        .nav-link-active::after {
+            content: '';
+            position: absolute;
+            bottom: -28px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #9d4223;
+            border-radius: 99px;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        /* Custom Scrollbar for side panels */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(137, 114, 107, 0.2);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(137, 114, 107, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-surface">
+<div class="flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="h-20 px-8 flex items-center justify-between border-b border-outline-variant/10 bg-surface z-50">
+<div class="flex items-center gap-4 w-1/4">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<h1 class="font-headline text-xl font-extrabold tracking-tight">Tactile</h1>
+</div>
+<!-- Center Navigation -->
+<nav class="flex items-center gap-8">
+<a class="text-sm font-label font-medium text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
+<a class="text-sm font-label font-medium text-on-surface-variant hover:text-primary transition-colors" href="resumes.html">Resumes</a>
+<a class="text-sm font-label font-medium text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
+<a class="text-sm font-label nav-link-active" href="ats-scorer.html">ATS Scorer</a>
+</nav>
+<!-- Right Controls -->
+<div class="flex items-center justify-end gap-6 w-1/4">
+<div class="flex items-center gap-2">
+<button class="px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label font-bold text-sm hover:bg-surface-container-high transition-colors">ATS Score</button>
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label font-bold text-sm shadow-sm hover:shadow-md transition-all">Download</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<!-- User Avatar with Dropdown -->
+<div class="relative dropdown group">
+<button class="flex items-center gap-1 hover:opacity-80 transition-opacity">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container overflow-hidden">
+<span class="material-symbols-outlined">person</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</button>
+<!-- Dropdown Menu -->
+<div class="dropdown-menu hidden absolute right-0 top-full mt-2 w-48 bg-surface-container-lowest border border-outline-variant/20 rounded-xl shadow-xl overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
+<span class="material-symbols-outlined text-sm">account_circle</span>
+                            My Profile
+                        </a>
+<div class="h-[1px] bg-outline-variant/10 my-1 mx-2"></div>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-error hover:bg-error-container/10 transition-colors" href="index.html">
+<span class="material-symbols-outlined text-sm">logout</span>
+                            Logout
+                        </a>
+</div>
+</div>
+</div>
+</header>
+<!-- Workspace Layout -->
+<div class="flex-1 flex overflow-hidden p-6 gap-6">
+<!-- Left Pane: ATS Input & Controls (Resume Selector) -->
+<section class="w-[400px] flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2">
+<div class="bg-surface-container-low rounded-lg p-8 flex flex-col gap-8 shadow-sm">
+<header>
+<span class="text-[10px] font-label font-bold uppercase tracking-widest text-primary mb-2 block">Analyzer</span>
+<h2 class="font-headline text-3xl font-extrabold text-on-surface leading-none">ATS Input &amp; Controls</h2>
+</header>
+<!-- Select Resume -->
+<div class="flex flex-col gap-4">
+<label class="text-xs font-label font-bold text-on-surface-variant uppercase">Select Resume</label>
+<div class="bg-surface-container-highest rounded-xl p-4 flex items-center justify-between cursor-pointer border-2 border-transparent hover:border-primary-fixed transition-all">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Senior_UX_Designer.pdf</p>
+<p class="text-[10px] text-on-surface-variant">Modified 2 hours ago</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Checklist -->
+<div class="flex flex-col gap-4">
+<label class="text-xs font-label font-bold text-on-surface-variant uppercase">ATS Formatting Rules</label>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-sm font-medium text-on-surface">No tables used</span>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-sm font-medium text-on-surface">Standard fonts only</span>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="w-6 h-6 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-error-container text-sm">close</span>
+</div>
+<span class="text-sm font-medium text-on-surface">Contains images/icons</span>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">Single column layout</span>
+</div>
+</div>
+</div>
+<a href="ats-report.html" class="w-full py-4 rounded-xl bg-primary text-on-primary font-headline font-extrabold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95 transition-all no-underline">
+<span class="material-symbols-outlined">analytics</span>
+                        Run ATS Scan</a>
+</div>
+<!-- App Mascot Tip -->
+<div class="mt-auto p-6 bg-secondary-fixed rounded-lg relative overflow-hidden">
+<div class="relative z-10">
+<p class="text-xs font-bold text-on-secondary-fixed mb-1 uppercase">Pro Tip</p>
+<p class="text-sm text-on-secondary-fixed-variant leading-relaxed">Mochii says: Removing profile pictures increases readability by 14%!</p>
+</div>
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-secondary-container/50 rounded-full blur-2xl"></div>
+<!-- Mascot Face -->
+<div class="absolute right-4 bottom-2 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+<div class="w-8 h-8 bg-[#deccfd] rounded-full flex items-center justify-center relative">
+<div class="absolute w-1 h-1 bg-[#21143a] rounded-full left-2 top-3"></div>
+<div class="absolute w-1 h-1 bg-[#21143a] rounded-full right-2 top-3"></div>
+<div class="w-2 h-[2px] bg-[#21143a] mt-2 rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Pane: The Full ATS Score Report -->
+<section class="flex-1 bg-surface-container-low rounded-lg p-10 flex flex-col gap-10 overflow-y-auto custom-scrollbar">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-[10px] font-label font-bold uppercase tracking-widest text-secondary mb-2 block">Summary Report</span>
+<h2 class="font-headline text-4xl font-extrabold text-on-surface">ATS Score Report</h2>
+</div>
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-container-highest" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364" stroke-dashoffset="80" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-3xl font-headline font-extrabold text-on-surface">78%</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Good</span>
+</div>
+</div>
+</div>
+<!-- Category Breakdown Bento -->
+<div class="grid grid-cols-4 gap-4">
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-tertiary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Formatting</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface">92/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Keywords</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface">64/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-secondary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Structure</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface">88/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary-container shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Readability</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface">71/100</p>
+</div>
+</div>
+<!-- Issues List -->
+<div class="flex flex-col gap-4">
+<h3 class="font-headline text-xl font-bold text-on-surface">What to Fix</h3>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-4 p-5 rounded-2xl bg-surface-container-lowest border-l-8 border-error">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">Keyword Gap: Senior UX Leadership</p>
+<p class="text-xs text-on-surface-variant">Critical keyword missing from your profile summary.</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase">Critical</span>
+</div>
+<div class="flex items-center gap-4 p-5 rounded-2xl bg-surface-container-lowest border-l-8 border-primary-container">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">error</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">Avoid Chart Graphics</p>
+<p class="text-xs text-on-surface-variant">The 'Skills' bar charts cannot be read by legacy ATS software.</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold uppercase">Moderate</span>
+</div>
+<div class="flex items-center gap-4 p-5 rounded-2xl bg-surface-container-lowest border-l-8 border-secondary-fixed">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">info</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">Contact Links Formatting</p>
+<p class="text-xs text-on-surface-variant">Use standard hyperlink formatting for your LinkedIn profile.</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold uppercase">Low</span>
+</div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="mt-auto pt-10">
+<a href="editor-content.html" class="w-full py-5 rounded-full bg-secondary text-on-secondary font-headline font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:bg-secondary/90 transition-all no-underline">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                        Generate Suggestions</a>
+</div>
+</section>
+</div>
+</div>
+<!-- Floating Mascot Hint -->
+<div class="fixed bottom-12 right-12 flex flex-col items-center gap-4 z-50">
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-xl border border-outline-variant/20 relative">
+<p class="text-xs font-medium text-on-surface italic">"Need help rewriting that summary?"</p>
+<div class="absolute -bottom-2 right-8 w-4 h-4 bg-surface-container-lowest rotate-45 border-b border-r border-outline-variant/20"></div>
+</div>
+<div class="w-20 h-20 bg-primary-fixed rounded-full flex items-center justify-center shadow-lg group cursor-pointer hover:scale-110 transition-transform">
+<div class="w-14 h-14 bg-white rounded-full flex items-center justify-center relative overflow-hidden">
+<div class="absolute w-1.5 h-1.5 bg-[#1c1c18] rounded-full left-4 top-6"></div>
+<div class="absolute w-1.5 h-1.5 bg-[#1c1c18] rounded-full right-4 top-6"></div>
+<div class="w-4 h-1.5 border-b-2 border-[#1c1c18] rounded-full mt-4"></div>
+<div class="absolute top-1 left-2 w-3 h-3 bg-primary-fixed-dim rounded-full blur-[1px] opacity-60"></div>
+<div class="absolute top-1 right-2 w-3 h-3 bg-primary-fixed-dim rounded-full blur-[1px] opacity-60"></div>
+</div>
+</div>
+</div>
+</body></html>

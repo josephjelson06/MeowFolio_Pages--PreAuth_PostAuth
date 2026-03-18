@@ -1,0 +1,401 @@
+﻿<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Resume Editor - Tactile Dreamscape</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fdf9f3",
+              "inverse-surface": "#31302d",
+              "background": "#fdf9f3",
+              "error-container": "#ffdad6",
+              "tertiary": "#3d6751",
+              "error": "#ba1a1a",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed": "#390b00",
+              "secondary-fixed": "#eaddff",
+              "primary-container": "#f4845f",
+              "on-secondary-fixed": "#21143a",
+              "surface-container-high": "#ebe8e2",
+              "tertiary-fixed-dim": "#a4d1b6",
+              "surface-variant": "#e6e2dc",
+              "on-tertiary-fixed-variant": "#254f3a",
+              "on-secondary-container": "#62547e",
+              "primary-fixed": "#ffdbd0",
+              "primary-fixed-dim": "#ffb59d",
+              "on-primary-container": "#6c1e02",
+              "on-error": "#ffffff",
+              "on-secondary-fixed-variant": "#4d4068",
+              "secondary": "#655781",
+              "outline-variant": "#dcc1b8",
+              "inverse-on-surface": "#f4f0ea",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-highest": "#e6e2dc",
+              "inverse-primary": "#ffb59d",
+              "on-tertiary-fixed": "#002113",
+              "secondary-container": "#deccfd",
+              "on-secondary": "#ffffff",
+              "on-tertiary-container": "#17412d",
+              "surface-dim": "#dddad4",
+              "outline": "#89726b",
+              "on-error-container": "#93000a",
+              "on-surface-variant": "#56423c",
+              "tertiary-fixed": "#bfedd1",
+              "on-primary": "#ffffff",
+              "on-surface": "#1c1c18",
+              "surface": "#fdf9f3",
+              "tertiary-container": "#81ad94",
+              "surface-tint": "#9d4223",
+              "surface-container-low": "#f7f3ed",
+              "primary": "#9d4223",
+              "surface-container": "#f1ede7",
+              "on-background": "#1c1c18",
+              "secondary-fixed-dim": "#d0bfef",
+              "on-primary-fixed-variant": "#7e2b0d"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #fdf9f3; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .tactile-shadow { box-shadow: 0px 8px 0px rgba(157, 66, 35, 0.1); }
+        .paper-shadow { box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.08); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e6e2dc; border-radius: 10px; }
+        
+        .template-card {
+            border: 2px solid #e6e2dc;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .template-card:hover {
+            border-color: #f4845f;
+            transform: translateY(-2px);
+        }
+        .template-card.active {
+            border-color: #9d4223;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 12px rgba(157, 66, 35, 0.1);
+        }
+        .template-card.active .check-badge {
+            display: flex;
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #56423c;
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover { color: #9d4223; }
+        .nav-link.active { color: #9d4223; }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 1rem;
+            right: 1rem;
+            height: 3px;
+            background: #9d4223;
+            border-radius: 99px;
+        }
+    </style>
+</head>
+<body class="text-on-surface flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<nav class="h-20 bg-surface-container-lowest border-b border-outline-variant/20 px-8 flex items-center justify-between z-30 shrink-0">
+<div class="flex items-center gap-4 w-1/4">
+<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center tactile-shadow">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">description</span>
+</div>
+<span class="font-headline font-extrabold text-xl tracking-tight text-on-surface">Resume Editor</span>
+</div>
+<div class="flex items-center justify-center gap-2 flex-1">
+<a class="nav-link" href="index.html">Dashboard</a>
+<a class="nav-link active" href="resumes.html">Resumes</a>
+<a class="nav-link" href="jd-analyzer.html">JD Analyzer</a>
+<a class="nav-link" href="ats-scorer.html">ATS Scorer</a>
+</div>
+<div class="flex items-center justify-end w-1/4">
+<div class="relative group">
+<button class="w-12 h-12 flex items-center justify-center rounded-2xl bg-surface-container-low border-2 border-outline-variant/20 tactile-shadow hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</button>
+<!-- Dropdown -->
+<div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl paper-shadow border border-outline-variant/20 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-on-surface" href="profile.html">
+<span class="material-symbols-outlined text-lg">person</span>
+                        My Profile
+                    </a>
+<div class="h-px bg-outline-variant/10 mx-2 my-1"></div>
+<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-error" href="index.html">
+<span class="material-symbols-outlined text-lg text-error">logout</span>
+                        Logout
+                    </a>
+</div>
+</div>
+</div>
+</nav>
+<div class="flex flex-1 overflow-hidden">
+<!-- Main Content Area (Split View) - Full Width now that sidebar is gone -->
+<main class="flex-1 flex overflow-hidden">
+<!-- Editor Column: Template Choice -->
+<section class="w-1/2 bg-surface-container-low flex flex-col overflow-hidden">
+<div class="px-8 pt-10 pb-6 w-full shrink-0">
+<div class="mb-8">
+<h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface mb-2">Choose Template</h2>
+<p class="text-on-surface-variant text-sm font-medium">Select a layout that best represents your professional story.</p>
+</div>
+<!-- Filter Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar no-scrollbar">
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label text-sm font-bold shadow-sm whitespace-nowrap">All</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap">Minimal</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap">Two-column</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap">Compact</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap">Modern</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap">Creative</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar px-8 pb-10">
+<div class="grid grid-cols-2 gap-6">
+<!-- Template Card 1: Minimal -->
+<div class="template-card active group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10">
+<div class="absolute inset-0 p-4 flex flex-col gap-2">
+<div class="w-2/3 h-1.5 bg-white/80 rounded-full"></div>
+<div class="w-full h-1 bg-white/40 rounded-full"></div>
+<div class="w-full h-1 bg-white/40 rounded-full"></div>
+<div class="w-1/2 h-1 bg-white/40 rounded-full mb-2"></div>
+<div class="flex-1 bg-white/60 rounded-lg"></div>
+<div class="flex-1 bg-white/60 rounded-lg"></div>
+</div>
+<div class="check-badge absolute bottom-3 right-3 w-8 h-8 bg-primary rounded-full hidden items-center justify-center text-white shadow-lg z-10">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+</div>
+<div class="px-1">
+<h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Minimal</h3>
+<p class="text-on-surface-variant text-[11px] leading-tight line-clamp-2">Clean, sophisticated, and focused on high readability.</p>
+</div>
+</div>
+<!-- Template Card 2: Two-Column -->
+<div class="template-card group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10">
+<div class="absolute inset-0 flex">
+<div class="w-1/3 h-full bg-white/20 border-r border-white/10"></div>
+<div class="w-2/3 h-full p-4 flex flex-col gap-2">
+<div class="w-3/4 h-1.5 bg-white/80 rounded-full"></div>
+<div class="w-full h-8 bg-white/40 rounded-lg mt-1"></div>
+<div class="w-full h-8 bg-white/40 rounded-lg"></div>
+<div class="w-full h-8 bg-white/40 rounded-lg"></div>
+</div>
+</div>
+<div class="check-badge absolute bottom-3 right-3 w-8 h-8 bg-primary rounded-full hidden items-center justify-center text-white shadow-lg z-10">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+</div>
+<div class="px-1">
+<h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Two-Column</h3>
+<p class="text-on-surface-variant text-[11px] leading-tight line-clamp-2">A balanced layout with a dedicated skill sidebar.</p>
+</div>
+</div>
+<!-- Template Card 3: Compact -->
+<div class="template-card group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10">
+<div class="absolute inset-0 p-4 flex flex-col items-center">
+<div class="w-1/2 h-2 bg-white/80 rounded-full mb-4"></div>
+<div class="grid grid-cols-2 gap-2 w-full mb-3">
+<div class="h-8 bg-white/40 rounded-lg"></div>
+<div class="h-8 bg-white/40 rounded-lg"></div>
+<div class="h-8 bg-white/40 rounded-lg"></div>
+<div class="h-8 bg-white/40 rounded-lg"></div>
+</div>
+<div class="w-full flex-1 bg-white/60 rounded-lg"></div>
+</div>
+<div class="check-badge absolute bottom-3 right-3 w-8 h-8 bg-primary rounded-full hidden items-center justify-center text-white shadow-lg z-10">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+</div>
+<div class="px-1">
+<h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Compact</h3>
+<p class="text-on-surface-variant text-[11px] leading-tight line-clamp-2">High-density layout for extensive experiences.</p>
+</div>
+</div>
+<!-- Template Card 4: Modern -->
+<div class="template-card group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10">
+<div class="absolute inset-0 p-4">
+<div class="flex gap-2 items-center mb-4">
+<div class="w-8 h-8 rounded-full bg-white/60"></div>
+<div class="flex-1 flex flex-col gap-1">
+<div class="w-3/4 h-1.5 bg-white/80 rounded-full"></div>
+<div class="w-1/2 h-1 bg-white/40 rounded-full"></div>
+</div>
+</div>
+<div class="w-full h-12 bg-white/40 rounded-lg mb-2"></div>
+<div class="w-full h-12 bg-white/40 rounded-lg"></div>
+<div class="w-full h-12 bg-white/40 rounded-lg"></div>
+</div>
+<div class="check-badge absolute bottom-3 right-3 w-8 h-8 bg-primary rounded-full hidden items-center justify-center text-white shadow-lg z-10">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+</div>
+<div class="px-1">
+<h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Modern</h3>
+<p class="text-on-surface-variant text-[11px] leading-tight line-clamp-2">Sleek typography and bold sections for impact.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Buttons -->
+<div class="p-8 border-t border-outline-variant/10 bg-surface-container-low shrink-0 flex gap-4">
+<a href="editor-content.html" class="flex-1 bg-surface-container-highest py-3.5 rounded-xl font-headline font-bold hover:bg-surface-variant transition-colors border-2 border-outline-variant/20 text-sm block text-center no-underline">Back to Content</a>
+<a href="editor-customize.html" class="flex-1 bg-secondary text-on-secondary py-3.5 rounded-xl font-headline font-bold tactile-shadow border-2 border-white/20 text-sm block text-center no-underline">Confirm Template</a>
+</div>
+</section>
+<!-- Preview Column -->
+<section class="flex-1 bg-surface-variant flex flex-col items-center justify-start overflow-y-auto py-12 px-8 relative">
+<!-- Zoom Controls -->
+<div class="absolute top-6 right-8 flex items-center bg-surface-container-lowest rounded-full p-1 paper-shadow z-20 border-2 border-outline-variant/10">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container"><span class="material-symbols-outlined text-sm">remove</span></button>
+<span class="px-3 font-label text-xs font-bold">100%</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+<!-- A4 Resume Preview -->
+<div class="w-[595px] h-[842px] bg-white paper-shadow flex flex-col p-12 text-zinc-800 shrink-0">
+<header class="border-b-2 border-zinc-900 pb-4 mb-6">
+<h1 class="text-3xl font-serif font-bold tracking-tight uppercase">Alexander Thompson</h1>
+<div class="flex justify-between items-center mt-2 text-[10px] font-medium text-zinc-600">
+<span>SENIOR PRODUCT DESIGNER</span>
+<div class="flex gap-3">
+<span>alex@dreamscape.io</span>
+<span>•</span>
+<span>+1 (555) 000-0000</span>
+<span>•</span>
+<span>San Francisco, CA</span>
+</div>
+</div>
+</header>
+<div class="space-y-6">
+<section>
+<h2 class="text-xs font-bold border-b border-zinc-200 pb-1 mb-2 tracking-widest text-zinc-400 uppercase">Professional Summary</h2>
+<p class="text-[11px] leading-relaxed italic">
+                                Passionate Product Designer with 8+ years of experience in building scalable design systems and high-fidelity mobile experiences. Focused on merging tactile aesthetics with functional accessibility.
+                            </p>
+</section>
+<section>
+<h2 class="text-xs font-bold border-b border-zinc-200 pb-1 mb-3 tracking-widest text-zinc-400 uppercase">Experience</h2>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-baseline">
+<h3 class="text-sm font-bold">Senior Designer • Dreamscape Labs</h3>
+<span class="text-[10px] font-bold">2020 — Present</span>
+</div>
+<ul class="mt-1 list-disc list-inside text-[10px] leading-relaxed space-y-1 text-zinc-700">
+<li>Led the redesign of the core mobile application, resulting in a 40% increase in user retention.</li>
+<li>Architected the company's first internal design system, serving 12 cross-functional squads.</li>
+<li>Mentored junior designers and conducted quarterly design sprints for rapid prototyping.</li>
+</ul>
+</div>
+<div>
+<div class="flex justify-between items-baseline">
+<h3 class="text-sm font-bold">UI/UX Designer • Pixel Perfect Co.</h3>
+<span class="text-[10px] font-bold">2017 — 2020</span>
+</div>
+<ul class="mt-1 list-disc list-inside text-[10px] leading-relaxed space-y-1 text-zinc-700">
+<li>Developed responsive web interfaces for Fortune 500 clients in the fintech space.</li>
+<li>Collaborated with engineering teams to bridge the gap between design vision and technical feasibility.</li>
+</ul>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-xs font-bold border-b border-zinc-200 pb-1 mb-3 tracking-widest text-zinc-400 uppercase">Education</h2>
+<div class="flex justify-between items-baseline">
+<h3 class="text-sm font-bold">B.A. Graphic Design • Rhode Island School of Design</h3>
+<span class="text-[10px] font-bold">Class of 2016</span>
+</div>
+</section>
+<section>
+<h2 class="text-xs font-bold border-b border-zinc-200 pb-1 mb-3 tracking-widest text-zinc-400 uppercase">Skills</h2>
+<div class="flex flex-wrap gap-y-1 gap-x-4 text-[10px] font-medium">
+<span>Figma &amp; Adobe Suite</span>
+<span>React &amp; Tailwind CSS</span>
+<span>User Research</span>
+<span>Design Systems</span>
+<span>Prototyping</span>
+</div>
+</section>
+</div>
+</div>
+<div class="mt-8 mb-12 flex gap-4">
+<button class="bg-surface-container-lowest px-4 py-2 rounded-full font-label text-xs font-bold paper-shadow flex items-center gap-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-sm">visibility</span>
+                        Preview Mode
+                    </button>
+<button class="bg-surface-container-lowest px-4 py-2 rounded-full font-label text-xs font-bold paper-shadow flex items-center gap-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-sm">print</span>
+                        Print Marks
+                    </button>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label text-xs font-bold tactile-shadow flex items-center gap-2 border border-white/20">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Download Resume
+                    </button>
+</div>
+</section>
+</main>
+</div>
+<!-- Floating Mascot: Mochii -->
+<div class="fixed bottom-8 right-8 z-50">
+<div class="relative group">
+<div class="absolute -top-16 right-0 bg-surface-container-lowest px-4 py-2 rounded-2xl rounded-br-none paper-shadow opacity-0 group-hover:opacity-100 transition-opacity border border-outline-variant/20 whitespace-nowrap">
+<p class="font-label text-xs font-bold text-on-surface">Need help choosing a template? ✨</p>
+</div>
+<div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center tactile-shadow border-4 border-white cursor-pointer hover:scale-110 transition-transform">
+<img alt="Mochii Mascot" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWrr94LyF14pxrqZ-YfC4g7IIUSwMgFUkNAQHX6aINnazDmjDJjBoBUOTwr4OI5rJia2GCmyP5Rm26JrVpxV7PXbkd88i8d8B0-hQgPNrvLGoATZuvgovvupVmTXlExGVto605UzbmhCPnA8My4za-dqp9n96fjgM9ypAVmEQd0-7z17icL84J3PvV8wo2VvvA1LW8ZP27xnJWXEsDMlkDDQf4afpPUiV8b16__UJTeOUJjV_nBCVAd8AY8ZLDj2DSmYkGTvk7bnyi"/>
+</div>
+</div>
+</div>
+<script>
+        // Selection logic for template cards
+        const templateCards = document.querySelectorAll('.template-card');
+        templateCards.forEach((card) => {
+            card.addEventListener('click', () => {
+                templateCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            });
+        });
+
+        // Filter tabs logic
+        const filterBtns = document.querySelectorAll('.flex.items-center.gap-2.overflow-x-auto button');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+                    b.classList.add('bg-surface-container-lowest', 'text-on-surface-variant', 'border', 'border-outline-variant/20');
+                });
+                btn.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant', 'border', 'border-outline-variant/20');
+                btn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+            });
+        });
+    </script>
+</body></html>
