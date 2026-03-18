@@ -6,71 +6,9 @@
 <title>MeowFolio | JD Results</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "on-primary-fixed": "#390b00",
-              "secondary-fixed-dim": "#d0bfef",
-              "surface-bright": "#fdf9f3",
-              "secondary": "#655781",
-              "outline": "#89726b",
-              "on-secondary": "#ffffff",
-              "on-background": "#1c1c18",
-              "surface": "#fdf9f3",
-              "inverse-surface": "#31302d",
-              "error-container": "#ffdad6",
-              "on-primary": "#ffffff",
-              "surface-container-low": "#f7f3ed",
-              "on-tertiary": "#ffffff",
-              "outline-variant": "#dcc1b8",
-              "on-error": "#ffffff",
-              "tertiary-container": "#81ad94",
-              "on-tertiary-fixed": "#002113",
-              "surface-container": "#f1ede7",
-              "on-secondary-container": "#62547e",
-              "surface-tint": "#9d4223",
-              "primary-fixed": "#ffdbd0",
-              "on-tertiary-fixed-variant": "#254f3a",
-              "on-primary-fixed-variant": "#7e2b0d",
-              "on-error-container": "#93000a",
-              "tertiary-fixed-dim": "#a4d1b6",
-              "error": "#ba1a1a",
-              "inverse-primary": "#ffb59d",
-              "tertiary-fixed": "#bfedd1",
-              "background": "#fdf9f3",
-              "on-secondary-fixed-variant": "#4d4068",
-              "on-primary-container": "#6c1e02",
-              "inverse-on-surface": "#f4f0ea",
-              "primary-fixed-dim": "#ffb59d",
-              "surface-container-lowest": "#ffffff",
-              "surface-container-high": "#ebe8e2",
-              "secondary-container": "#deccfd",
-              "surface-dim": "#dddad4",
-              "primary": "#9d4223",
-              "on-tertiary-container": "#17412d",
-              "surface-container-highest": "#e6e2dc",
-              "on-surface-variant": "#56423c",
-              "on-surface": "#1c1c18",
-              "surface-variant": "#e6e2dc",
-              "secondary-fixed": "#eaddff",
-              "tertiary": "#3d6751",
-              "on-secondary-fixed": "#21143a",
-              "primary-container": "#f4845f"
-            },
-            fontFamily: {
-              "headline": ["Plus Jakarta Sans"],
-              "body": ["Inter"],
-              "label": ["Plus Jakarta Sans"]
-            },
-            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
+<script src="tailwind-config.js"></script>
 <style>
       .material-symbols-outlined {
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -79,17 +17,9 @@
         background: rgba(230, 226, 220, 0.6);
         backdrop-filter: blur(20px);
       }
-      .custom-shadow {
-        box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.06);
-      }
       body {
         background-color: #fdf9f3;
         color: #1c1c18;
-      }
-      .nav-link-active {
-        color: #9d4223;
-        font-weight: 700;
-        position: relative;
       }
       .nav-link-active::after {
         content: '';
@@ -100,10 +30,6 @@
         height: 2px;
         background-color: #9d4223;
         border-radius: 9999px;
-      }
-      .resume-skeleton {
-        background: linear-gradient(135deg, #ffffff 0%, #f7f3ed 100%);
-        box-shadow: inset 0 0 0 1px rgba(137, 114, 107, 0.1);
       }
     </style>
 </head>

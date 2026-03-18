@@ -4,107 +4,15 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MeowFolio | ATS Report</title>
+<link rel="stylesheet" href="shared.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "surface-container": "#f1ede7",
-                        "inverse-surface": "#31302d",
-                        "surface-container-low": "#f7f3ed",
-                        "surface-container-highest": "#e6e2dc",
-                        "surface-bright": "#fdf9f3",
-                        "on-tertiary-container": "#17412d",
-                        "on-secondary-fixed-variant": "#4d4068",
-                        "error": "#ba1a1a",
-                        "on-tertiary": "#ffffff",
-                        "surface-dim": "#dddad4",
-                        "on-error-container": "#93000a",
-                        "secondary-container": "#deccfd",
-                        "primary": "#9d4223",
-                        "on-surface": "#1c1c18",
-                        "on-secondary-fixed": "#21143a",
-                        "tertiary-container": "#81ad94",
-                        "on-tertiary-fixed": "#002113",
-                        "error-container": "#ffdad6",
-                        "tertiary-fixed-dim": "#a4d1b6",
-                        "surface-variant": "#e6e2dc",
-                        "outline": "#89726b",
-                        "on-primary-fixed-variant": "#7e2b0d",
-                        "primary-fixed-dim": "#ffb59d",
-                        "surface-container-lowest": "#ffffff",
-                        "secondary-fixed-dim": "#d0bfef",
-                        "primary-fixed": "#ffdbd0",
-                        "on-background": "#1c1c18",
-                        "on-primary-fixed": "#390b00",
-                        "secondary": "#655781",
-                        "outline-variant": "#dcc1b8",
-                        "on-tertiary-fixed-variant": "#254f3a",
-                        "surface": "#fdf9f3",
-                        "surface-container-high": "#ebe8e2",
-                        "on-secondary-container": "#62547e",
-                        "inverse-primary": "#ffb59d",
-                        "tertiary-fixed": "#bfedd1",
-                        "inverse-on-surface": "#f4f0ea",
-                        "on-primary-container": "#6c1e02",
-                        "on-error": "#ffffff",
-                        "surface-tint": "#9d4223",
-                        "tertiary": "#3d6751",
-                        "primary-container": "#f4845f",
-                        "background": "#fdf9f3",
-                        "secondary-fixed": "#eaddff",
-                        "on-primary": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "on-surface-variant": "#56423c"
-                    },
-                    fontFamily: {
-                        "headline": ["Plus Jakarta Sans"],
-                        "body": ["Inter"],
-                        "label": ["Plus Jakarta Sans"]
-                    },
-                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
-                },
-            },
-        }
-    </script>
+<script src="tailwind-config.js"></script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fdf9f3;
-            color: #1c1c18;
-        }
-        .nav-link-active {
-            color: #9d4223;
-            font-weight: 700;
-            position: relative;
-        }
-        .nav-link-active::after {
-            content: '';
-            position: absolute;
-            bottom: -28px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #9d4223;
-            border-radius: 99px;
-        }
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
         /* Custom Scrollbar for side panels */
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(137, 114, 107, 0.2);

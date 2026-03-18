@@ -1,0 +1,160 @@
+/* ====================================
+   MeowFolio – Shared Styles
+   ==================================== */
+
+/* Base */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fdf9f3;
+    color: #1c1c18;
+}
+
+.font-headline {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+}
+
+/* Shadows */
+.tactile-shadow {
+    box-shadow: 0px 8px 0px rgba(157, 66, 35, 0.1);
+}
+
+.paper-shadow {
+    box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.08);
+}
+
+.custom-shadow {
+    box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.06);
+}
+
+/* Tactile Design Components */
+.tactile-card {
+    background: white;
+    border: 2px solid #1c1c18;
+    box-shadow: 6px 6px 0px 0px rgba(28, 28, 24, 0.1);
+    transition: all 0.2s ease;
+}
+
+.tactile-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px 0px rgba(28, 28, 24, 0.15);
+}
+
+.chunky-button {
+    border: 2px solid #1c1c18;
+    box-shadow: 4px 4px 0px 0px #1c1c18;
+    transition: all 0.1s ease;
+}
+
+.chunky-button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px 0px #1c1c18;
+}
+
+/* Glass Effect */
+.glass-effect {
+    backdrop-filter: blur(20px);
+    background: rgba(230, 226, 220, 0.6);
+}
+
+/* Dropdown */
+.group:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Active Nav Link */
+.nav-link-active {
+    color: #9d4223;
+    font-weight: 700;
+    position: relative;
+}
+
+.nav-link-active::after {
+    content: '';
+    position: absolute;
+    bottom: -28px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #9d4223;
+    border-radius: 99px;
+}
+
+/* Nav Link (editor-templates style) */
+.nav-link {
+    position: relative;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #56423c;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #9d4223;
+}
+
+.nav-link.active {
+    color: #9d4223;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 1rem;
+    right: 1rem;
+    height: 3px;
+    background: #9d4223;
+    border-radius: 99px;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e6e2dc;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #dcc1b8;
+}
+
+/* No Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Resume Preview */
+.resume-page {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    aspect-ratio: 1 / 1.414;
+}
+
+/* Resume Skeleton */
+.resume-skeleton {
+    background: linear-gradient(135deg, #ffffff 0%, #f7f3ed 100%);
+    box-shadow: inset 0 0 0 1px rgba(137, 114, 107, 0.1);
+}

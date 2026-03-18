@@ -4,84 +4,13 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MeowFolio | Templates</title>
+<link rel="stylesheet" href="shared.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "surface-bright": "#fdf9f3",
-              "inverse-surface": "#31302d",
-              "background": "#fdf9f3",
-              "error-container": "#ffdad6",
-              "tertiary": "#3d6751",
-              "error": "#ba1a1a",
-              "on-tertiary": "#ffffff",
-              "on-primary-fixed": "#390b00",
-              "secondary-fixed": "#eaddff",
-              "primary-container": "#f4845f",
-              "on-secondary-fixed": "#21143a",
-              "surface-container-high": "#ebe8e2",
-              "tertiary-fixed-dim": "#a4d1b6",
-              "surface-variant": "#e6e2dc",
-              "on-tertiary-fixed-variant": "#254f3a",
-              "on-secondary-container": "#62547e",
-              "primary-fixed": "#ffdbd0",
-              "primary-fixed-dim": "#ffb59d",
-              "on-primary-container": "#6c1e02",
-              "on-error": "#ffffff",
-              "on-secondary-fixed-variant": "#4d4068",
-              "secondary": "#655781",
-              "outline-variant": "#dcc1b8",
-              "inverse-on-surface": "#f4f0ea",
-              "surface-container-lowest": "#ffffff",
-              "surface-container-highest": "#e6e2dc",
-              "inverse-primary": "#ffb59d",
-              "on-tertiary-fixed": "#002113",
-              "secondary-container": "#deccfd",
-              "on-secondary": "#ffffff",
-              "on-tertiary-container": "#17412d",
-              "surface-dim": "#dddad4",
-              "outline": "#89726b",
-              "on-error-container": "#93000a",
-              "on-surface-variant": "#56423c",
-              "tertiary-fixed": "#bfedd1",
-              "on-primary": "#ffffff",
-              "on-surface": "#1c1c18",
-              "surface": "#fdf9f3",
-              "tertiary-container": "#81ad94",
-              "surface-tint": "#9d4223",
-              "surface-container-low": "#f7f3ed",
-              "primary": "#9d4223",
-              "surface-container": "#f1ede7",
-              "on-background": "#1c1c18",
-              "secondary-fixed-dim": "#d0bfef",
-              "on-primary-fixed-variant": "#7e2b0d"
-            },
-            fontFamily: {
-              "headline": ["Plus Jakarta Sans"],
-              "body": ["Inter"],
-              "label": ["Plus Jakarta Sans"]
-            },
-            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
+<script src="tailwind-config.js"></script>
 <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fdf9f3; }
-        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .tactile-shadow { box-shadow: 0px 8px 0px rgba(157, 66, 35, 0.1); }
-        .paper-shadow { box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.08); }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e6e2dc; border-radius: 10px; }
-        
-        .template-card {
+.template-card {
             border: 2px solid #e6e2dc;
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -96,27 +25,6 @@
         }
         .template-card.active .check-badge {
             display: flex;
-        }
-
-        .nav-link {
-            position: relative;
-            padding: 0.5rem 1rem;
-            font-weight: 700;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #56423c;
-            transition: all 0.2s ease;
-        }
-        .nav-link:hover { color: #9d4223; }
-        .nav-link.active { color: #9d4223; }
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 1rem;
-            right: 1rem;
-            height: 3px;
-            background: #9d4223;
-            border-radius: 99px;
         }
     </style>
 </head>

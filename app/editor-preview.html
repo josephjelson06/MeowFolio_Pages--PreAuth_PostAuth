@@ -7,81 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "surface-container-lowest": "#ffffff",
-              "surface-container-highest": "#e6e2dc",
-              "inverse-primary": "#ffb59d",
-              "secondary": "#655781",
-              "outline-variant": "#dcc1b8",
-              "inverse-on-surface": "#f4f0ea",
-              "on-secondary-fixed-variant": "#4d4068",
-              "primary-fixed-dim": "#ffb59d",
-              "on-primary-container": "#6c1e02",
-              "on-error": "#ffffff",
-              "primary-fixed": "#ffdbd0",
-              "on-secondary-container": "#62547e",
-              "tertiary-fixed-dim": "#a4d1b6",
-              "surface-variant": "#e6e2dc",
-              "on-tertiary-fixed-variant": "#254f3a",
-              "surface-container-high": "#ebe8e2",
-              "secondary-fixed": "#eaddff",
-              "primary-container": "#f4845f",
-              "on-secondary-fixed": "#21143a",
-              "on-tertiary": "#ffffff",
-              "on-primary-fixed": "#390b00",
-              "error": "#ba1a1a",
-              "error-container": "#ffdad6",
-              "tertiary": "#3d6751",
-              "surface-bright": "#fdf9f3",
-              "inverse-surface": "#31302d",
-              "background": "#fdf9f3",
-              "secondary-fixed-dim": "#d0bfef",
-              "on-primary-fixed-variant": "#7e2b0d",
-              "surface-container": "#f1ede7",
-              "on-background": "#1c1c18",
-              "tertiary-container": "#81ad94",
-              "surface-tint": "#9d4223",
-              "surface-container-low": "#f7f3ed",
-              "primary": "#9d4223",
-              "surface": "#fdf9f3",
-              "on-surface": "#1c1c18",
-              "tertiary-fixed": "#bfedd1",
-              "on-primary": "#ffffff",
-              "on-surface-variant": "#56423c",
-              "on-error-container": "#93000a",
-              "outline": "#89726b",
-              "surface-dim": "#dddad4",
-              "on-tertiary-container": "#17412d",
-              "on-tertiary-fixed": "#002113",
-              "secondary-container": "#deccfd",
-              "on-secondary": "#ffffff"
-            },
-            fontFamily: {
-              "headline": ["Plus Jakarta Sans"],
-              "body": ["Inter"],
-              "label": ["Plus Jakarta Sans"]
-            },
-            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
-<style>
-        body { font-family: 'Inter', sans-serif; background-color: #fdf9f3; }
-        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-effect { backdrop-filter: blur(20px); background: rgba(230, 226, 220, 0.6); }
-        .resume-page { box-shadow: 0 10px 40px rgba(0,0,0,0.05); aspect-ratio: 1 / 1.414; }
-        /* Hide scrollbar for clean editorial look */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+<script src="tailwind-config.js"></script>
+
 </head>
 <body class="bg-background text-on-surface h-screen flex flex-col overflow-hidden">
 <!-- TopNavBar -->
