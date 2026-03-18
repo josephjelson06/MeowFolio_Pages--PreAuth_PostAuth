@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-lowest": "#ffffff",
+              "on-background": "#1c1c18",
+              "surface-dim": "#dddad4",
+              "on-secondary-fixed": "#21143a",
+              "on-primary-container": "#6c1e02",
+              "surface-tint": "#9d4223",
+              "on-primary": "#ffffff",
+              "surface-variant": "#e6e2dc",
+              "tertiary-fixed-dim": "#a4d1b6",
+              "secondary-fixed-dim": "#d0bfef",
+              "outline-variant": "#dcc1b8",
+              "error": "#ba1a1a",
+              "on-primary-fixed": "#390b00",
+              "background": "#fdf9f3",
+              "surface-container-highest": "#e6e2dc",
+              "on-tertiary-fixed": "#002113",
+              "primary-fixed": "#ffdbd0",
+              "surface-container-high": "#ebe8e2",
+              "inverse-on-surface": "#f4f0ea",
+              "on-tertiary-container": "#17412d",
+              "surface-container": "#f1ede7",
+              "tertiary-container": "#81ad94",
+              "surface-bright": "#fdf9f3",
+              "secondary-fixed": "#eaddff",
+              "on-secondary-fixed-variant": "#4d4068",
+              "on-secondary": "#ffffff",
+              "outline": "#89726b",
+              "on-error-container": "#93000a",
+              "on-surface": "#1c1c18",
+              "on-error": "#ffffff",
+              "tertiary-fixed": "#bfedd1",
+              "secondary": "#655781",
+              "on-secondary-container": "#62547e",
+              "on-tertiary": "#ffffff",
+              "inverse-primary": "#ffb59d",
+              "primary": "#9d4223",
+              "on-tertiary-fixed-variant": "#254f3a",
+              "on-primary-fixed-variant": "#7e2b0d",
+              "secondary-container": "#deccfd",
+              "primary-container": "#f4845f",
+              "error-container": "#ffdad6",
+              "tertiary": "#3d6751",
+              "inverse-surface": "#31302d",
+              "surface-container-low": "#f7f3ed",
+              "on-surface-variant": "#56423c",
+              "surface": "#fdf9f3",
+              "primary-fixed-dim": "#ffb59d"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .glass-card {
+            background: rgba(230, 226, 220, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="menu">menu</span>
+</button>
+<h1 class="text-xl font-headline font-bold text-on-surface">Learn with Mochii</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-3xl" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<!-- Breadcrumbs & Progress Area -->
+<nav class="max-w-5xl mx-auto px-6 pt-8">
+<div class="flex items-center gap-2 mb-6">
+<span class="text-label-md text-on-surface-variant flex items-center gap-2">
+                Home 
+                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                Curriculum
+                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+<span class="font-bold text-primary">The Impact Formula</span>
+</span>
+</div>
+<!-- ProgressBar -->
+<div class="bg-surface-container-low p-6 rounded-xl mb-12">
+<div class="flex justify-between items-end mb-3">
+<div>
+<p class="text-xs font-headline font-bold uppercase tracking-wider text-on-surface-variant mb-1">Course Progress</p>
+<p class="text-sm text-on-surface font-medium">Chapter 5 of 7</p>
+</div>
+<p class="text-2xl font-headline font-extrabold text-primary">75%</p>
+</div>
+<div class="w-full bg-surface-variant h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="max-w-5xl mx-auto px-6 space-y-24">
+<!-- Hero Section -->
+<section class="relative">
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-primary-container/20 rounded-full blur-3xl -z-10"></div>
+<div class="max-w-2xl">
+<span class="inline-block px-4 py-1.5 bg-tertiary-fixed text-on-tertiary-fixed text-xs font-bold rounded-full mb-6 uppercase tracking-widest">Mastery Chapter</span>
+<h2 class="text-5xl md:text-6xl font-headline font-extrabold tracking-tight text-on-surface mb-8 leading-[1.1]">The Impact Formula</h2>
+<p class="text-lg text-on-surface-variant leading-relaxed">Turn mundane tasks into powerful career wins. We're moving beyond "what you did" to "how you changed the world" (or at least the codebase).</p>
+</div>
+</section>
+<!-- Mochii Story Block (Asymmetric Layout) -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<div class="lg:col-span-5 relative group">
+<div class="aspect-square rounded-xl bg-secondary-container overflow-hidden shadow-sm">
+<img alt="Coding workspace with soft lighting" class="w-full h-full object-cover mix-blend-multiply opacity-80" data-alt="Cute orange cat coding on a tiny laptop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASoPQ-9ZI0xPfkjsXxiPDysdq1KcJQw25A22NnFjMny6YzbEEnh55R9CRnLVRSkXIWjZVGXt9Qx2370wWh1oSu5tRrA2ycmv2zXzK2fbm0Uafe6DtM_VlkzWJhXZU9S13Pv2H1bgejv1c4VaVw88En_ujaGIcc6kJvJNY2o6pbpi1DS1zhb5sjuLdslZT5V3hI4Ja1WT4_TvPsYz3F4MLGnHNCna6erC6e8RMJyAIa8yTdb8VfeY48Q0p1kD0pQXxBZo7WsisVmFAX"/>
+</div>
+<div class="absolute -bottom-6 -right-6 glass-card p-6 rounded-lg max-w-[240px] shadow-xl">
+<p class="text-sm italic font-medium text-on-secondary-fixed-variant leading-snug">"My first resume said 'I wrote code'. I didn't get any interviews. Then I discovered the formula..."</p>
+<div class="mt-4 flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" data-icon="pets">pets</span>
+</div>
+<span class="text-xs font-headline font-bold">Mochii's Origin</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-7 lg:pl-12">
+<h3 class="text-3xl font-headline font-bold mb-6">A Bullet Point's Soul</h3>
+<p class="text-on-surface-variant text-lg mb-8 leading-relaxed">
+                    Recruiters spend 6 seconds per resume. They aren't looking for a list of chores. They are looking for **Evidence of Value**. Mochii learned that every bullet needs to be a mini-story with a beginning (the action), a middle (the task), and an end (the victory).
+                </p>
+<div class="flex flex-wrap gap-4">
+<div class="px-5 py-3 bg-surface-container-highest rounded-full text-sm font-bold border border-outline-variant/20">#EngineeringExpertise</div>
+<div class="px-5 py-3 bg-surface-container-highest rounded-full text-sm font-bold border border-outline-variant/20">#ResumeHacks</div>
+</div>
+</div>
+</section>
+<!-- Visual Formula (Bento-style Grid) -->
+<section class="space-y-12">
+<div class="text-center max-w-xl mx-auto">
+<h3 class="text-4xl font-headline font-black mb-4 italic">The Formula</h3>
+<p class="text-on-surface-variant">Glue these three pieces together for instant impact.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Action Verb -->
+<div class="bg-primary-container p-8 rounded-lg flex flex-col justify-between min-h-[280px]">
+<div class="w-14 h-14 bg-on-primary-container/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-on-primary-container text-3xl" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h4 class="text-2xl font-headline font-extrabold text-on-primary-container mb-2">Action Verb</h4>
+<p class="text-on-primary-container/80 text-sm">Start strong. Use words like *Optimized*, *Architected*, or *Orchestrated*.</p>
+</div>
+</div>
+<!-- Task -->
+<div class="bg-secondary-container p-8 rounded-lg flex flex-col justify-between min-h-[280px]">
+<div class="w-14 h-14 bg-on-secondary-container/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-on-secondary-container text-3xl" data-icon="settings">settings</span>
+</div>
+<div>
+<h4 class="text-2xl font-headline font-extrabold text-on-secondary-container mb-2">The Task</h4>
+<p class="text-on-secondary-container/80 text-sm">What did you actually build? Be specific about the tech stack and complexity.</p>
+</div>
+</div>
+<!-- Result -->
+<div class="bg-tertiary-container p-8 rounded-lg flex flex-col justify-between min-h-[280px]">
+<div class="w-14 h-14 bg-on-tertiary-container/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-on-tertiary-container text-3xl" data-icon="trending_up">trending_up</span>
+</div>
+<div>
+<h4 class="text-2xl font-headline font-extrabold text-on-tertiary-container mb-2">The Result</h4>
+<p class="text-on-tertiary-container/80 text-sm">The ROI. Numbers, percentages, or time saved. Show the "So What?".</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Before vs After Engineering Cards -->
+<section class="space-y-12">
+<h3 class="text-3xl font-headline font-bold">Engineering Examples</h3>
+<div class="grid grid-cols-1 gap-8">
+<!-- Example 1 -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden flex flex-col md:flex-row border border-outline-variant/10">
+<div class="flex-1 p-8 bg-surface-container-highest/30">
+<div class="flex items-center gap-2 mb-4 text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+<span class="text-xs font-bold uppercase tracking-widest">The "Mehh" Before</span>
+</div>
+<p class="text-lg text-on-surface-variant font-medium italic">"Fixed bugs in the checkout flow and added some new features."</p>
+</div>
+<div class="md:w-16 bg-surface-container flex items-center justify-center py-4 md:py-0">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="flex-1 p-8 bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold uppercase tracking-widest">The Impact After</span>
+</div>
+<p class="text-lg text-on-surface font-bold leading-relaxed">
+<span class="text-primary">Optimized</span> the React checkout pipeline by <span class="text-secondary">implementing lazy loading and Redux caching</span>, resulting in a <span class="text-tertiary">24% reduction in cart abandonment</span>.
+                        </p>
+</div>
+</div>
+<!-- Example 2 -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden flex flex-col md:flex-row border border-outline-variant/10">
+<div class="flex-1 p-8 bg-surface-container-highest/30">
+<div class="flex items-center gap-2 mb-4 text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+<span class="text-xs font-bold uppercase tracking-widest">The "Mehh" Before</span>
+</div>
+<p class="text-lg text-on-surface-variant font-medium italic">"Moved the database to the cloud for better performance."</p>
+</div>
+<div class="md:w-16 bg-surface-container flex items-center justify-center py-4 md:py-0">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="flex-1 p-8 bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold uppercase tracking-widest">The Impact After</span>
+</div>
+<p class="text-lg text-on-surface font-bold leading-relaxed">
+<span class="text-primary">Architected</span> a multi-region AWS migration for <span class="text-secondary">PostgreSQL databases using Terraform</span>, improving <span class="text-tertiary">query latency by 45%</span> for international users.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA / Footer -->
+<section class="bg-primary text-on-primary p-12 rounded-xl text-center relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<span class="material-symbols-outlined text-9xl" data-icon="psychology">psychology</span>
+</div>
+<h3 class="text-4xl font-headline font-black mb-6">Ready to Rewrite?</h3>
+<p class="text-primary-fixed mb-8 max-w-lg mx-auto">Open your resume and find one task. Apply the formula and watch it transform from a duty to an achievement.</p>
+<button class="bg-surface-container-lowest text-primary px-10 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all active:scale-95">
+                Download Bullet Workbook
+            </button>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-28 right-8 bg-primary text-on-primary px-6 py-4 rounded-xl flex items-center gap-3 shadow-xl z-50 hover:shadow-2xl transition-all">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-headline font-bold text-sm">Mochii's Tip</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-container-highest/90 backdrop-blur-xl border-t border-outline-variant/10 px-6 py-3 z-50">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" data-icon="school" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="text-[10px] font-bold">Lessons</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span class="text-[10px] font-bold">Practice</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="text-[10px] font-bold">Community</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</div>
+</div>
+</nav>
+</body></html>

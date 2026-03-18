@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>404 - Page Not Found | MeowFolio</title>
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              coral: '#F4845F',
+              cream: '#FAF6F0',
+              charcoal: '#333333',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          borderRadius: {
+            'full': '9999px',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-background">
+    /* Subtle paw print watermark pattern */
+    .bg-paw-pattern {
+      background-color: #FAF6F0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 10c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm6 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-12 5c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm18 0c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-9 3c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4z' fill='%23F4845F' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+  </style>
+<style data-purpose="typography">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #333333;
+    }
+  </style>
+</head>
+<body class="bg-paw-pattern min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden">
+<!-- BEGIN: MainContent -->
+<main class="relative w-full max-w-2xl flex flex-col items-center text-center z-10" data-purpose="error-display">
+<!-- Background Watermark 404 -->
+<div aria-hidden="true" class="absolute inset-0 flex items-center justify-center -z-10 select-none pointer-events-none">
+<span class="text-[15rem] md:text-[25rem] font-extrabold text-brand-coral opacity-20">404</span>
+</div>
+<!-- Mascot Illustration Area -->
+<div class="mb-8 relative" data-purpose="mascot-container">
+<!-- The mascot image placeholder -->
+<img alt="Mochii the mascot looking lost in an empty room with question marks" class="w-64 h-64 md:w-80 md:h-80 object-contain mx-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2ZoC4r6fmvFFhfZEMlTrntlpEXAYM0AT7HcVGqbygkbYunoAUrCESzi4YE49dvkUeAcjEWFfSm5fpdIZKK7GJECuQPmlA2EZu-SowrC9_-CmlszM1ucH4okRLsIorji78bg9O3um8NZKkCfizApIzLAkipyKqucNpBeLNlROm63gXJmz7-uHHTPtue4B5q23pypM-JOVuTYKjkFH5nDWsvKIaCvDA4sUETKzwpmA0zcci5cLhZXZMmZe1a4SP_MsPC9iMFLqm7DtR"/>
+<!-- Decorative Question Marks (Absolute positioned) -->
+<div class="absolute -top-4 right-1/4 text-brand-coral animate-bounce text-4xl font-bold">?</div>
+<div class="absolute top-1/2 -left-4 text-brand-coral opacity-60 text-2xl font-bold">?</div>
+</div>
+<!-- Text Information -->
+<div class="space-y-4 mb-10">
+<h1 class="text-3xl md:text-5xl font-extrabold text-brand-charcoal tracking-tight">
+        Meow? This page doesn't exist.
+      </h1>
+<p class="text-lg md:text-xl text-gray-600 font-medium">
+        Mochii looked everywhere. Even under the couch cushions. <br class="hidden md:block"/> Nothing.
+      </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 w-full justify-center px-4" data-purpose="navigation-actions">
+<a class="bg-brand-coral text-white font-bold py-4 px-10 rounded-full hover:bg-opacity-90 transition-all shadow-lg shadow-brand-coral/20" href="/">
+        Take me home
+      </a>
+<a class="bg-white text-brand-coral border-2 border-brand-coral font-bold py-4 px-10 rounded-full hover:bg-brand-coral hover:text-white transition-all" href="/build">
+        Build my resume
+      </a>
+</div>
+<!-- Bottom Quip -->
+<div class="mt-12 opacity-70">
+<p class="italic text-sm text-brand-charcoal">
+        Mochii has been lost before. 47 times, in fact. He always found his way. 🐾
+      </p>
+</div>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: Footer -->
+<footer class="mt-auto py-8 text-gray-400 text-xs tracking-wider uppercase font-semibold" data-purpose="minimal-footer">
+<p>© 2023 MeowFolio. All rights reserved.</p>
+</footer>
+<!-- END: Footer -->
+</body></html>
