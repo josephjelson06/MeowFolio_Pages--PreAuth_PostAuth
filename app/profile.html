@@ -43,13 +43,15 @@
 <div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 rounded-bl-full -mr-8 -mt-8"></div>
 <!-- 1. Header Section -->
 <section class="flex flex-col md:flex-row items-center gap-8 mb-12">
-<div class="relative">
-<div class="w-32 h-32 md:w-40 md:h-40 bg-secondary-fixed rounded-full flex items-center justify-center border-4 border-surface-container-high overflow-hidden shadow-inner">
-<span class="font-headline text-4xl md:text-5xl font-extrabold text-on-secondary-fixed">AT</span>
+<div class="relative group cursor-pointer" onclick="document.getElementById('avatarUpload').click()">
+<div class="w-32 h-32 md:w-40 md:h-40 bg-secondary-fixed rounded-full flex items-center justify-center border-4 border-surface-container-high overflow-hidden shadow-inner relative">
+<span id="avatarInitials" class="font-headline text-4xl md:text-5xl font-extrabold text-on-secondary-fixed">AT</span>
+<img id="avatarPreview" class="w-full h-full object-cover absolute inset-0 hidden" alt="Profile Avatar" />
 </div>
-<div class="absolute bottom-1 right-1 bg-primary p-2 rounded-full border-4 border-surface-container-lowest">
+<div class="absolute bottom-1 right-1 bg-primary p-2 rounded-full border-4 border-surface-container-lowest group-hover:scale-110 transition-transform shadow-md">
 <span class="material-symbols-outlined text-on-primary text-xl" data-icon="edit">edit</span>
 </div>
+<input type="file" id="avatarUpload" class="hidden" accept="image/png, image/jpeg, image/webp" />
 </div>
 <div class="text-center md:text-left">
 <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">PRO ACCOUNT</p>
@@ -174,7 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.querySelector('input[type="text"][value="Alexander Thompson"]');
     const emailInput = document.querySelector('input[type="email"]');
     const nameDisplay = document.querySelector('h1.font-headline');
-    const initialsDisplay = document.querySelector('.bg-secondary-fixed .font-headline');
+    const initialsDisplay = document.querySelector('#avatarInitials');
+    const avatarPreview = document.querySelector('#avatarPreview');
     
     if (nameInput && user.name) nameInput.value = user.name;
     if (emailInput && user.email) emailInput.value = user.email;
@@ -188,7 +191,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 : name.substring(0, 2).toUpperCase();
         }
     }
-    if (user.name) updateHeader(user.name);
+    if (user.name && !user.avatar) updateHeader(user.name);
+    
+    // Check for saved avatar
+    if (user.avatar && avatarPreview && initialsDisplay) {
+        avatarPreview.src = user.avatar;
+        avatarPreview.classList.remove('hidden');
+        initialsDisplay.classList.add('hidden');
+    }
+    
+    // Handle Avatar Upload
+    const avatarUpload = document.getElementById('avatarUpload');
+    if (avatarUpload) {
+        avatarUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const dataUrl = e.target.result;
+                    avatarPreview.src = dataUrl;
+                    avatarPreview.classList.remove('hidden');
+                    initialsDisplay.classList.add('hidden');
+                    
+                    // Automatically save avatar change
+                    AppState.updateUser({ avatar: dataUrl });
+                    UI.showToast("Avatar updated successfully!", "success");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
     
     // Handle Save Changes
     const saveBtn = document.querySelector('button.bg-primary');
@@ -200,10 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
             AppState.updateUser({ name: newName, email: newEmail });
             updateHeader(newName);
             
-            // The global save listener in app.js might also fire and show a toast,
-            // but we can ensure one specifically for profile.
-            // UI.showToast("Profile updated successfully!"); is handled by btn.textContent.includes('apply changes') or similar
-            // Profile uses "Save Changes". Let's explicitly trigger it if not caught by generic handler:
             UI.showToast("Profile updated successfully!");
         });
     }

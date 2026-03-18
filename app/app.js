@@ -40,6 +40,17 @@ const AppState = {
         resumes.push(resume);
         localStorage.setItem('meowfolio_resumes', JSON.stringify(resumes));
         return resume;
+    },
+    deleteResume(id) {
+        let resumes = this.getResumes();
+        resumes = resumes.filter(r => r.id !== id);
+        localStorage.setItem('meowfolio_resumes', JSON.stringify(resumes));
+    },
+    
+    logout() {
+        localStorage.removeItem('meowfolio_user');
+        localStorage.removeItem('meowfolio_resumes'); // Or keep them, but clearing simulates full logout
+        window.location.href = 'editor-preview.html'; // Fallback to landing/preview
     }
 };
 
@@ -179,4 +190,41 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // Global Logout Listener for dropdown items
+    document.querySelectorAll('a').forEach(link => {
+        if (link.textContent.toLowerCase().includes('logout')) {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                UI.showToast("Logging out...", "info");
+                setTimeout(() => AppState.logout(), 800);
+            });
+        }
+    });
+
+    // Intercept "Create New" or "Start Fresh"
+    document.querySelectorAll('a[href="editor-content.html"]').forEach(btn => {
+        if (btn.textContent.toLowerCase().includes('create new') || btn.textContent.toLowerCase().includes('start fresh')) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                AppState.addResume({
+                    name: "Untitled_Resume.pdf",
+                    role: "New Role",
+                    updated: "Just now",
+                    completion: 10,
+                    score: 0
+                });
+                window.location.href = 'editor-content.html';
+            });
+        }
+    });
 });
+
+// Global helper for inline onclick handlers
+window.deleteResumeUI = function(id) {
+    if(confirm("Are you sure you want to delete this resume?")) {
+        AppState.deleteResume(id);
+        UI.showToast("Resume deleted", "success");
+        setTimeout(() => window.location.reload(), 1000);
+    }
+};

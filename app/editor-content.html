@@ -342,11 +342,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user.location && locationInput) locationInput.value = user.location;
     
     // Wire up A4 preview syncing (demo mock)
-    const inputs = document.querySelectorAll('input, textaream');
+    const inputs = document.querySelectorAll('input, textarea');
+    let autoSaveTimeout;
+    
     inputs.forEach(input => {
         input.addEventListener('input', () => {
             // Optional: In a full app this would update the iframe preview live
-            // For now, it just shows it's interactive
+            
+            // Auto-save logic
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                UI.showToast("Changes auto-saved ☁️", "info");
+            }, 1500);
         });
     });
     

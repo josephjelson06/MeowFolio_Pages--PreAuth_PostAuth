@@ -302,8 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="flex gap-2 mt-2">
                         <button class="flex-1 py-2 rounded-lg border border-outline-variant/30 font-label font-bold text-xs hover:bg-surface-container transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...');">Download</button>
-                        <button class="py-2 px-3 rounded-lg border border-outline-variant/30 hover:bg-surface-container transition-colors text-on-surface-variant" onclick="event.stopPropagation();">
-                            <span class="material-symbols-outlined text-sm">more_horiz</span>
+                        <button class="py-2 px-3 rounded-lg border border-outline-variant/30 hover:bg-error-container hover:text-error transition-colors text-on-surface-variant" title="Delete Resume" onclick="event.stopPropagation(); window.deleteResumeUI(${r.id});">
+                            <span class="material-symbols-outlined text-sm">delete</span>
                         </button>
                     </div>
                 </div>

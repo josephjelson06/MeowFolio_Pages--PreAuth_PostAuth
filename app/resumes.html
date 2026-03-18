@@ -242,8 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...', 'info');">
                             <span class="material-symbols-outlined text-xl">download</span>
                         </button>
-                        <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation();">
-                            <span class="material-symbols-outlined text-xl">more_vert</span>
+                        <button class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant hover:text-error transition-colors" title="Delete Resume" onclick="event.stopPropagation(); window.deleteResumeUI(${r.id});">
+                            <span class="material-symbols-outlined text-xl">delete</span>
                         </button>
                     </div>
                 </div>
