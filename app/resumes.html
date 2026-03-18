@@ -73,19 +73,19 @@ h1, h2, h3, button, span.label { font-family: 'Plus Jakarta Sans', sans-serif; }
                     Manage your professional feline journeys. Customize, optimize, and share your expertise with the world.
                 </p>
 </div>
-<div class="flex items-center p-1.5 bg-surface-container-high rounded-full shadow-inner">
-<button class="flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-lowest shadow-sm text-primary font-bold transition-all">
+<div class="flex items-center p-1.5 bg-surface-container-high rounded-full shadow-inner view-toggle-group">
+<button id="btn-grid-view" class="flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-lowest shadow-sm text-primary font-bold transition-all">
 <span class="material-symbols-outlined">grid_view</span>
                     Grid View
                 </button>
-<button class="flex items-center gap-2 px-6 py-3 rounded-full text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
+<button id="btn-list-view" class="flex items-center gap-2 px-6 py-3 rounded-full text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
 <span class="material-symbols-outlined">view_list</span>
                     List View
                 </button>
 </div>
 </header>
-<!-- Main Content Area: Full Width Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+<!-- Main Content Area: Resume Container -->
+<div id="resume-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
 <!-- Create New Card -->
 <a href="editor-content.html" class="group relative flex flex-col items-center justify-center p-12 border-4 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-4 no-underline">
 <div class="w-20 h-20 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
@@ -212,19 +212,44 @@ h1, h2, h3, button, span.label { font-family: 'Plus Jakarta Sans', sans-serif; }
 document.addEventListener('DOMContentLoaded', () => {
     // Render dynamic resumes on Resumes page
     const resumes = AppState.getResumes();
-    const grid = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3');
+    const container = document.getElementById('resume-container');
+    const gridBtn = document.getElementById('btn-grid-view');
+    const listBtn = document.getElementById('btn-list-view');
     
-    const createNewCard = grid ? grid.querySelector('a[href="editor-content.html"]') : null;
+    let currentView = 'grid'; // 'grid' | 'list'
+
+    // Create New Card Template (Grid)
+    const createNewGrid = `
+<a href="editor-content.html" class="group relative flex flex-col items-center justify-center p-12 border-4 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-4 no-underline bg-transparent min-h-[300px]">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-4xl">add</span>
+</div>
+<span class="text-xl font-extrabold text-primary">Start Fresh Resume</span>
+<p class="text-sm text-on-surface-variant font-medium text-center">Use our smart AI builder</p>
+</a>`;
+
+    // Create New Card Template (List)
+    const createNewList = `
+<a href="editor-content.html" class="group relative flex items-center p-6 border-2 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-6 no-underline bg-surface-container-lowest">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10 shrink-0">
+<span class="material-symbols-outlined text-2xl">add</span>
+</div>
+<div>
+    <span class="text-lg font-extrabold text-primary block">Start Fresh Resume</span>
+    <p class="text-sm text-on-surface-variant font-medium mt-1">Use our smart AI builder</p>
+</div>
+</a>`;
     
-    if(grid) {
+    const render = () => {
+        if (!container) return;
+        
         let html = '';
-        if (createNewCard) {
-            html += createNewCard.outerHTML; // Keep the Create New card as the first item
-        }
         
         if (resumes.length === 0) {
+            container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8';
+            html += createNewGrid;
             html += `
-            <div class="col-span-1 md:col-span-1 lg:col-span-2 bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-center gap-4 min-h-[250px]">
+            <div class="col-span-1 md:col-span-1 lg:col-span-2 xl:col-span-3 bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-center gap-4 min-h-[300px]">
                 <div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center">
                     <span class="material-symbols-outlined text-3xl text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
                 </div>
@@ -232,45 +257,107 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-sm text-on-surface-variant font-medium max-w-xs">Click the 'Start Fresh Resume' card to begin crafting your first masterpiece.</p>
             </div>`;
         } else {
-            resumes.forEach(r => {
-                html += `
-                <div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform cursor-pointer" onclick="window.location.href='editor-content.html'">
-                    <div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20 flex flex-col items-center justify-center">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10"></div>
-                        <span class="material-symbols-outlined text-outline text-8xl opacity-20">contract</span>
-                        <div class="absolute top-4 right-4 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-lg z-20">
-                            ${r.score}% STRENGTH
+            if (currentView === 'grid') {
+                container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8';
+                html += createNewGrid;
+                resumes.forEach(r => {
+                    html += `
+                    <div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform cursor-pointer" onclick="window.location.href='editor-content.html'">
+                        <div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20 flex flex-col items-center justify-center">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10"></div>
+                            <span class="material-symbols-outlined text-outline text-8xl opacity-20">contract</span>
+                            <div class="absolute top-4 right-4 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-lg z-20">
+                                ${r.score}% STRENGTH
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1 min-w-0 pr-2">
-                            <h3 class="text-xl font-extrabold text-on-surface leading-tight truncate">${r.role}</h3>
-                            <p class="text-sm text-on-surface-variant font-medium mt-1">Modified: ${r.updated}</p>
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1 min-w-0 pr-2">
+                                <h3 class="text-xl font-extrabold text-on-surface leading-tight truncate">${r.role}</h3>
+                                <p class="text-sm text-on-surface-variant font-medium mt-1">Modified: ${r.updated}</p>
+                            </div>
+                            <div class="flex gap-1 shrink-0">
+                                <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); window.location.href='editor-content.html'"><span class="material-symbols-outlined text-xl">edit</span></button>
+                                <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...', 'info');">
+                                    <span class="material-symbols-outlined text-xl">download</span>
+                                </button>
+                                <button class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant hover:text-error transition-colors" title="Delete Resume" onclick="event.stopPropagation(); window.deleteResumeUI(${r.id});">
+                                    <span class="material-symbols-outlined text-xl">delete</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex gap-1 shrink-0">
-                            <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); window.location.href='editor-content.html'"><span class="material-symbols-outlined text-xl">edit</span></button>
-                            <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...', 'info');">
-                                <span class="material-symbols-outlined text-xl">download</span>
-                            </button>
-                            <button class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant hover:text-error transition-colors" title="Delete Resume" onclick="event.stopPropagation(); window.deleteResumeUI(${r.id});">
-                                <span class="material-symbols-outlined text-xl">delete</span>
-                            </button>
+                        <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
+                            <span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
+                            <span class="text-xs font-bold text-on-surface-variant">Optimized for ATS</span>
                         </div>
-                    </div>
-                    <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
-                        <span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
-                        <span class="text-xs font-bold text-on-surface-variant">Optimized for ATS</span>
-                    </div>
-                </div>`;
-            });
+                    </div>`;
+                });
+            } else { // LIST VIEW
+                container.className = 'flex flex-col gap-4 max-w-5xl mx-auto w-full';
+                html += createNewList;
+                resumes.forEach(r => {
+                    html += `
+                    <div class="bg-surface-container-lowest p-4 md:p-6 rounded-lg shadow-md border border-outline-variant/10 flex flex-col md:flex-row items-center gap-4 md:gap-6 group hover:border-primary/30 transition-colors cursor-pointer" onclick="window.location.href='editor-content.html'">
+                        <div class="w-16 h-20 bg-surface-container rounded border border-outline-variant/20 flex flex-col items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-outline text-2xl opacity-40">contract</span>
+                        </div>
+                        <div class="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between w-full gap-4">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-extrabold text-on-surface leading-tight truncate">${r.role}</h3>
+                                <div class="flex flex-wrap items-center gap-3 mt-2">
+                                    <p class="text-sm text-on-surface-variant font-medium">Modified: ${r.updated}</p>
+                                    <span class="text-on-surface-variant text-xs hidden md:inline">•</span>
+                                    <div class="flex items-center gap-1 text-tertiary text-xs font-bold">
+                                        <span class="material-symbols-outlined text-sm">check_circle</span> ATS Optimized
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 md:gap-6 shrink-0 justify-between md:justify-end w-full md:w-auto mt-2 md:mt-0">
+                                <div class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-sm shrink-0">
+                                    ${r.score}% STRENGTH
+                                </div>
+                                <div class="flex gap-1 border-t border-outline-variant/10 pt-2 md:pt-0 md:border-t-0 p-1 md:p-0 w-full md:w-auto justify-end">
+                                    <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); window.location.href='editor-content.html'"><span class="material-symbols-outlined text-xl">edit</span></button>
+                                    <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...', 'info');">
+                                        <span class="material-symbols-outlined text-xl">download</span>
+                                    </button>
+                                    <button class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant hover:text-error transition-colors" title="Delete Resume" onclick="event.stopPropagation(); window.deleteResumeUI(${r.id});">
+                                        <span class="material-symbols-outlined text-xl">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            }
         }
-        grid.innerHTML = html;
-    }    
+        container.innerHTML = html;
+        
+        // Update styling of toggle buttons
+        if (gridBtn && listBtn) {
+            const activeClasses = "flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-lowest shadow-sm text-primary font-bold transition-all".split(' ');
+            const inactiveClasses = "flex items-center gap-2 px-6 py-3 rounded-full text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all".split(' ');
+            
+            if (currentView === 'grid') {
+                gridBtn.className = ''; gridBtn.classList.add(...activeClasses);
+                listBtn.className = ''; listBtn.classList.add(...inactiveClasses);
+            } else {
+                listBtn.className = ''; listBtn.classList.add(...activeClasses);
+                gridBtn.className = ''; gridBtn.classList.add(...inactiveClasses);
+            }
+        }
+        
         // Update pagination counter (1-X of Y resumes)
         const counter = document.querySelector('.text-sm.font-bold.text-on-surface-variant');
         if (counter && counter.textContent.includes('resumes')) {
             counter.textContent = `Showing 1-${resumes.length} of ${resumes.length} resumes`;
         }
+    };
+
+    // Attach listeners and initial render
+    if (gridBtn) gridBtn.addEventListener('click', () => { currentView = 'grid'; render(); });
+    if (listBtn) listBtn.addEventListener('click', () => { currentView = 'list'; render(); });
+    
+    render();
 });
 </script>
 </body></html>

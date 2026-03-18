@@ -56,6 +56,142 @@ const AppState = {
 
 // --- UI INTERACTIONS ---
 const UI = {
+    // 0. Componentize Top Nav
+    injectNavbar() {
+        // Skip for editor-preview as it has a custom pre-auth nav
+        if (window.location.pathname.includes('editor-preview.html')) return;
+
+        const user = AppState.getUser();
+        // Fallback initials if no avatar
+        const initials = user.name ? user.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'U';
+        
+        const avatarContent = user.avatar 
+            ? `<img alt="User avatar" src="${user.avatar}" class="w-full h-full object-cover" />`
+            : `<div class="w-full h-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-headline font-extrabold text-sm">${initials}</div>`;
+
+        const navHtml = `
+<!-- Mobile Sidebar Overlay -->
+<div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+<!-- Mobile Sidebar -->
+<div id="mobile-sidebar" class="fixed top-0 left-0 h-full w-64 bg-surface-container-lowest shadow-2xl z-[70] transform -translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-6 border-b border-outline-variant/20 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">pets</span>
+            <span class="font-headline font-bold text-lg">MeowFolio</span>
+        </div>
+        <button id="mobile-close-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors text-on-surface-variant">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="flex flex-col py-2 overflow-y-auto">
+        <a class="mobile-nav-link flex items-center gap-4 px-6 py-4 font-label font-bold text-on-surface-variant hover:bg-surface-container transition-colors" href="index.html">
+            <span class="material-symbols-outlined text-xl">dashboard</span> Dashboard
+        </a>
+        <a class="mobile-nav-link flex items-center gap-4 px-6 py-4 font-label font-bold text-on-surface-variant hover:bg-surface-container transition-colors" href="resumes.html">
+            <span class="material-symbols-outlined text-xl">description</span> Resumes
+        </a>
+        <a class="mobile-nav-link flex items-center gap-4 px-6 py-4 font-label font-bold text-on-surface-variant hover:bg-surface-container transition-colors" href="jd-analyzer.html">
+            <span class="material-symbols-outlined text-xl">troubleshoot</span> JD Analyzer
+        </a>
+        <a class="mobile-nav-link flex items-center gap-4 px-6 py-4 font-label font-bold text-on-surface-variant hover:bg-surface-container transition-colors" href="ats-scorer.html">
+            <span class="material-symbols-outlined text-xl">fact_check</span> ATS Scorer
+        </a>
+    </div>
+</div>
+
+<nav class="sticky top-0 z-[50] bg-background/80 backdrop-blur-xl border-b-2 border-on-surface/10 px-4 md:px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2 md:gap-4">
+        <!-- Hamburger Button (Mobile Only) -->
+        <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container rounded-full transition-colors">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center tactile-card cursor-pointer" onclick="window.location.href='index.html'">
+            <span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
+        </div>
+        <span class="font-headline font-bold text-xl tracking-tight cursor-pointer hidden sm:block" onclick="window.location.href='index.html'">MeowFolio</span>
+    </div>
+    <!-- Center Navigation Links -->
+    <div class="hidden lg:flex items-center gap-8">
+        <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
+        <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="resumes.html">Resumes</a>
+        <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
+        <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="ats-scorer.html">ATS Scorer</a>
+    </div>
+    <div class="flex items-center gap-2 md:gap-6">
+        <a href="editor-content.html" class="chunky-button bg-primary text-on-primary px-5 py-2 rounded-full font-label font-bold text-sm hidden sm:block text-center no-underline">
+            Create New
+        </a>
+        <div class="flex items-center gap-1 md:gap-4">
+            <button class="hidden md:flex w-10 h-10 items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors rounded-full">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button class="hidden md:flex w-10 h-10 items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors rounded-full">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+            <!-- User Avatar with Dropdown -->
+            <div class="relative group">
+                <button class="flex items-center gap-1 p-1 rounded-full border-2 border-on-surface hover:ring-4 ring-primary/20 transition-all">
+                    <div class="w-8 h-8 rounded-full overflow-hidden">
+                        ${avatarContent}
+                    </div>
+                    <span class="material-symbols-outlined text-sm hidden sm:block">arrow_drop_down</span>
+                </button>
+                <!-- Dropdown Menu -->
+                <div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border-2 border-on-surface rounded-xl shadow-[4px_4px_0px_0px_rgba(28,28,24,1)] overflow-hidden">
+                    <a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
+                        <span class="material-symbols-outlined text-lg">person</span>
+                        My Profile
+                    </a>
+                    <div class="h-[1px] bg-on-surface/10"></div>
+                    <a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-error hover:bg-error-container transition-colors" href="index.html" id="global-logout">
+                        <span class="material-symbols-outlined text-lg">logout</span>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>`;
+
+        // Remove existing nav if present
+        const existingNav = document.querySelector('nav');
+        if (existingNav) {
+            existingNav.remove();
+        }
+        
+        // Inject new nav
+        document.body.insertAdjacentHTML('afterbegin', navHtml);
+    },
+
+    initMobileNav() {
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const closeBtn = document.getElementById('mobile-close-btn');
+        const sidebar = document.getElementById('mobile-sidebar');
+        const overlay = document.getElementById('mobile-sidebar-overlay');
+        
+        if (!menuBtn || !sidebar || !overlay) return;
+
+        function toggleMenu() {
+            const isOpen = sidebar.classList.contains('translate-x-0');
+            if (isOpen) {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100', 'pointer-events-auto');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100', 'pointer-events-auto');
+            }
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        closeBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+    },
+
     // 1. Page Transitions
     initPageTransition() {
         document.body.classList.add('opacity-0', 'transition-opacity', 'duration-300');
@@ -166,6 +302,11 @@ const UI = {
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     AppState.init();
+    
+    // Inject global navbar before highlighting active links
+    UI.injectNavbar();
+    UI.initMobileNav();
+    
     UI.initPageTransition();
     
     // We delay nav highlighting slightly to let any framework/inline scripts finish, 
