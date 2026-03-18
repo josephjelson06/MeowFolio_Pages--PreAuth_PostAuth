@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -165,4 +165,48 @@
 <button class="fixed bottom-8 right-8 w-14 h-14 bg-primary rounded-full flex items-center justify-center text-on-primary tactile-shadow hover:scale-110 active:scale-95 transition-all z-40">
 <span class="material-symbols-outlined" data-icon="pets">pets</span>
 </button>
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const user = AppState.getUser();
+    
+    // Set initial values
+    const nameInput = document.querySelector('input[type="text"][value="Alexander Thompson"]');
+    const emailInput = document.querySelector('input[type="email"]');
+    const nameDisplay = document.querySelector('h1.font-headline');
+    const initialsDisplay = document.querySelector('.bg-secondary-fixed .font-headline');
+    
+    if (nameInput && user.name) nameInput.value = user.name;
+    if (emailInput && user.email) emailInput.value = user.email;
+    
+    function updateHeader(name) {
+        if (nameDisplay) nameDisplay.textContent = name;
+        if (initialsDisplay) {
+            const parts = name.split(' ');
+            initialsDisplay.textContent = parts.length > 1 
+                ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() 
+                : name.substring(0, 2).toUpperCase();
+        }
+    }
+    if (user.name) updateHeader(user.name);
+    
+    // Handle Save Changes
+    const saveBtn = document.querySelector('button.bg-primary');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            const newName = nameInput ? nameInput.value : user.name;
+            const newEmail = emailInput ? emailInput.value : user.email;
+            
+            AppState.updateUser({ name: newName, email: newEmail });
+            updateHeader(newName);
+            
+            // The global save listener in app.js might also fire and show a toast,
+            // but we can ensure one specifically for profile.
+            // UI.showToast("Profile updated successfully!"); is handled by btn.textContent.includes('apply changes') or similar
+            // Profile uses "Save Changes". Let's explicitly trigger it if not caught by generic handler:
+            UI.showToast("Profile updated successfully!");
+        });
+    }
+});
+</script>
 </body></html>

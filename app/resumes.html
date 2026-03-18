@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -207,4 +207,60 @@ h1, h2, h3, button, span.label { font-family: 'Plus Jakarta Sans', sans-serif; }
 <button class="md:hidden fixed bottom-8 right-8 w-16 h-16 rounded-full bg-primary text-on-primary shadow-2xl flex items-center justify-center z-50 active:scale-90 transition-transform">
 <span class="material-symbols-outlined text-3xl">add</span>
 </button>
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Render dynamic resumes on Resumes page
+    const resumes = AppState.getResumes();
+    const grid = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3');
+    
+    // Find the "Create New" card so we can keep it
+    const createNewCard = grid ? grid.querySelector('a[href="editor-content.html"]') : null;
+    
+    if(grid && resumes.length > 0) {
+        let html = '';
+        if (createNewCard) {
+            html += createNewCard.outerHTML; // Keep the Create New card as the first item
+        }
+        resumes.forEach(r => {
+            html += `
+            <div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform cursor-pointer" onclick="window.location.href='editor-content.html'">
+                <div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20 flex flex-col items-center justify-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10"></div>
+                    <span class="material-symbols-outlined text-outline text-8xl opacity-20">contract</span>
+                    <div class="absolute top-4 right-4 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-lg z-20">
+                        ${r.score}% STRENGTH
+                    </div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div class="flex-1 min-w-0 pr-2">
+                        <h3 class="text-xl font-extrabold text-on-surface leading-tight truncate">${r.role}</h3>
+                        <p class="text-sm text-on-surface-variant font-medium mt-1">Modified: ${r.updated}</p>
+                    </div>
+                    <div class="flex gap-1 shrink-0">
+                        <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); window.location.href='editor-content.html'"><span class="material-symbols-outlined text-xl">edit</span></button>
+                        <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...', 'info');">
+                            <span class="material-symbols-outlined text-xl">download</span>
+                        </button>
+                        <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation();">
+                            <span class="material-symbols-outlined text-xl">more_vert</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
+                    <span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
+                    <span class="text-xs font-bold text-on-surface-variant">Optimized for ATS</span>
+                </div>
+            </div>`;
+        });
+        grid.innerHTML = html;
+        
+        // Update pagination counter (1-X of Y resumes)
+        const counter = document.querySelector('.text-sm.font-bold.text-on-surface-variant');
+        if (counter && counter.textContent.includes('resumes')) {
+            counter.textContent = `Showing 1-${resumes.length} of ${resumes.length} resumes`;
+        }
+    }
+});
+</script>
 </body></html>

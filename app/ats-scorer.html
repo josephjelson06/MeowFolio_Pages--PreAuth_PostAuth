@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -185,4 +185,26 @@
 </div>
 </div>
 </div>
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Handle Run Scan Button
+    const runBtn = document.querySelector('button.bg-primary');
+    if (runBtn) {
+        runBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Show loading state
+            runBtn.innerHTML = `<span class="material-symbols-outlined animate-spin" style="animation: spin 1s linear infinite;">refresh</span> Scanning...`;
+            runBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            UI.showToast("ATS scan started...", "info");
+            
+            // Simulate API request/processing delay
+            setTimeout(() => {
+                window.location.href = 'ats-report.html';
+            }, 1500);
+        });
+    }
+});
+</script>
 </body></html>

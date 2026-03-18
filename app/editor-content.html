@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -325,5 +325,38 @@
             }, 0);
         });
     });
+</script>
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Pre-populate core identity from AppState
+    const user = AppState.getUser();
+    const nameInput = document.querySelector('input[placeholder="Alexander Thompson"]');
+    const roleInput = document.querySelector('input[placeholder="Senior Product Designer"]');
+    const emailInput = document.querySelector('input[placeholder="alex@dreamscape.io"]');
+    const locationInput = document.querySelector('input[placeholder="San Francisco, CA"]');
+    
+    if (user.name && nameInput) nameInput.value = user.name;
+    if (user.title && roleInput) roleInput.value = user.title;
+    if (user.email && emailInput) emailInput.value = user.email;
+    if (user.location && locationInput) locationInput.value = user.location;
+    
+    // Wire up A4 preview syncing (demo mock)
+    const inputs = document.querySelectorAll('input, textaream');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            // Optional: In a full app this would update the iframe preview live
+            // For now, it just shows it's interactive
+        });
+    });
+    
+    // Handle Save Draft
+    const saveBtn = document.querySelector('button.bg-surface-container-highest');
+    if (saveBtn && saveBtn.textContent.includes('Save Draft')) {
+        saveBtn.addEventListener('click', () => {
+             UI.showToast("Draft saved to cloud ☁️", "success");
+        });
+    }
+});
 </script>
 </body></html>
