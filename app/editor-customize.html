@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Resume Editor - Tactile Dreamscape</title>
+<title>MeowFolio | Customize</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -102,23 +102,39 @@
 <body class="text-on-surface flex flex-col h-screen overflow-hidden">
 <!-- TopNavBar -->
 <nav class="h-20 bg-surface-container-lowest border-b border-outline-variant/20 px-8 flex items-center justify-between z-30">
-<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
 <div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center tactile-shadow">
-<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
 </div>
-<span class="font-headline font-extrabold text-xl tracking-tight text-on-surface">Resume Editor</span>
+<span class="font-headline font-extrabold text-xl tracking-tight">MeowFolio</span>
 </div>
 <div class="flex items-center gap-8">
 <div class="flex items-center gap-6">
-<button class="font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">Dashboard</button>
-<button class="font-label font-bold text-sm text-primary transition-colors">Resumes</button>
-<button class="font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">JD Analyzer</button>
-<button class="font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">ATS Scorer</button>
+<a href="index.html" class="font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
+<a href="resumes.html" class="font-label font-bold text-sm text-primary transition-colors">Resumes</a>
+<a href="jd-analyzer.html" class="font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">JD Analyzer</a>
+<a href="ats-scorer.html" class="font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">ATS Scorer</a>
 </div>
 <div class="flex items-center gap-4 border-l border-outline-variant/30 pl-8">
 <button class="bg-primary px-8 py-3 rounded-full font-headline font-bold text-on-primary tactile-shadow transition-transform hover:scale-[1.02] active:scale-[0.98]">
                 Download
             </button>
+<div class="relative group">
+<button class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container cursor-pointer hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">person</span>
+</button>
+<div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl paper-shadow border border-outline-variant/20 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-on-surface" href="profile.html">
+<span class="material-symbols-outlined text-lg">person</span>
+                            My Profile
+                        </a>
+<div class="h-px bg-outline-variant/10 mx-2 my-1"></div>
+<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-error" href="index.html">
+<span class="material-symbols-outlined text-lg text-error">logout</span>
+                            Logout
+                        </a>
+</div>
+</div>
 </div>
 </div>
 </nav>

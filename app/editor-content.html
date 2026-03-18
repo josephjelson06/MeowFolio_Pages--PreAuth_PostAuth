@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Resume Editor - MeowFolio</title>
+<title>MeowFolio | Editor</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -113,10 +113,22 @@
             Share
         </button>
 <div class="flex items-center gap-2 pl-4 border-l border-outline-variant/30">
-<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center cursor-pointer">
+<div class="relative group">
+<button class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
 <span class="material-symbols-outlined text-on-secondary-container">person</span>
+</button>
+<div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl paper-shadow border border-outline-variant/20 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-on-surface" href="profile.html">
+<span class="material-symbols-outlined text-lg">person</span>
+                            My Profile
+                        </a>
+<div class="h-px bg-outline-variant/10 mx-2 my-1"></div>
+<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-error" href="index.html">
+<span class="material-symbols-outlined text-lg text-error">logout</span>
+                            Logout
+                        </a>
 </div>
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">expand_more</span>
+</div>
 </div>
 </div>
 </nav>
