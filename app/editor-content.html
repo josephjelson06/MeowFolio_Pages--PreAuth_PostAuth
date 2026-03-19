@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -349,6 +349,11 @@
         });
     });
 </script>
+<script src="page-modules.js"></script>
+<script src="pages-profile.js"></script>
+<script src="pages-editor.js"></script>
+<script src="pages-analysis.js"></script>
+<script src="pages-public-content.js"></script>
 <script src="app.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -376,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Auto-save logic
             clearTimeout(autoSaveTimeout);
             autoSaveTimeout = setTimeout(() => {
-                UI.showToast("Changes auto-saved â˜ï¸", "info");
+                UI.showToast("Changes auto-saved to cloud", "info");
             }, 1500);
         });
     });
@@ -385,10 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.querySelector('button.bg-surface-container-highest');
     if (saveBtn && saveBtn.textContent.includes('Save Draft')) {
         saveBtn.addEventListener('click', () => {
-             UI.showToast("Draft saved to cloud â˜ï¸", "success");
+             UI.showToast("Draft saved to cloud", "success");
         });
     }
 });
 </script>
 </body></html>
+
 

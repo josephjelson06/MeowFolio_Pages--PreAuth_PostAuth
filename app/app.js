@@ -1065,472 +1065,149 @@
         });
     }
 
+    const pageModules = window.createMeowFolioPageModules
+        ? window.createMeowFolioPageModules({
+            Store,
+            escapeHtml,
+            relativeTime,
+            getResumesView: () => resumesView,
+            setResumesView: (value) => {
+                resumesView = value;
+            }
+        })
+        : null;
+
+    const profileModule = window.createMeowFolioProfileModule
+        ? window.createMeowFolioProfileModule({
+            Store,
+            UI,
+            initials
+        })
+        : null;
+
+    const editorModule = window.createMeowFolioEditorModule
+        ? window.createMeowFolioEditorModule({
+            Store,
+            UI,
+            DEFAULT_CUSTOMIZE,
+            TEMPLATE_FAMILIES,
+            mergeDeep,
+            clone,
+            renderRepeatableLists,
+            renderPreview,
+            hydrateEditorBindings,
+            updateActiveResumeLabels,
+            setResumeHeaderContext,
+            getTemplatesFilter: () => templatesFilter,
+            setTemplatesFilter: (value) => {
+                templatesFilter = value;
+            }
+        })
+        : null;
+
+    const analysisModule = window.createMeowFolioAnalysisModule
+        ? window.createMeowFolioAnalysisModule({
+            Store,
+            UI,
+            titleCase,
+            escapeHtml,
+            updateActiveResumeLabels,
+            computeJDAnalysis,
+            computeATSAnalysis
+        })
+        : null;
+
+    const publicContentModule = window.createMeowFolioPublicContentModule
+        ? window.createMeowFolioPublicContentModule({
+            Store,
+            UI,
+            CHAPTER_METADATA,
+            getCurrentPage
+        })
+        : null;
+
     function initDashboardPage() {
-        const profile = Store.ensureProfile();
-        const resumes = Store.listResumes();
-        const greeting = document.querySelector('[data-dashboard-greeting]');
-        const cardsRoot = document.querySelector('[data-dashboard-resumes]');
-        const atsMetric = document.querySelector('[data-metric="ats"]');
-        const strengthMetric = document.querySelector('[data-metric="strength"]');
-        const jdMetric = document.querySelector('[data-metric="jd"]');
-
-        if (greeting) greeting.innerHTML = `${greetingForTime()}, <br class="md:hidden"/> ${escapeHtml(profile.name)}!`;
-        if (atsMetric) {
-            const values = resumes.map((resume) => resume.atsScore || 0).filter(Boolean);
-            atsMetric.textContent = `${values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : 0}%`;
+        if (pageModules && pageModules.initDashboardPage) {
+            pageModules.initDashboardPage();
         }
-        if (strengthMetric) {
-            const values = resumes.map((resume) => resume.strengthScore || 0);
-            strengthMetric.textContent = `${values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : 0}%`;
-        }
-        if (jdMetric) {
-            const values = resumes.map((resume) => resume.jdScore || 0).filter(Boolean);
-            jdMetric.textContent = `${values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : 0}%`;
-        }
-
-        if (!cardsRoot) return;
-        if (!resumes.length) {
-            cardsRoot.innerHTML = `
-                <div class="col-span-1 md:col-span-2 flex flex-col items-center justify-center py-16 bg-surface-container-lowest border border-dashed border-outline-variant/30 rounded-2xl text-center">
-                    <div class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mb-4">
-                        <span class="material-symbols-outlined text-on-primary-container text-4xl" style="font-variation-settings: 'FILL' 1;">pets</span>
-                    </div>
-                    <h3 class="font-headline font-extrabold text-2xl mb-2">No resumes yet</h3>
-                    <p class="text-on-surface-variant font-medium mb-8 max-w-md mx-auto leading-relaxed">Start your first draft and MeowFolio will keep the editor, templates, customization, and analysis tools in sync.</p>
-                    <button type="button" class="bg-primary text-on-primary px-8 py-4 rounded-full font-label font-bold text-lg flex items-center gap-3 hover:shadow-lg hover:scale-105 transition-all" data-action="create-resume">
-                        <span class="material-symbols-outlined">add_circle</span> Start Fresh Resume
-                    </button>
-                </div>
-            `;
-            return;
-        }
-
-        cardsRoot.innerHTML = resumes.slice(0, 2).map((resume) => `
-            <div class="tactile-card overflow-hidden group">
-                <div class="h-48 bg-surface-container-highest relative overflow-hidden flex items-center justify-center">
-                    <span class="material-symbols-outlined text-outline text-8xl opacity-20">contract</span>
-                    <div class="absolute top-4 right-4 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold px-2 py-1 rounded-full border border-on-surface shadow-sm">
-                        ATS ${resume.atsScore || '--'}%
-                    </div>
-                </div>
-                <div class="p-5 flex flex-col gap-4">
-                    <div>
-                        <h4 class="font-headline font-bold text-lg">${escapeHtml(resume.role)}</h4>
-                        <p class="font-body text-xs text-on-surface-variant flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">schedule</span>
-                            Last edited ${relativeTime(resume.updatedAt)}
-                        </p>
-                    </div>
-                    <div class="flex gap-3">
-                        <button type="button" class="chunky-button bg-primary text-on-primary flex-1 py-3 rounded-xl font-label font-bold text-sm" data-action="edit-resume" data-resume-id="${resume.id}">
-                            Continue Editing
-                        </button>
-                        <button type="button" class="px-4 py-3 rounded-xl bg-surface-container-highest font-label font-bold text-sm" data-action="export-resume" data-resume-id="${resume.id}">
-                            Export
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `).join('') + `
-            <button type="button" class="border-2 border-dashed border-outline-variant rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-surface-container-low transition-colors group p-8" data-action="create-resume">
-                <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center border-2 border-outline-variant group-hover:border-primary group-hover:bg-primary-fixed transition-all">
-                    <span class="material-symbols-outlined text-3xl text-outline group-hover:text-primary">add</span>
-                </div>
-                <p class="font-label font-bold text-on-surface-variant group-hover:text-primary">Create New Resume</p>
-            </button>
-        `;
     }
 
     function renderResumesPage() {
-        const container = document.getElementById('resume-container');
-        const counter = document.querySelector('[data-resume-counter]');
-        const resumes = Store.listResumes();
-        const activeResumeId = Store.ensureActiveResume();
-        if (!container) return;
-
-        if (counter) {
-            counter.textContent = resumes.length ? `Showing ${resumes.length} resume${resumes.length === 1 ? '' : 's'}` : 'No resumes yet';
+        if (pageModules && pageModules.renderResumesPage) {
+            pageModules.renderResumesPage();
         }
-
-        if (!resumes.length) {
-            container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8';
-            container.innerHTML = `
-                <button type="button" class="group relative flex flex-col items-center justify-center p-12 border-4 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-4 bg-transparent min-h-[300px]" data-action="create-resume">
-                    <div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
-                        <span class="material-symbols-outlined text-4xl">add</span>
-                    </div>
-                    <span class="text-xl font-extrabold text-primary">Start Fresh Resume</span>
-                    <p class="text-sm text-on-surface-variant font-medium text-center">Use the editor, templates, and ATS tools together.</p>
-                </button>
-                <div class="col-span-1 md:col-span-1 lg:col-span-2 xl:col-span-3 bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-center gap-4 min-h-[300px]">
-                    <div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center">
-                        <span class="material-symbols-outlined text-3xl text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
-                    </div>
-                    <h3 class="text-xl font-extrabold text-on-surface">Your workspace is ready</h3>
-                    <p class="text-sm text-on-surface-variant font-medium max-w-xs">Create a resume and MeowFolio will persist its content, template, customization, and analysis results locally.</p>
-                </div>
-            `;
-            return;
-        }
-
-        if (resumesView === 'list') {
-            container.className = 'grid grid-cols-1 gap-5';
-            container.innerHTML = `
-                <button type="button" class="group relative flex items-center p-6 border-2 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-6 bg-surface-container-lowest" data-action="create-resume">
-                    <div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10 shrink-0">
-                        <span class="material-symbols-outlined text-2xl">add</span>
-                    </div>
-                    <div>
-                        <span class="text-lg font-extrabold text-primary block">Start Fresh Resume</span>
-                        <p class="text-sm text-on-surface-variant font-medium mt-1">Keep everything in the same local-first flow.</p>
-                    </div>
-                </button>
-                ${resumes.map((resume) => `
-                    <div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex items-center gap-6">
-                        <div class="w-40 aspect-[4/3] rounded-md border border-outline-variant/20 bg-surface-container flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-outline text-6xl opacity-30">description</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${resume.id === activeResumeId ? 'bg-tertiary-fixed text-on-tertiary-fixed' : 'bg-surface-container-highest text-on-surface-variant'}">${resume.id === activeResumeId ? 'Active' : 'Saved'}</span>
-                                <span class="text-xs font-bold text-on-surface-variant">Updated ${relativeTime(resume.updatedAt)}</span>
-                            </div>
-                            <h3 class="text-xl font-extrabold text-on-surface leading-tight">${escapeHtml(resume.role)}</h3>
-                            <p class="text-sm text-on-surface-variant font-medium mt-1">${escapeHtml(resume.name)}</p>
-                            <div class="flex flex-wrap gap-3 mt-4 text-xs font-bold text-on-surface-variant">
-                                <span>Completion ${resume.completion}%</span>
-                                <span>Strength ${resume.strengthScore}%</span>
-                                <span>ATS ${resume.atsScore || '--'}%</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 shrink-0">
-                            <button type="button" class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" data-action="edit-resume" data-resume-id="${resume.id}"><span class="material-symbols-outlined text-xl">edit</span></button>
-                            <button type="button" class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" data-action="export-resume" data-resume-id="${resume.id}"><span class="material-symbols-outlined text-xl">download</span></button>
-                            <button type="button" class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant transition-colors" data-action="delete-resume" data-resume-id="${resume.id}"><span class="material-symbols-outlined text-xl">delete</span></button>
-                        </div>
-                    </div>
-                `).join('')}
-            `;
-            return;
-        }
-
-        container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8';
-        container.innerHTML = `
-            <button type="button" class="group relative flex flex-col items-center justify-center p-12 border-4 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-4 bg-transparent min-h-[300px]" data-action="create-resume">
-                <div class="w-20 h-20 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
-                    <span class="material-symbols-outlined text-4xl">add</span>
-                </div>
-                <span class="text-xl font-extrabold text-primary">Start Fresh Resume</span>
-                <p class="text-sm text-on-surface-variant font-medium">Use the smart local-first builder</p>
-            </button>
-            ${resumes.map((resume) => `
-                <div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform">
-                    <div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-outline text-8xl opacity-20">contract</span>
-                        <div class="absolute top-4 right-4 ${resume.id === activeResumeId ? 'bg-tertiary-fixed text-on-tertiary-fixed' : 'bg-primary-fixed text-on-primary-fixed'} px-3 py-1.5 rounded-full text-xs font-black shadow-lg">
-                            ${resume.strengthScore}% STRENGTH
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-start">
-                        <div class="min-w-0 pr-2">
-                            <h3 class="text-xl font-extrabold text-on-surface leading-tight truncate">${escapeHtml(resume.role)}</h3>
-                            <p class="text-sm text-on-surface-variant font-medium mt-1">Modified ${relativeTime(resume.updatedAt)}</p>
-                        </div>
-                        <div class="flex gap-1 shrink-0">
-                            <button type="button" class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" data-action="edit-resume" data-resume-id="${resume.id}"><span class="material-symbols-outlined text-xl">edit</span></button>
-                            <button type="button" class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" data-action="export-resume" data-resume-id="${resume.id}"><span class="material-symbols-outlined text-xl">download</span></button>
-                            <button type="button" class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant transition-colors" data-action="delete-resume" data-resume-id="${resume.id}"><span class="material-symbols-outlined text-xl">delete</span></button>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
-                        <span class="bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-black uppercase text-on-surface-variant">${resume.id === activeResumeId ? 'Active Resume' : 'Saved Draft'}</span>
-                        <span class="text-xs font-bold text-on-surface-variant ml-auto italic">ATS ${resume.atsScore || '--'}%</span>
-                    </div>
-                </div>
-            `).join('')}
-        `;
     }
 
     function initResumesPage() {
-        const gridButton = document.getElementById('btn-grid-view');
-        const listButton = document.getElementById('btn-list-view');
-        if (gridButton) {
-            gridButton.addEventListener('click', () => {
-                resumesView = 'grid';
-                gridButton.classList.add('bg-surface-container-lowest', 'shadow-sm', 'text-primary');
-                listButton?.classList.remove('bg-surface-container-lowest', 'shadow-sm', 'text-primary');
-                renderResumesPage();
-            });
+        if (pageModules && pageModules.initResumesPage) {
+            pageModules.initResumesPage();
         }
-        if (listButton) {
-            listButton.addEventListener('click', () => {
-                resumesView = 'list';
-                listButton.classList.add('bg-surface-container-lowest', 'shadow-sm', 'text-primary');
-                gridButton?.classList.remove('bg-surface-container-lowest', 'shadow-sm', 'text-primary');
-                renderResumesPage();
-            });
-        }
-        renderResumesPage();
     }
 
     function initProfilePage() {
-        const profile = Store.ensureProfile();
-        const bindings = {
-            fullName: profile.name,
-            email: profile.email,
-            phone: profile.phone,
-            college: profile.college,
-            degree: profile.degree,
-            branch: profile.branch,
-            year: profile.year
-        };
-
-        Object.keys(bindings).forEach((name) => {
-            const input = document.querySelector(`[name="${name}"]`);
-            if (input) input.value = bindings[name] || '';
-        });
-
-        const headerName = document.querySelector('[data-profile-header-name]');
-        const initialsNode = document.querySelector('[data-profile-initials]');
-        const avatarPreview = document.getElementById('avatarPreview');
-        if (headerName) headerName.textContent = profile.name;
-        if (initialsNode) initialsNode.textContent = initials(profile.name);
-
-        if (profile.avatar && avatarPreview) {
-            avatarPreview.src = profile.avatar;
-            avatarPreview.classList.remove('hidden');
-            initialsNode?.classList.add('hidden');
-        }
-
-        const avatarUpload = document.getElementById('avatarUpload');
-        if (avatarUpload) {
-            avatarUpload.addEventListener('change', (event) => {
-                const file = event.target.files && event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const result = String(reader.result || '');
-                    Store.updateProfile({ avatar: result });
-                    if (avatarPreview) {
-                        avatarPreview.src = result;
-                        avatarPreview.classList.remove('hidden');
-                    }
-                    initialsNode?.classList.add('hidden');
-                    UI.showToast('Avatar updated locally.', 'success');
-                };
-                reader.readAsDataURL(file);
-            });
+        if (profileModule && profileModule.initProfilePage) {
+            profileModule.initProfilePage();
         }
     }
 
     function saveProfileFromForm() {
-        const patch = {
-            name: document.querySelector('[name="fullName"]')?.value?.trim() || '',
-            email: document.querySelector('[name="email"]')?.value?.trim() || '',
-            phone: document.querySelector('[name="phone"]')?.value?.trim() || '',
-            college: document.querySelector('[name="college"]')?.value?.trim() || '',
-            degree: document.querySelector('[name="degree"]')?.value?.trim() || '',
-            branch: document.querySelector('[name="branch"]')?.value?.trim() || '',
-            year: document.querySelector('[name="year"]')?.value || ''
-        };
-        if (!patch.name || !patch.email) {
-            UI.showToast('Name and email are required.', 'error');
-            return;
+        if (profileModule && profileModule.saveProfileFromForm) {
+            profileModule.saveProfileFromForm();
         }
-        Store.updateProfile(patch);
-        initProfilePage();
-        UI.showToast('Profile updated successfully.', 'success');
     }
 
     function initEditorContentPage() {
-        const resumeId = Store.ensureActiveResume({ createIfMissing: true });
-        const draft = Store.getDraft(resumeId);
-        hydrateEditorBindings(draft);
-        renderRepeatableLists(draft);
-        renderPreview();
-        updateActiveResumeLabels();
-        setResumeHeaderContext();
+        if (editorModule && editorModule.initEditorContentPage) {
+            editorModule.initEditorContentPage();
+        }
     }
 
     function initEditorTemplatesPage() {
-        Store.ensureActiveResume({ createIfMissing: true });
-        const draft = Store.getDraft(Store.ensureActiveResume({ createIfMissing: true }));
-        templatesFilter = templatesFilter || 'All';
-
-        document.querySelectorAll('[data-template-filter]').forEach((button) => {
-            const active = button.dataset.templateFilter === templatesFilter;
-            button.classList.toggle('bg-primary', active);
-            button.classList.toggle('text-on-primary', active);
-            button.classList.toggle('shadow-sm', active);
-            button.classList.toggle('bg-surface-container-lowest', !active);
-            button.classList.toggle('text-on-surface-variant', !active);
-            button.classList.toggle('border', !active);
-            button.classList.toggle('border-outline-variant/20', !active);
-        });
-
-        document.querySelectorAll('[data-template-id]').forEach((card) => {
-            const active = card.dataset.templateId === draft.templateId;
-            const visible = templatesFilter === 'All' || TEMPLATE_FAMILIES[card.dataset.templateId] === templatesFilter;
-            card.classList.toggle('active', active);
-            card.style.display = visible ? '' : 'none';
-        });
-
-        renderPreview();
+        if (editorModule && editorModule.initEditorTemplatesPage) {
+            editorModule.initEditorTemplatesPage();
+        }
     }
 
     function initEditorCustomizePage() {
-        const draft = Store.getDraft(Store.ensureActiveResume({ createIfMissing: true }));
-        const customize = mergeDeep(DEFAULT_CUSTOMIZE, draft.customize || {});
-
-        document.querySelectorAll('[data-setting]').forEach((element) => {
-            const setting = element.dataset.setting;
-            const value = element.dataset.value;
-            if (value) {
-                const active = customize[setting] === value;
-                element.classList.toggle('bg-white', active);
-                element.classList.toggle('tactile-shadow', active);
-                element.classList.toggle('text-on-surface', active);
-                element.classList.toggle('text-on-surface-variant', !active);
-            } else if (element.type === 'range') {
-                element.value = String(customize[setting]);
-            }
-        });
-
-        ['margins', 'sectionSpacing', 'lineHeight'].forEach((setting) => {
-            const valueNode = document.querySelector(`[data-setting-value="${setting}"]`);
-            if (valueNode) valueNode.textContent = setting === 'lineHeight' ? String(customize[setting]) : `${customize[setting]}px`;
-        });
-
-        renderPreview();
+        if (editorModule && editorModule.initEditorCustomizePage) {
+            editorModule.initEditorCustomizePage();
+        }
     }
 
     function initJDAnalyzerPage() {
-        Store.ensureActiveResume({ createIfMissing: true });
-        updateActiveResumeLabels();
-        const draft = Store.getDraft(Store.ensureActiveResume({ createIfMissing: true }));
-        const input = document.querySelector('[name="jdText"]');
-        if (input && !input.value && draft.lastJobDescription) input.value = draft.lastJobDescription;
+        if (analysisModule && analysisModule.initJDAnalyzerPage) {
+            analysisModule.initJDAnalyzerPage();
+        }
     }
 
     function renderJDResultsPage() {
-        const resumeId = Store.ensureActiveResume({ createIfMissing: true });
-        const analysis = Store.getAnalysis(resumeId, 'jd');
-        if (!analysis) {
-            UI.navigate('jd-analyzer.html');
-            return;
-        }
-
-        updateActiveResumeLabels();
-        const input = document.querySelector('[name="jdText"]');
-        if (input) input.value = analysis.jdText || '';
-        const scoreNode = document.querySelector('[data-jd-score]');
-        if (scoreNode) scoreNode.textContent = `${analysis.score}%`;
-        const summaryTitle = document.querySelector('[data-jd-summary-title]');
-        if (summaryTitle) summaryTitle.textContent = analysis.summaryTitle;
-        const summaryCopy = document.querySelector('[data-jd-summary-copy]');
-        if (summaryCopy) summaryCopy.textContent = analysis.summaryCopy;
-        const matchedCount = document.querySelector('[data-jd-matched-count]');
-        if (matchedCount) matchedCount.textContent = String(analysis.matchedKeywords.length).padStart(2, '0');
-        const missingCount = document.querySelector('[data-jd-missing-count]');
-        if (missingCount) missingCount.textContent = String(analysis.missingKeywords.length).padStart(2, '0');
-        const partialCount = document.querySelector('[data-jd-partial-count]');
-        if (partialCount) partialCount.textContent = String(analysis.partialKeywords.length).padStart(2, '0');
-
-        const missingList = document.querySelector('[data-jd-missing-list]');
-        if (missingList) {
-            missingList.innerHTML = analysis.suggestions.map((suggestion, index) => `
-                <div class="bg-surface-container-lowest p-5 rounded-xl border-l-8 ${index % 2 === 0 ? 'border-error' : 'border-primary'} flex items-start gap-4 custom-shadow">
-                    <div class="w-12 h-12 rounded-full ${index % 2 === 0 ? 'bg-error-container' : 'bg-primary-fixed'} flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined ${index % 2 === 0 ? 'text-on-error-container' : 'text-on-primary-fixed-variant'}">${index % 2 === 0 ? 'leaderboard' : 'brush'}</span>
-                    </div>
-                    <div>
-                        <h4 class="font-headline font-bold text-on-surface">${escapeHtml(titleCase(suggestion.keyword))}</h4>
-                        <p class="text-sm text-on-surface-variant leading-relaxed mt-1">${escapeHtml(suggestion.detail)}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        const tags = document.querySelector('[data-jd-tags]');
-        if (tags) {
-            tags.innerHTML = analysis.tags.map((tag, index) => `
-                <span class="px-4 py-2 ${index === 0 ? 'bg-tertiary-fixed text-on-tertiary-fixed-variant' : index === 1 ? 'bg-secondary-fixed text-on-secondary-fixed-variant' : 'bg-primary-fixed text-on-primary-fixed-variant'} text-sm font-bold rounded-full shadow-sm">${escapeHtml(tag)}</span>
-            `).join('');
+        if (analysisModule && analysisModule.renderJDResultsPage) {
+            analysisModule.renderJDResultsPage();
         }
     }
 
     function initAtsScorerPage() {
-        Store.ensureActiveResume({ createIfMissing: true });
-        updateActiveResumeLabels();
+        if (analysisModule && analysisModule.initAtsScorerPage) {
+            analysisModule.initAtsScorerPage();
+        }
     }
 
     function renderATSReportPage() {
-        const resumeId = Store.ensureActiveResume({ createIfMissing: true });
-        const analysis = Store.getAnalysis(resumeId, 'ats');
-        if (!analysis) {
-            UI.navigate('ats-scorer.html');
-            return;
-        }
-
-        updateActiveResumeLabels();
-        const scoreNode = document.querySelector('[data-ats-score]');
-        if (scoreNode) scoreNode.textContent = `${analysis.score}%`;
-        const ratingNode = document.querySelector('[data-ats-rating]');
-        if (ratingNode) ratingNode.textContent = analysis.rating;
-        ['formatting', 'keywords', 'structure', 'readability'].forEach((key) => {
-            const node = document.querySelector(`[data-ats-category="${key}"]`);
-            if (node) node.textContent = `${analysis.categories[key]}/100`;
-        });
-
-        const issuesRoot = document.querySelector('[data-ats-issues]');
-        if (issuesRoot) {
-            issuesRoot.innerHTML = analysis.issues.map((issue) => {
-                const severity = issue.severity.toLowerCase();
-                const palette = severity === 'critical'
-                    ? { border: 'border-error', badge: 'bg-error-container text-on-error-container', icon: 'warning', fill: 'bg-error-container text-error' }
-                    : severity === 'moderate'
-                        ? { border: 'border-primary-container', badge: 'bg-primary-fixed text-on-primary-fixed-variant', icon: 'error', fill: 'bg-primary-fixed text-primary' }
-                        : { border: 'border-secondary-fixed', badge: 'bg-secondary-fixed text-on-secondary-fixed-variant', icon: 'info', fill: 'bg-secondary-fixed text-secondary' };
-
-                return `
-                    <div class="flex items-center gap-4 p-5 rounded-2xl bg-surface-container-lowest border-l-8 ${palette.border}">
-                        <div class="w-10 h-10 rounded-full ${palette.fill} flex items-center justify-center">
-                            <span class="material-symbols-outlined">${palette.icon}</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-bold text-on-surface">${escapeHtml(issue.title)}</p>
-                            <p class="text-xs text-on-surface-variant">${escapeHtml(issue.detail)}</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full ${palette.badge} text-[10px] font-bold uppercase">${escapeHtml(issue.severity)}</span>
-                    </div>
-                `;
-            }).join('');
+        if (analysisModule && analysisModule.renderATSReportPage) {
+            analysisModule.renderATSReportPage();
         }
     }
 
     function runJDAnalysis() {
-        const resumeId = Store.ensureActiveResume({ createIfMissing: true });
-        const input = document.querySelector('[name="jdText"]');
-        const jdText = input?.value?.trim() || '';
-        if (!jdText) {
-            UI.showToast('Paste a job description first.', 'error');
-            return;
+        if (analysisModule && analysisModule.runJDAnalysis) {
+            analysisModule.runJDAnalysis();
         }
-
-        Store.updateDraft(resumeId, (draft) => {
-            draft.lastJobDescription = jdText;
-            return draft;
-        });
-        Store.saveAnalysis(resumeId, 'jd', computeJDAnalysis(Store.getDraft(resumeId), jdText));
-        UI.showToast('JD analysis complete.', 'success');
-        UI.navigate('jd-results.html');
     }
 
     function runATSAnalysis() {
-        const resumeId = Store.ensureActiveResume({ createIfMissing: true });
-        Store.saveAnalysis(resumeId, 'ats', computeATSAnalysis(Store.getDraft(resumeId)));
-        UI.showToast('ATS scan finished.', 'success');
-        UI.navigate('ats-report.html');
+        if (analysisModule && analysisModule.runATSAnalysis) {
+            analysisModule.runATSAnalysis();
+        }
     }
 
     function promptForEducation(existing) {
@@ -1569,12 +1246,9 @@
     }
 
     function updateCustomizeSetting(setting, value) {
-        const resumeId = Store.ensureActiveResume({ createIfMissing: true });
-        Store.updateDraft(resumeId, (draft) => {
-            draft.customize = mergeDeep(draft.customize || {}, { [setting]: value });
-            return draft;
-        });
-        initEditorCustomizePage();
+        if (editorModule && editorModule.updateCustomizeSetting) {
+            editorModule.updateCustomizeSetting(setting, value);
+        }
     }
 
     function handleClickAction(event) {
@@ -1728,12 +1402,9 @@
                 return;
             case 'reset-customize':
                 event.preventDefault();
-                Store.updateDraft(Store.ensureActiveResume({ createIfMissing: true }), (draft) => {
-                    draft.customize = clone(DEFAULT_CUSTOMIZE);
-                    return draft;
-                });
-                initEditorCustomizePage();
-                UI.showToast('Customization reset to defaults.', 'info');
+                if (editorModule && editorModule.resetCustomize) {
+                    editorModule.resetCustomize();
+                }
                 return;
             case 'apply-customize':
                 event.preventDefault();
@@ -1779,34 +1450,27 @@
     }
 
     function handleCustomizeInteraction(event) {
-        const button = event.target.closest('[data-setting][data-value]');
-        if (!button) return;
-        event.preventDefault();
-        updateCustomizeSetting(button.dataset.setting, button.dataset.value);
+        if (editorModule && editorModule.handleCustomizeInteraction) {
+            editorModule.handleCustomizeInteraction(event);
+        }
     }
 
     function handleCustomizeRange(event) {
-        const input = event.target.closest('input[data-setting]');
-        if (!input) return;
-        updateCustomizeSetting(input.dataset.setting, Number(input.value));
+        if (editorModule && editorModule.handleCustomizeRange) {
+            editorModule.handleCustomizeRange(event);
+        }
     }
 
     function handleTemplateSelection(event) {
-        const card = event.target.closest('[data-template-id]');
-        if (!card) return;
-        Store.updateDraft(Store.ensureActiveResume({ createIfMissing: true }), (draft) => {
-            draft.templateId = card.dataset.templateId;
-            return draft;
-        });
-        initEditorTemplatesPage();
+        if (editorModule && editorModule.handleTemplateSelection) {
+            editorModule.handleTemplateSelection(event);
+        }
     }
 
     function handleTemplateFilter(event) {
-        const button = event.target.closest('[data-template-filter]');
-        if (!button) return;
-        event.preventDefault();
-        templatesFilter = button.dataset.templateFilter;
-        initEditorTemplatesPage();
+        if (editorModule && editorModule.handleTemplateFilter) {
+            editorModule.handleTemplateFilter(event);
+        }
     }
 
     function replaceTextNodes(matcher, replacer) {
@@ -1820,47 +1484,21 @@
     }
 
     function updateLegalBranding() {
-        const page = getCurrentPage();
-        if (page === 'privacy') document.title = 'Privacy Policy | MeowFolio';
-        if (page === 'terms') document.title = 'Terms of Service | MeowFolio';
-        if (page === 'about' && !document.title) document.title = 'MeowFolio | About';
-
-        if (page === 'privacy' || page === 'terms') {
-            replaceTextNodes((value) => value.includes('DreamResume'), (value) => value.replace(/DreamResume/g, 'MeowFolio'));
+        if (publicContentModule && publicContentModule.updateLegalBranding) {
+            publicContentModule.updateLegalBranding();
         }
     }
 
     function initLandingLikePages() {
-        const page = getCurrentPage();
-        if (page === 'landing') {
-            document.querySelectorAll('a[href="choose-path.html"], button[onclick*="choose-path.html"]').forEach((node) => {
-                node.removeAttribute('onclick');
-                node.setAttribute('data-action', 'start-building');
-                if (node.tagName === 'A') node.setAttribute('href', Store.isAuthenticated() ? 'editor-content.html' : 'signup.html');
-            });
-            Array.from(document.querySelectorAll('button')).slice(0, 2).forEach((button) => button.setAttribute('data-action', 'start-building'));
-        }
-
-        if (['about', 'privacy', 'terms', 'learn'].includes(page)) {
-            document.querySelectorAll('button').forEach((button) => {
-                const label = button.textContent.trim().toLowerCase();
-                if (label.includes('get started') || label.includes('build my resume') || label.includes('create resume') || label.includes("let's build") || label.includes('contact me') || label.includes('contact mochii support') || label.includes('try the editor') || label.includes('download guide') || label.includes("i've completed")) {
-                    button.setAttribute('data-action', 'start-building');
-                }
-                if (label === 'login') button.setAttribute('data-action', 'go-login');
-            });
+        if (publicContentModule && publicContentModule.initLandingLikePages) {
+            publicContentModule.initLandingLikePages();
         }
     }
 
     function initLearnPage() {
-        if (getCurrentPage() !== 'learn') return;
-        let chapterNumber = 1;
-        document.querySelectorAll('a[href="landing.html"]').forEach((link) => {
-            if (chapterNumber <= 7 && link.textContent.toLowerCase().includes('read chapter')) {
-                link.href = `chapter-${chapterNumber}.html`;
-                chapterNumber += 1;
-            }
-        });
+        if (publicContentModule && publicContentModule.initLearnPage) {
+            publicContentModule.initLearnPage();
+        }
     }
 
     function replaceTextContent(selector, matcher, replacement) {
@@ -1890,41 +1528,14 @@
     }
 
     function initChapterPage() {
-        const meta = CHAPTER_METADATA[getCurrentPage()];
-        if (!meta) return;
-
-        document.title = `Learn with Mochii | ${meta.title}`;
-        replaceTextContent('span, p, h1, h2, h3, h4, a', (text) => text === 'The Impact Formula', () => meta.title);
-        replaceTextContent('span, p, h1, h2, h3, h4', (text) => text === 'Chapter 5 of 7', () => meta.progressLabel);
-        replaceTextContent('span, p, h1, h2, h3, h4', (text) => text === '75%', () => `${meta.percent}%`);
-
-        document.querySelectorAll('[style*="width: 75%"], [class*="w-[75%]"]').forEach((node) => {
-            if (node instanceof HTMLElement) node.style.width = `${meta.percent}%`;
-        });
-
-        document.querySelectorAll('a[href="landing.html"]').forEach((link) => {
-            const label = link.textContent.trim().toLowerCase();
-            if (label.includes('continue to chapter')) link.href = meta.next;
-            if (label === 'the resume mythos' || label === 'previous') link.href = meta.previous;
-            if (label.includes('sectioning for impact')) link.href = meta.next;
-        });
-
-        injectLearningNav(meta);
+        if (publicContentModule && publicContentModule.initChapterPage) {
+            publicContentModule.initChapterPage();
+        }
     }
 
     function initErrorPages() {
-        const page = getCurrentPage();
-        if (page === '404') {
-            document.querySelectorAll('a[href="choose-path.html"]').forEach((link) => {
-                link.href = Store.isAuthenticated() ? 'editor-content.html' : 'signup.html';
-            });
-        }
-
-        if (page === '500') {
-            const retry = document.getElementById('btn-try-again');
-            const back = document.getElementById('btn-back-editor');
-            retry?.addEventListener('click', () => window.location.reload());
-            back?.addEventListener('click', () => UI.navigate(Store.isAuthenticated() ? 'editor-content.html' : 'login.html'));
+        if (publicContentModule && publicContentModule.initErrorPages) {
+            publicContentModule.initErrorPages();
         }
     }
 

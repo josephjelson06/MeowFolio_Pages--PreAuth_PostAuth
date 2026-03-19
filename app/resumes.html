@@ -11,9 +11,6 @@
 <script src="tailwind-config.js"></script>
 <style>
 h1, h2, h3, button, span.label { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .paw-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm10 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm-5 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm10 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0z' fill='%23dcc1b8' fill-opacity='0.1'/%3E%3C/svg%3E");
-        }
         .user-dropdown:focus-within .dropdown-menu {
             opacity: 1;
             visibility: visible;
@@ -21,36 +18,38 @@ h1, h2, h3, button, span.label { font-family: 'Plus Jakarta Sans', sans-serif; }
         }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-surface text-on-surface min-h-screen paw-pattern" data-page="resumes" data-shell="app">
+<body class="min-h-screen bg-background text-on-surface" data-page="resumes" data-shell="app">
 <!-- Top Navigation Bar -->
-<nav class="sticky top-0 z-50 bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/10 px-8 py-4 flex items-center justify-between">
-<div class="flex items-center">
-<span class="text-2xl font-extrabold text-primary flex items-center gap-2">
-<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">pets</span>
-                MeowFolio
-            </span>
+<nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b-2 border-on-surface/10 px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center tactile-card">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
 </div>
-<div class="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-<a class="font-semibold text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
-<a class="font-semibold text-primary relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-0.5 after:bg-primary" href="resumes.html">Resumes</a>
-<a class="font-semibold text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
-<a class="font-semibold text-on-surface-variant hover:text-primary transition-colors" href="ats-scorer.html">ATS Scorer</a>
+<span class="font-headline font-bold text-xl tracking-tight">MeowFolio</span>
 </div>
-<div class="flex items-center gap-6">
-<a href="editor-content.html" class="hidden sm:block bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold shadow-lg hover:shadow-primary/20 transition-all active:scale-95 no-underline text-center" data-action="create-resume">Create New</a>
+<div class="hidden lg:flex items-center gap-8">
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
+<a class="font-label text-sm font-bold text-primary border-b-2 border-primary pb-1" href="resumes.html">Resumes</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="ats-scorer.html">ATS Scorer</a>
+</div>
+<div class="flex items-center gap-4 md:gap-6">
+<a href="editor-content.html" class="chunky-button bg-primary text-on-primary px-5 py-2 rounded-full font-label font-bold text-sm hidden sm:block text-center no-underline" data-action="create-resume">Create New</a>
 <div class="user-dropdown relative group flex items-center gap-1 cursor-pointer">
-<button class="w-10 h-10 rounded-full bg-secondary-container overflow-hidden border-2 border-surface-container-highest flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary">
+<button class="flex items-center gap-1 p-1 rounded-full border-2 border-on-surface hover:ring-4 ring-primary/20 transition-all focus:outline-none focus:ring-2 focus:ring-primary">
+<div class="w-8 h-8 rounded-full overflow-hidden">
 <img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2gNJtYuJ5Ewt-m1JSOwllMb6__TrdjLFMh7olgOF2ZQxdhLboYejSR7zSvpC6NYwW_cW7L3ROg3B07czgX2fcpbZEDquaCVOJoKVc-82NILjVvo_Oh2WtecwHfK4Xg15O9xYeeX5x62D1C5J7gsWUeoLaIfXqPbvsiCZkzn74_FK7cpRxiEpqJtyWOQR9QnoF7wzKtlZyCwgVpKuSNg0haFjHzt56UCixelHCV2mnvj-DmcsskxMWA8GpJ6L1Ly4PbjcNqInjYHMu"/>
+</div>
 </button>
-<span class="material-symbols-outlined text-on-surface-variant text-xl">expand_more</span>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
 <div class="dropdown-menu invisible opacity-0 absolute right-0 top-full mt-2 w-48 bg-surface-container-lowest rounded-xl shadow-2xl border border-outline-variant/10 transition-all duration-200 transform translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0">
 <div class="py-2">
-<a class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
 <span class="material-symbols-outlined text-lg">person</span>
                             My Profile
                         </a>
 <div class="h-px bg-outline-variant/10 my-1"></div>
-<a class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error-container/20 transition-colors" href="index.html" data-action="logout">
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-error hover:bg-error-container/20 transition-colors" href="index.html" data-action="logout">
 <span class="material-symbols-outlined text-lg">logout</span>
                             Logout
                         </a>
@@ -85,119 +84,20 @@ h1, h2, h3, button, span.label { font-family: 'Plus Jakarta Sans', sans-serif; }
 </div>
 </header>
 <!-- Main Content Area: Resume Container -->
-<div id="resume-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-<!-- Create New Card -->
-<a href="editor-content.html" class="group relative flex flex-col items-center justify-center p-12 border-4 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-4 no-underline" data-action="create-resume">
-<div class="w-20 h-20 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
-<span class="material-symbols-outlined text-4xl">add</span>
-</div>
-<span class="text-xl font-extrabold text-primary">Start Fresh Resume</span>
-<p class="text-sm text-on-surface-variant font-medium">Use our smart AI builder</p>
-</a>
-<!-- Resume Card 1 -->
-<div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform">
-<div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20">
-<img alt="Mockup of a professional resume with teal accents" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAczg4fNqiB3DXFvoyCa8GoF4ZcWYCHtX2czeJ_zV0NUwbjbwOHZCCQqHb0kMeS8VR53POHEZeFR4jUq1Rhvygu9pUYZa63IrwNMoDdfS9yRcBYclLK4G6j7HF2unI_w1ux4sDyMLR6F6jOQUdh1MqLhiFVkB-jamyNy0gJunk9DdkZAHvL1wAcnRC8Drt-C5rksMRO9AFZSmTlxY1W_d0M_hF9676mB6Z1d3voqkJjlSW-HAthPJzCHmiWdWpT4ECX3yWvK3Y1D04Y"/>
-<div class="absolute top-4 right-4 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-lg">
-                        98% STRENGTH
-                    </div>
-</div>
-<div class="flex justify-between items-start">
-<div>
-<h3 class="text-xl font-extrabold text-on-surface leading-tight">Senior Product Purr-ner</h3>
-<p class="text-sm text-on-surface-variant font-medium mt-1">Modified: Oct 24, 2023</p>
-</div>
-<div class="flex gap-1">
-<a href="editor-content.html" class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-xl">edit</span>
-</a>
-<button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined text-xl">download</span>
-</button>
-<button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined text-xl">more_vert</span>
-</button>
-</div>
-</div>
-<div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
-<div class="flex -space-x-2">
-<div class="w-8 h-8 rounded-full bg-tertiary-container border-2 border-surface-container-lowest"></div>
-<div class="w-8 h-8 rounded-full bg-primary-container border-2 border-surface-container-lowest"></div>
-</div>
-<span class="text-xs font-bold text-on-surface-variant">Shared with 4 recruiters</span>
-</div>
-</div>
-<!-- Resume Card 2 -->
-<div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform">
-<div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20">
-<img alt="Minimalist resume design with coral highlights" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0ipruZoNOJnd-3gIUbjz4JNouJRstbO2EJdxvq36Jx3c1ZlXUVmuxDI7pfPa3wrTaieps44bZrcO8H9aNGlYLLZkTc7OZc1muXYbL-33MmC1K0kIMvoBp-qG5qx-1RfOT3oCocaI9tPB3ZzLkiMcnC_Tz3ZQITpJJY2N6VKUqyOHEztHy1_b4pl5SOycz9I5qdMX3wE1XBjZdRDPr50lsQpUvhxEQkwkJ1PyvnH48cVyKc8MUdO93BMR5B60psSo6D0qNMGX1xBBy"/>
-<div class="absolute top-4 right-4 bg-primary-fixed text-on-primary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-lg">
-                        74% STRENGTH
-                    </div>
-</div>
-<div class="flex justify-between items-start">
-<div>
-<h3 class="text-xl font-extrabold text-on-surface leading-tight">Chief Nap Officer</h3>
-<p class="text-sm text-on-surface-variant font-medium mt-1">Modified: Sep 12, 2023</p>
-</div>
-<div class="flex gap-1">
-<a href="editor-content.html" class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-xl">edit</span>
-</a>
-<button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined text-xl">download</span>
-</button>
-<button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined text-xl">more_vert</span>
-</button>
-</div>
-</div>
-<div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
-<span class="bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-black uppercase text-on-surface-variant">Draft</span>
-<span class="text-xs font-bold text-on-surface-variant ml-auto italic">Created Jan 05</span>
-</div>
-</div>
-<!-- Resume Card 3 -->
-<div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform">
-<div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20">
-<img alt="Modern resume template featuring dark mode aesthetic" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvG3nnMv5Syl0bzgFd7mzwFVEUIZaOwdeWIlf7HgmV2YRBRAbokXqU2hfnR0tXkau0iNSpo2XJQ-BvTtZm97pc7Un4UEC0YEqIyJX8YGInZjwUzFXAaFCK-F7siDCBKzaRjRxB1XZ-NI6iNffz_XtXitWzy5m8nWToIgjGij6PeIZbb0oS6AIWgYSwChMgLuB2Bf9DkmyYYQ4_fK56v7iRHAg9_bZ19LMWqNbXjHSV2tkPMSGlV1h24gNOGCGSS_m4RNdhnKdHlgZy"/>
-<div class="absolute top-4 right-4 bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-xs font-black shadow-lg">
-                        82% STRENGTH
-                    </div>
-</div>
-<div class="flex justify-between items-start">
-<div>
-<h3 class="text-xl font-extrabold text-on-surface leading-tight">Freelance Yarn Designer</h3>
-<p class="text-sm text-on-surface-variant font-medium mt-1">Modified: Aug 30, 2023</p>
-</div>
-<div class="flex gap-1">
-<a href="editor-content.html" class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-xl">edit</span>
-</a>
-<button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined text-xl">download</span>
-</button>
-<button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined text-xl">more_vert</span>
-</button>
-</div>
-</div>
-<div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
-<span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
-<span class="text-xs font-bold text-on-surface-variant">Optimized for LinkedIn</span>
-</div>
-</div>
-</div>
+<div id="resume-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8"></div>
 <!-- Subtle Footer/Pagination -->
-<div class="mt-12 flex items-center justify-between bg-surface-container-low p-6 rounded-lg border border-outline-variant/10">
+<div class="mt-12 tactile-card flex items-center justify-between bg-surface-container-lowest p-6 rounded-xl border-2 border-on-surface">
 <div class="flex items-center gap-4">
 <span class="text-sm font-bold text-on-surface-variant" data-resume-counter>Showing 1-3 of 12 resumes</span>
 </div>
 <div class="flex items-center gap-2">
-<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface-variant cursor-not-allowed opacity-50">
+<button class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-on-surface bg-surface-container-highest text-on-surface-variant cursor-not-allowed opacity-50">
 <span class="material-symbols-outlined">chevron_left</span>
 </button>
-<button class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-on-primary font-bold shadow-md">1</button>
-<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface font-bold hover:bg-surface-variant transition-colors">2</button>
-<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface font-bold hover:bg-surface-variant transition-colors">3</button>
-<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-variant transition-colors">
+<button class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-on-surface bg-primary text-on-primary font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-on-surface bg-surface-container-lowest text-on-surface font-bold hover:bg-surface-variant transition-colors">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-on-surface bg-surface-container-lowest text-on-surface font-bold hover:bg-surface-variant transition-colors">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-on-surface bg-surface-container-lowest text-on-surface-variant hover:bg-surface-variant transition-colors">
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
@@ -207,158 +107,11 @@ h1, h2, h3, button, span.label { font-family: 'Plus Jakarta Sans', sans-serif; }
 <button class="md:hidden fixed bottom-8 right-8 w-16 h-16 rounded-full bg-primary text-on-primary shadow-2xl flex items-center justify-center z-50 active:scale-90 transition-transform" data-action="create-resume" type="button">
 <span class="material-symbols-outlined text-3xl">add</span>
 </button>
+<script src="page-modules.js"></script>
+<script src="pages-profile.js"></script>
+<script src="pages-editor.js"></script>
+<script src="pages-analysis.js"></script>
+<script src="pages-public-content.js"></script>
 <script src="app.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.__MEOWFOLIO_V2__) return;
-    // Render dynamic resumes on Resumes page
-    const resumes = AppState.getResumes();
-    const container = document.getElementById('resume-container');
-    const gridBtn = document.getElementById('btn-grid-view');
-    const listBtn = document.getElementById('btn-list-view');
-    
-    let currentView = 'grid'; // 'grid' | 'list'
-
-    // Create New Card Template (Grid)
-    const createNewGrid = `
-<a href="editor-content.html" class="group relative flex flex-col items-center justify-center p-12 border-4 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-4 no-underline bg-transparent min-h-[300px]">
-<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
-<span class="material-symbols-outlined text-4xl">add</span>
-</div>
-<span class="text-xl font-extrabold text-primary">Start Fresh Resume</span>
-<p class="text-sm text-on-surface-variant font-medium text-center">Use our smart AI builder</p>
-</a>`;
-
-    // Create New Card Template (List)
-    const createNewList = `
-<a href="editor-content.html" class="group relative flex items-center p-6 border-2 border-dashed border-outline-variant/30 rounded-lg hover:border-primary/40 hover:bg-primary-fixed/20 transition-all gap-6 no-underline bg-surface-container-lowest">
-<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg shadow-primary/10 shrink-0">
-<span class="material-symbols-outlined text-2xl">add</span>
-</div>
-<div>
-    <span class="text-lg font-extrabold text-primary block">Start Fresh Resume</span>
-    <p class="text-sm text-on-surface-variant font-medium mt-1">Use our smart AI builder</p>
-</div>
-</a>`;
-    
-    const render = () => {
-        if (!container) return;
-        
-        let html = '';
-        
-        if (resumes.length === 0) {
-            container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8';
-            html += createNewGrid;
-            html += `
-            <div class="col-span-1 md:col-span-1 lg:col-span-2 xl:col-span-3 bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-center gap-4 min-h-[300px]">
-                <div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center">
-                    <span class="material-symbols-outlined text-3xl text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
-                </div>
-                <h3 class="text-xl font-extrabold text-on-surface">It's quiet in here...</h3>
-                <p class="text-sm text-on-surface-variant font-medium max-w-xs">Click the 'Start Fresh Resume' card to begin crafting your first masterpiece.</p>
-            </div>`;
-        } else {
-            if (currentView === 'grid') {
-                container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8';
-                html += createNewGrid;
-                resumes.forEach(r => {
-                    html += `
-                    <div class="bg-surface-container-lowest p-6 rounded-lg shadow-xl shadow-surface-dim/40 border border-outline-variant/10 flex flex-col gap-6 group hover:-translate-y-2 transition-transform cursor-pointer" onclick="window.location.href='editor-content.html'">
-                        <div class="relative w-full aspect-[4/3] bg-surface-container rounded-md overflow-hidden border border-outline-variant/20 flex flex-col items-center justify-center">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10"></div>
-                            <span class="material-symbols-outlined text-outline text-8xl opacity-20">contract</span>
-                            <div class="absolute top-4 right-4 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-lg z-20">
-                                ${r.score}% STRENGTH
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-start">
-                            <div class="flex-1 min-w-0 pr-2">
-                                <h3 class="text-xl font-extrabold text-on-surface leading-tight truncate">${r.role}</h3>
-                                <p class="text-sm text-on-surface-variant font-medium mt-1">Modified: ${r.updated}</p>
-                            </div>
-                            <div class="flex gap-1 shrink-0">
-                                <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); window.location.href='editor-content.html'"><span class="material-symbols-outlined text-xl">edit</span></button>
-                                <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...', 'info');">
-                                    <span class="material-symbols-outlined text-xl">download</span>
-                                </button>
-                                <button class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant hover:text-error transition-colors" title="Delete Resume" onclick="event.stopPropagation(); window.deleteResumeUI(${r.id});">
-                                    <span class="material-symbols-outlined text-xl">delete</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
-                            <span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
-                            <span class="text-xs font-bold text-on-surface-variant">Optimized for ATS</span>
-                        </div>
-                    </div>`;
-                });
-            } else { // LIST VIEW
-                container.className = 'flex flex-col gap-4 max-w-5xl mx-auto w-full';
-                html += createNewList;
-                resumes.forEach(r => {
-                    html += `
-                    <div class="bg-surface-container-lowest p-4 md:p-6 rounded-lg shadow-md border border-outline-variant/10 flex flex-col md:flex-row items-center gap-4 md:gap-6 group hover:border-primary/30 transition-colors cursor-pointer" onclick="window.location.href='editor-content.html'">
-                        <div class="w-16 h-20 bg-surface-container rounded border border-outline-variant/20 flex flex-col items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-outline text-2xl opacity-40">contract</span>
-                        </div>
-                        <div class="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between w-full gap-4">
-                            <div class="flex-1">
-                                <h3 class="text-xl font-extrabold text-on-surface leading-tight truncate">${r.role}</h3>
-                                <div class="flex flex-wrap items-center gap-3 mt-2">
-                                    <p class="text-sm text-on-surface-variant font-medium">Modified: ${r.updated}</p>
-                                    <span class="text-on-surface-variant text-xs hidden md:inline">•</span>
-                                    <div class="flex items-center gap-1 text-tertiary text-xs font-bold">
-                                        <span class="material-symbols-outlined text-sm">check_circle</span> ATS Optimized
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4 md:gap-6 shrink-0 justify-between md:justify-end w-full md:w-auto mt-2 md:mt-0">
-                                <div class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded-full text-xs font-black shadow-sm shrink-0">
-                                    ${r.score}% STRENGTH
-                                </div>
-                                <div class="flex gap-1 border-t border-outline-variant/10 pt-2 md:pt-0 md:border-t-0 p-1 md:p-0 w-full md:w-auto justify-end">
-                                    <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); window.location.href='editor-content.html'"><span class="material-symbols-outlined text-xl">edit</span></button>
-                                    <button class="p-2.5 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" onclick="event.stopPropagation(); UI.showToast('Generating PDF...', 'info');">
-                                        <span class="material-symbols-outlined text-xl">download</span>
-                                    </button>
-                                    <button class="p-2.5 rounded-full hover:bg-error-container text-on-surface-variant hover:text-error transition-colors" title="Delete Resume" onclick="event.stopPropagation(); window.deleteResumeUI(${r.id});">
-                                        <span class="material-symbols-outlined text-xl">delete</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-                });
-            }
-        }
-        container.innerHTML = html;
-        
-        // Update styling of toggle buttons
-        if (gridBtn && listBtn) {
-            const activeClasses = "flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-lowest shadow-sm text-primary font-bold transition-all".split(' ');
-            const inactiveClasses = "flex items-center gap-2 px-6 py-3 rounded-full text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all".split(' ');
-            
-            if (currentView === 'grid') {
-                gridBtn.className = ''; gridBtn.classList.add(...activeClasses);
-                listBtn.className = ''; listBtn.classList.add(...inactiveClasses);
-            } else {
-                listBtn.className = ''; listBtn.classList.add(...activeClasses);
-                gridBtn.className = ''; gridBtn.classList.add(...inactiveClasses);
-            }
-        }
-        
-        // Update pagination counter (1-X of Y resumes)
-        const counter = document.querySelector('.text-sm.font-bold.text-on-surface-variant');
-        if (counter && counter.textContent.includes('resumes')) {
-            counter.textContent = `Showing 1-${resumes.length} of ${resumes.length} resumes`;
-        }
-    };
-
-    // Attach listeners and initial render
-    if (gridBtn) gridBtn.addEventListener('click', () => { currentView = 'grid'; render(); });
-    if (listBtn) listBtn.addEventListener('click', () => { currentView = 'list'; render(); });
-    
-    render();
-});
-</script>
 </body></html>
+
