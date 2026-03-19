@@ -34,7 +34,7 @@
         }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="text-on-surface">
+<body class="text-on-surface" data-page="learn" data-shell="public">
 <!-- Top Navigation Bar -->
 <nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 px-6 py-4">
 <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -48,8 +48,8 @@
 </div>
 </div>
 <div class="flex items-center gap-4">
-<button class="font-label text-sm font-bold px-5 py-2 hover:bg-surface-container-high rounded-full transition-colors">Login</button>
-<button class="chunky-button font-label text-sm font-bold px-6 py-2.5 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20">Get Started</button>
+<button class="font-label text-sm font-bold px-5 py-2 hover:bg-surface-container-high rounded-full transition-colors" data-action="go-login" type="button">Login</button>
+<button class="chunky-button font-label text-sm font-bold px-6 py-2.5 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20" data-action="start-building" type="button">Get Started</button>
 </div>
 </div>
 </nav>
@@ -112,16 +112,16 @@
 </div>
 </section>
 <!-- Chapter Grid -->
-<section class="space-y-12">
+<section class="space-y-12" id="curriculum">
 <div class="flex items-end justify-between border-b border-outline-variant/20 pb-6">
 <div>
 <span class="font-label text-xs uppercase font-black tracking-widest text-primary mb-2 block">All Chapters</span>
 <h2 class="font-headline text-4xl font-bold">The Curriculum</h2>
 </div>
-<button class="flex items-center gap-2 font-label text-sm font-bold text-primary group">
+<a class="flex items-center gap-2 font-label text-sm font-bold text-primary group" href="#curriculum">
                     View Course Syllabus
                     <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
+</a>
 </div>
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 <!-- Card 1 -->
@@ -139,7 +139,7 @@
 <h3 class="font-headline text-xl font-extrabold group-hover:text-primary transition-colors">First Impressions</h3>
 <p class="text-sm text-on-surface-variant leading-relaxed">Why the first 6 seconds are all you have to win the recruiter's heart.</p>
 </div>
-<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="chapter-1.html">
                             Read chapter
                             <span class="material-symbols-outlined text-sm">east</span>
 </a>
@@ -160,7 +160,7 @@
 <h3 class="font-headline text-xl font-extrabold group-hover:text-secondary transition-colors">The Layout Grid</h3>
 <p class="text-sm text-on-surface-variant leading-relaxed">Structural secrets to keep your resume organized and readable.</p>
 </div>
-<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="chapter-2.html">
                             Read chapter
                             <span class="material-symbols-outlined text-sm">east</span>
 </a>
@@ -181,7 +181,7 @@
 <h3 class="font-headline text-xl font-extrabold group-hover:text-tertiary transition-colors">Action Verbs</h3>
 <p class="text-sm text-on-surface-variant leading-relaxed">Swap boring duties for high-impact power words that pop.</p>
 </div>
-<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="chapter-3.html">
                             Read chapter
                             <span class="material-symbols-outlined text-sm">east</span>
 </a>
@@ -202,7 +202,7 @@
 <h3 class="font-headline text-xl font-extrabold group-hover:text-primary transition-colors">Beating the ATS</h3>
 <p class="text-sm text-on-surface-variant leading-relaxed">Optimization tricks to bypass the robotic resume gatekeepers.</p>
 </div>
-<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="chapter-4.html">
                             Read chapter
                             <span class="material-symbols-outlined text-sm">east</span>
 </a>
@@ -223,7 +223,7 @@
 <h3 class="font-headline text-xl font-extrabold group-hover:text-secondary-container transition-colors">The Wow Factor</h3>
 <p class="text-sm text-on-surface-variant leading-relaxed">Adding personality and flair without being unprofessional.</p>
 </div>
-<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="chapter-5.html">
                             Read chapter
                             <span class="material-symbols-outlined text-sm">east</span>
 </a>
@@ -244,7 +244,7 @@
 <h3 class="font-headline text-xl font-extrabold group-hover:text-tertiary-fixed-variant transition-colors">Proofing &amp; Polish</h3>
 <p class="text-sm text-on-surface-variant leading-relaxed">The final checklist to ensure zero errors before hitting send.</p>
 </div>
-<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="chapter-6.html">
                             Read chapter
                             <span class="material-symbols-outlined text-sm">east</span>
 </a>
@@ -265,7 +265,7 @@
 <h3 class="font-headline text-xl font-extrabold group-hover:text-primary transition-colors">Submission Strategy</h3>
 <p class="text-sm text-on-surface-variant leading-relaxed">How to follow up and manage multiple applications like a pro.</p>
 </div>
-<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="chapter-7.html">
                             Read chapter
                             <span class="material-symbols-outlined text-sm">east</span>
 </a>
@@ -285,10 +285,10 @@
                         Knowledge is power, but a finished resume is a paycheck. Put everything Mochii taught you into practice.
                     </p>
 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-<button class="chunky-button px-10 py-5 bg-surface-container-lowest text-primary font-headline font-bold text-lg rounded-full shadow-xl">
+<button class="chunky-button px-10 py-5 bg-surface-container-lowest text-primary font-headline font-bold text-lg rounded-full shadow-xl" data-action="start-building" type="button">
                             Build my resume
                         </button>
-<button class="px-8 py-5 border-2 border-on-primary text-on-primary font-headline font-bold text-lg rounded-full hover:bg-on-primary/10 transition-colors">
+<button class="px-8 py-5 border-2 border-on-primary text-on-primary font-headline font-bold text-lg rounded-full hover:bg-on-primary/10 transition-colors" data-action="start-building" type="button">
                             Explore Templates
                         </button>
 </div>

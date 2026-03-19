@@ -39,7 +39,7 @@
     }
   </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="font-sans bg-surface min-h-screen flex items-center justify-center p-6 relative">
+<body class="font-sans bg-surface min-h-screen flex items-center justify-center p-6 relative" data-page="500" data-shell="public">
 <!-- BEGIN: Background Texture -->
 <div aria-hidden="true" class="fixed inset-0 bg-dotted-grid pointer-events-none"></div>
 <!-- END: Background Texture -->
@@ -86,10 +86,10 @@
 <!-- END: Content Section -->
 <!-- BEGIN: Action Buttons -->
 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center" data-purpose="navigation-actions">
-<button class="w-full sm:w-auto px-8 py-4 bg-primary text-white font-bold rounded-full kawaii-outline hover:translate-y-0.5 transition-transform shadow-kawaii active:shadow-none" id="btn-try-again">
+<button class="w-full sm:w-auto px-8 py-4 bg-primary text-white font-bold rounded-full kawaii-outline hover:translate-y-0.5 transition-transform shadow-kawaii active:shadow-none" id="btn-try-again" type="button">
           Try again
         </button>
-<button class="w-full sm:w-auto px-8 py-4 bg-white text-primary font-bold rounded-full border-3 border-primary kawaii-outline hover:translate-y-0.5 transition-transform shadow-kawaii active:shadow-none" id="btn-back-editor">
+<button class="w-full sm:w-auto px-8 py-4 bg-white text-primary font-bold rounded-full border-3 border-primary kawaii-outline hover:translate-y-0.5 transition-transform shadow-kawaii active:shadow-none" id="btn-back-editor" onclick="window.location.href='editor-content.html'" type="button">
           Back to Editor
         </button>
 </div>

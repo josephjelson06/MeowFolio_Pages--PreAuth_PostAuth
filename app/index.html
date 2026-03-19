@@ -11,7 +11,7 @@
 <script src="tailwind-config.js"></script>
 
 <meta name="view-transition" content="same-origin" /></head>
-<body class="min-h-screen">
+<body class="min-h-screen" data-page="dashboard" data-shell="app">
 <!-- Top Navigation Bar -->
 <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b-2 border-on-surface/10 px-6 py-4 flex items-center justify-between">
 <div class="flex items-center gap-2">
@@ -28,7 +28,7 @@
 <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="ats-scorer.html">ATS Scorer</a>
 </div>
 <div class="flex items-center gap-4 md:gap-6">
-<a href="editor-content.html" class="chunky-button bg-primary text-on-primary px-5 py-2 rounded-full font-label font-bold text-sm hidden sm:block text-center no-underline">
+<a href="editor-content.html" class="chunky-button bg-primary text-on-primary px-5 py-2 rounded-full font-label font-bold text-sm hidden sm:block text-center no-underline" data-action="create-resume">
                 Create New
             </a>
 <div class="flex items-center gap-2 md:gap-4">
@@ -53,7 +53,7 @@
                             My Profile
                         </a>
 <div class="h-[1px] bg-on-surface/10"></div>
-<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-error hover:bg-error-container transition-colors" href="index.html">
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-error hover:bg-error-container transition-colors" href="index.html" data-action="logout">
 <span class="material-symbols-outlined text-lg">logout</span>
                             Logout
                         </a>
@@ -68,7 +68,7 @@
 <!-- Greeting -->
 <header class="mb-12">
 <p class="font-label text-sm uppercase tracking-widest text-primary font-bold mb-2">Welcome Back</p>
-<h1 class="font-headline text-4xl md:text-5xl font-extrabold text-on-surface leading-tight">
+<h1 class="font-headline text-4xl md:text-5xl font-extrabold text-on-surface leading-tight" data-dashboard-greeting>
                     Good morning, <br class="md:hidden"/> Alexander Thompson! 🐾
                 </h1>
 </header>
@@ -87,7 +87,7 @@
 </div>
 <div>
 <h3 class="font-label font-bold text-on-tertiary-fixed-variant text-sm">Average ATS Score</h3>
-<p class="font-headline text-4xl font-extrabold text-on-tertiary-fixed-variant">78%</p>
+<p class="font-headline text-4xl font-extrabold text-on-tertiary-fixed-variant" data-metric="ats">78%</p>
 </div>
 <div class="h-2 bg-on-tertiary-fixed-variant/10 rounded-full overflow-hidden">
 <div class="h-full bg-tertiary w-[78%]"></div>
@@ -106,7 +106,7 @@
 </div>
 <div>
 <h3 class="font-label font-bold text-on-primary-fixed-variant text-sm">Resume Strength</h3>
-<p class="font-headline text-4xl font-extrabold text-on-primary-fixed-variant">85%</p>
+<p class="font-headline text-4xl font-extrabold text-on-primary-fixed-variant" data-metric="strength">85%</p>
 </div>
 <div class="h-2 bg-on-primary-fixed-variant/10 rounded-full overflow-hidden">
 <div class="h-full bg-primary w-[85%]"></div>
@@ -125,7 +125,7 @@
 </div>
 <div>
 <h3 class="font-label font-bold text-on-secondary-fixed-variant text-sm">JD Match Success</h3>
-<p class="font-headline text-4xl font-extrabold text-on-secondary-fixed-variant">72%</p>
+<p class="font-headline text-4xl font-extrabold text-on-secondary-fixed-variant" data-metric="jd">72%</p>
 </div>
 <div class="h-2 bg-on-secondary-fixed-variant/10 rounded-full overflow-hidden">
 <div class="h-full bg-secondary w-[72%]"></div>
@@ -145,7 +145,7 @@
 </a>
 </div>
 <!-- Resume Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-dashboard-resumes>
 <!-- Resume Card -->
 <div class="tactile-card overflow-hidden group">
 <div class="h-48 bg-surface-container-highest relative overflow-hidden">
@@ -217,7 +217,7 @@
 </div>
 <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
 </a>
-<button class="tactile-card w-full p-4 flex items-center gap-4 text-left group">
+<button class="tactile-card w-full p-4 flex items-center gap-4 text-left group" data-action="export-active-resume" type="button">
 <div class="w-12 h-12 bg-primary-fixed rounded-xl flex items-center justify-center border-2 border-on-surface group-hover:rotate-6 transition-transform">
 <span class="material-symbols-outlined text-on-primary-fixed-variant">download</span>
 </div>
@@ -266,6 +266,7 @@
 <script src="app.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.__MEOWFOLIO_V2__) return;
     // Render dynamic resumes on dashboard
     const resumes = AppState.getResumes().slice(0, 2); // Dashboard shows top 2
     const grid = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.gap-6');

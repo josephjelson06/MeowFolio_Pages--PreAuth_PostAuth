@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -23,7 +23,7 @@
         }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-surface">
+<body class="bg-surface" data-page="ats-report" data-shell="app">
 <div class="flex flex-col h-screen overflow-hidden">
 <!-- TopNavBar -->
 <header class="h-20 px-8 flex items-center justify-between border-b border-outline-variant/10 bg-surface z-50">
@@ -44,7 +44,7 @@
 <div class="flex items-center justify-end gap-6 w-1/4">
 <div class="flex items-center gap-2">
 <button class="px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label font-bold text-sm hover:bg-surface-container-high transition-colors">ATS Score</button>
-<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label font-bold text-sm shadow-sm hover:shadow-md transition-all">Download</button>
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label font-bold text-sm shadow-sm hover:shadow-md transition-all" data-action="export-active-resume" type="button">Download</button>
 </div>
 <div class="h-8 w-[1px] bg-outline-variant/30"></div>
 <!-- User Avatar with Dropdown -->
@@ -62,7 +62,7 @@
                             My Profile
                         </a>
 <div class="h-[1px] bg-outline-variant/10 my-1 mx-2"></div>
-<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-error hover:bg-error-container/10 transition-colors" href="index.html">
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-error hover:bg-error-container/10 transition-colors" href="index.html" data-action="logout">
 <span class="material-symbols-outlined text-sm">logout</span>
                             Logout
                         </a>
@@ -88,7 +88,7 @@
 <span class="material-symbols-outlined text-primary">description</span>
 </div>
 <div>
-<p class="text-sm font-bold text-on-surface">Senior_UX_Designer.pdf</p>
+<p class="text-sm font-bold text-on-surface" data-active-resume-name>Senior_UX_Designer.pdf</p>
 <p class="text-[10px] text-on-surface-variant">Modified 2 hours ago</p>
 </div>
 </div>
@@ -125,7 +125,7 @@
 </div>
 </div>
 </div>
-<a href="ats-report.html" class="w-full py-4 rounded-xl bg-primary text-on-primary font-headline font-extrabold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95 transition-all no-underline">
+<a href="ats-report.html" class="w-full py-4 rounded-xl bg-primary text-on-primary font-headline font-extrabold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95 transition-all no-underline" data-action="run-ats-scan">
 <span class="material-symbols-outlined">analytics</span>
                         Run ATS Scan</a>
 </div>
@@ -159,8 +159,8 @@
 <circle class="text-primary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364" stroke-dashoffset="80" stroke-linecap="round" stroke-width="8"></circle>
 </svg>
 <div class="absolute flex flex-col items-center">
-<span class="text-3xl font-headline font-extrabold text-on-surface">78%</span>
-<span class="text-[10px] font-bold text-on-surface-variant uppercase">Good</span>
+<span class="text-3xl font-headline font-extrabold text-on-surface" data-ats-score>78%</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase" data-ats-rating>Good</span>
 </div>
 </div>
 </div>
@@ -168,25 +168,25 @@
 <div class="grid grid-cols-4 gap-4">
 <div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-tertiary shadow-sm">
 <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Formatting</p>
-<p class="text-2xl font-headline font-extrabold text-on-surface">92/100</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="formatting">92/100</p>
 </div>
 <div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary shadow-sm">
 <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Keywords</p>
-<p class="text-2xl font-headline font-extrabold text-on-surface">64/100</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="keywords">64/100</p>
 </div>
 <div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-secondary shadow-sm">
 <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Structure</p>
-<p class="text-2xl font-headline font-extrabold text-on-surface">88/100</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="structure">88/100</p>
 </div>
 <div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary-container shadow-sm">
 <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Readability</p>
-<p class="text-2xl font-headline font-extrabold text-on-surface">71/100</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="readability">71/100</p>
 </div>
 </div>
 <!-- Issues List -->
 <div class="flex flex-col gap-4">
 <h3 class="font-headline text-xl font-bold text-on-surface">What to Fix</h3>
-<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-3" data-ats-issues>
 <div class="flex items-center gap-4 p-5 rounded-2xl bg-surface-container-lowest border-l-8 border-error">
 <div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
 <span class="material-symbols-outlined">warning</span>
@@ -221,7 +221,7 @@
 </div>
 <!-- Footer Action -->
 <div class="mt-auto pt-10">
-<a href="editor-content.html" class="w-full py-5 rounded-full bg-secondary text-on-secondary font-headline font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:bg-secondary/90 transition-all no-underline">
+<a href="editor-content.html" class="w-full py-5 rounded-full bg-secondary text-on-secondary font-headline font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:bg-secondary/90 transition-all no-underline" data-action="open-ats-suggestions">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
                         Generate Suggestions</a>
 </div>
@@ -246,3 +246,4 @@
 </div>
 <script src="app.js"></script>
 </body></html>
+

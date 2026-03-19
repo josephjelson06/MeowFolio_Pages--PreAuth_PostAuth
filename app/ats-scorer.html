@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -11,7 +11,7 @@
 <script src="tailwind-config.js"></script>
 
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-surface">
+<body class="bg-surface" data-page="ats-scorer" data-shell="app">
 <div class="flex flex-col h-screen overflow-hidden">
 <!-- TopNavBar -->
 <header class="h-20 px-8 flex items-center justify-between border-b border-outline-variant/10 bg-surface z-50">
@@ -32,7 +32,7 @@
 <div class="flex items-center justify-end gap-6 w-1/4">
 <div class="flex items-center gap-2">
 <button class="px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label font-bold text-sm hover:bg-surface-container-high transition-colors">ATS Score</button>
-<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label font-bold text-sm shadow-sm hover:shadow-md transition-all">Download</button>
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label font-bold text-sm shadow-sm hover:shadow-md transition-all" data-action="export-active-resume" type="button">Download</button>
 </div>
 <div class="h-8 w-[1px] bg-outline-variant/30"></div>
 <!-- User Avatar with Dropdown -->
@@ -50,7 +50,7 @@
                             My Profile
                         </a>
 <div class="h-[1px] bg-outline-variant/10 my-1 mx-2"></div>
-<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-error hover:bg-error-container/10 transition-colors" href="index.html">
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-error hover:bg-error-container/10 transition-colors" href="index.html" data-action="logout">
 <span class="material-symbols-outlined text-sm">logout</span>
                             Logout
                         </a>
@@ -95,9 +95,9 @@
 <div class="flex items-center justify-between px-2">
 <div class="flex flex-col min-w-0">
 <span class="text-[10px] font-bold text-primary uppercase tracking-tighter">Active Resume</span>
-<span class="font-bold text-on-surface truncate">Senior_UX_Designer.pdf</span>
+<span class="font-bold text-on-surface truncate" data-active-resume-name>Senior_UX_Designer.pdf</span>
 </div>
-<button class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container transition-colors">
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container transition-colors" data-action="cycle-active-resume" type="button">
 <span class="material-symbols-outlined text-lg">swap_horiz</span>
 </button>
 </div>
@@ -162,7 +162,7 @@
                             Select your resume from the left panel and Mochii will analyze it against common applicant tracking systems.
                         </p>
 </div>
-<a href="ats-report.html" class="w-full max-w-xs py-5 rounded-full bg-primary-container text-on-primary-container font-headline font-extrabold text-xl flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all no-underline">
+<a href="ats-report.html" class="w-full max-w-xs py-5 rounded-full bg-primary-container text-on-primary-container font-headline font-extrabold text-xl flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all no-underline" data-action="run-ats-scan">
 <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">analytics</span>
                         Run ATS Scan</a>
 </div>
@@ -188,6 +188,7 @@
 <script src="app.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.__MEOWFOLIO_V2__) return;
     // Handle Run Scan Button
     const runBtn = document.querySelector('button.bg-primary');
     if (runBtn) {
@@ -208,3 +209,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 </body></html>
+

@@ -12,7 +12,7 @@
 <script src="tailwind-config.js"></script>
 
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-background text-on-surface h-screen flex flex-col overflow-hidden">
+<body class="bg-background text-on-surface h-screen flex flex-col overflow-hidden" data-page="editor-preview" data-shell="app">
 <!-- TopNavBar -->
 <nav class="h-16 px-8 flex items-center justify-between bg-surface border-b border-outline-variant/20 z-50">
 <div class="flex items-center gap-4">
@@ -48,8 +48,8 @@
 </div>
 </div>
 <div class="flex gap-2">
-    <button class="text-primary font-bold font-label px-4 py-2 hover:bg-surface-container-highest rounded-full transition-colors" onclick="AppState.init(); window.location.href='index.html';">Log In</button>
-    <button class="bg-surface-container-highest text-on-surface font-bold font-label px-4 py-2 rounded-full transition-colors hover:bg-surface-variant" onclick="AppState.init(); window.location.href='index.html';">Sign Up</button>
+    <button class="text-primary font-bold font-label px-4 py-2 hover:bg-surface-container-highest rounded-full transition-colors" onclick="window.location.href='login.html';" type="button">Log In</button>
+    <button class="bg-surface-container-highest text-on-surface font-bold font-label px-4 py-2 rounded-full transition-colors hover:bg-surface-variant" onclick="window.location.href='signup.html';" type="button">Sign Up</button>
 </div>
 </div>
 </nav>

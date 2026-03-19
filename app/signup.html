@@ -21,7 +21,7 @@
         }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-background font-body text-on-background min-h-screen">
+<body class="bg-background font-body text-on-background min-h-screen" data-page="signup" data-shell="auth">
 <!-- Dimmed Landing Page Backdrop -->
 <div class="fixed inset-0 z-0 flex flex-col overflow-hidden pointer-events-none grayscale-[0.5] opacity-40">
 <!-- Mock Hero Content -->
@@ -70,7 +70,7 @@
 <!-- Action Button Stack -->
 <div class="space-y-4">
 <!-- Continue with Google -->
-<button class="group w-full flex items-center justify-center gap-3 bg-on-background text-surface py-4 px-6 rounded-full font-headline font-bold text-lg shadow-[0px_4px_0px_#000000] active:shadow-none active:translate-y-1 transition-all duration-150">
+<button class="group w-full flex items-center justify-center gap-3 bg-on-background text-surface py-4 px-6 rounded-full font-headline font-bold text-lg shadow-[0px_4px_0px_#000000] active:shadow-none active:translate-y-1 transition-all duration-150" data-action="signup-local" type="button">
 <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center overflow-hidden p-0.5">
 <img alt="Google Logo" class="w-full h-full object-contain" data-alt="Google colorful logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7_XuLt2Oe_59Jopt9Sj2yv0UKveYpLxFS5Bf_uAFcyXHOz6SRkpXdjlIqhzrtBhutJHm2iBcqRvdbsIYpNIC5Nr2V1ZxSUOoeb7MkG5dwOSwMOCa8blFLuqqbrFqdNxQApsW7tJVk86ZFn9fLtMw_WmonxruILWHptgn6jI-2LxEcJ1t37xfxGH6H1_dFZFoFi_1ToCQxcmRZq8dQpKhBNRxJP2MB3zBCYpq38mzJNYxq61GDYtViZuE3YfZWju8IWIjQ9xR-MRzS"/>
 </div>
@@ -84,9 +84,9 @@
 </div>
 <!-- Footer Link -->
 <div class="mt-8">
-<button class="text-on-surface-variant font-semibold hover:text-primary underline decoration-2 underline-offset-4 transition-colors">
+<a class="text-on-surface-variant font-semibold hover:text-primary underline decoration-2 underline-offset-4 transition-colors no-underline" href="landing.html">
                         Maybe later
-                    </button>
+                    </a>
 </div>
 </div>
 <!-- Tactile Corner Decoration -->

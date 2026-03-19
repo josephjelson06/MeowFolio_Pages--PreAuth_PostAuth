@@ -29,7 +29,7 @@
         }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-background min-h-screen flex flex-col">
+<body class="bg-background min-h-screen flex flex-col" data-page="choose-path" data-shell="public">
 <!-- TopNavBar (Rendered as per JSON guidelines with customized links for Pre-auth) -->
 <nav class="sticky top-0 z-50 bg-surface-container-highest px-8 py-4 flex items-center justify-between editorial-shadow">
 <div class="flex items-center gap-8">
@@ -42,8 +42,8 @@
 </div>
 </div>
 <div class="flex items-center gap-4">
-<button class="px-6 py-2.5 rounded-full font-label text-sm font-bold text-primary border-2 border-primary/20 hover:bg-primary-fixed transition-all" onclick="window.location.href='login.html'">Log in</button>
-<button class="px-6 py-2.5 rounded-full font-label text-sm font-bold text-on-primary gradient-cta shadow-lg active:scale-95 transition-all" onclick="window.location.href='signup.html'">Get Started</button>
+<button class="px-6 py-2.5 rounded-full font-label text-sm font-bold text-primary border-2 border-primary/20 hover:bg-primary-fixed transition-all" data-action="go-login" type="button">Log in</button>
+<button class="px-6 py-2.5 rounded-full font-label text-sm font-bold text-on-primary gradient-cta shadow-lg active:scale-95 transition-all" data-action="start-building" type="button">Get Started</button>
 </div>
 </nav>
 <main class="flex-grow flex flex-col items-center justify-center px-6 py-12 max-w-7xl mx-auto w-full">
@@ -105,7 +105,7 @@
 </div>
 </div>
 <!-- Path 1: Upload & Refine -->
-<button onclick="window.location.href='pick-template.html'" class="group relative flex flex-col items-center text-center p-12 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all editorial-shadow border border-transparent hover:border-outline-variant/30 overflow-hidden">
+<button class="group relative flex flex-col items-center text-center p-12 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all editorial-shadow border border-transparent hover:border-outline-variant/30 overflow-hidden" data-action="start-building" type="button">
 <div class="w-24 h-24 mb-8 rounded-full bg-secondary-container flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'wght' 600;">upload_file</span>
 </div>
@@ -114,7 +114,7 @@
                     Import your existing PDF or Word resume and let our AI optimize it for ATS.
                 </p>
 <div class="mt-8 flex items-center gap-2 text-primary font-label text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a href="pick-template.html" class="no-underline">Start Uploading</a> <span class="material-symbols-outlined">arrow_forward</span>
+                    <a class="no-underline" data-action="start-building" href="signup.html">Start Uploading</a> <span class="material-symbols-outlined">arrow_forward</span>
 </div>
 <!-- Bubble Badge -->
 <div class="absolute -top-2 -right-2 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase editorial-shadow">
@@ -122,7 +122,7 @@
                 </div>
 </button>
 <!-- Path 2: Build from Scratch -->
-<button onclick="window.location.href='pick-template.html'" class="group relative flex flex-col items-center text-center p-12 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all editorial-shadow border border-transparent hover:border-outline-variant/30 overflow-hidden">
+<button class="group relative flex flex-col items-center text-center p-12 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all editorial-shadow border border-transparent hover:border-outline-variant/30 overflow-hidden" data-action="start-building" type="button">
 <div class="w-24 h-24 mb-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'wght' 600;">edit_square</span>
 </div>
@@ -131,7 +131,7 @@
                     Start with a clean slate. We'll guide you through every step of the professional summary.
                 </p>
 <div class="mt-8 flex items-center gap-2 text-primary font-label text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a href="pick-template.html" class="no-underline">Open Editor</a> <span class="material-symbols-outlined">arrow_forward</span>
+                    <a class="no-underline" data-action="start-building" href="signup.html">Open Editor</a> <span class="material-symbols-outlined">arrow_forward</span>
 </div>
 <div class="absolute -top-2 -right-2 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase editorial-shadow">
                     Kawaii
@@ -167,7 +167,7 @@
 <div class="flex gap-12">
 <div class="flex flex-col gap-3">
 <span class="font-label text-xs font-bold text-on-surface uppercase tracking-widest">Product</span>
-<a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="pick-template.html">Templates</a>
+<a class="text-xs text-on-surface-variant hover:text-primary transition-colors" data-action="start-building" href="signup.html">Templates</a>
 <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="landing.html">Pricing</a>
 <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="about.html">Success Stories</a>
 </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
@@ -15,7 +15,7 @@
         .input-focus-transition:focus { background-color: #ffdbd0; outline: none; }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="text-on-background min-h-screen">
+<body class="text-on-background min-h-screen" data-page="profile" data-shell="app">
 <!-- TopNavBar -->
 <nav class="sticky top-0 z-50 bg-surface-container-highest/80 backdrop-blur-lg px-6 py-4 flex items-center justify-between border-b border-outline-variant/20">
 <div class="flex items-center gap-8">
@@ -45,7 +45,7 @@
 <section class="flex flex-col md:flex-row items-center gap-8 mb-12">
 <div class="relative group cursor-pointer" onclick="document.getElementById('avatarUpload').click()">
 <div class="w-32 h-32 md:w-40 md:h-40 bg-secondary-fixed rounded-full flex items-center justify-center border-4 border-surface-container-high overflow-hidden shadow-inner relative">
-<span id="avatarInitials" class="font-headline text-4xl md:text-5xl font-extrabold text-on-secondary-fixed">AT</span>
+<span id="avatarInitials" class="font-headline text-4xl md:text-5xl font-extrabold text-on-secondary-fixed" data-profile-initials>AT</span>
 <img id="avatarPreview" class="w-full h-full object-cover absolute inset-0 hidden" alt="Profile Avatar" />
 </div>
 <div class="absolute bottom-1 right-1 bg-primary p-2 rounded-full border-4 border-surface-container-lowest group-hover:scale-110 transition-transform shadow-md">
@@ -55,7 +55,7 @@
 </div>
 <div class="text-center md:text-left">
 <p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">PRO ACCOUNT</p>
-<h1 class="font-headline text-4xl font-extrabold text-on-surface mb-2">Alexander Thompson</h1>
+<h1 class="font-headline text-4xl font-extrabold text-on-surface mb-2" data-profile-header-name>Alexander Thompson</h1>
 <div class="flex items-center justify-center md:justify-start gap-2 text-on-surface-variant font-medium">
 <span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
 <span>Member since August 2023</span>
@@ -71,15 +71,15 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <div class="space-y-2">
 <label class="font-label text-sm font-bold text-on-surface-variant ml-2">Full Name</label>
-<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="text" value="Alexander Thompson"/>
+<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="text" value="Alexander Thompson" name="fullName"/>
 </div>
 <div class="space-y-2">
 <label class="font-label text-sm font-bold text-on-surface-variant ml-2">Email</label>
-<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="email" value="alex@dreamscape.io"/>
+<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="email" value="alex@dreamscape.io" name="email"/>
 </div>
 <div class="space-y-2 md:col-span-2">
 <label class="font-label text-sm font-bold text-on-surface-variant ml-2">Phone Number</label>
-<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="tel" value="+1 (555) 000-0000"/>
+<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="tel" value="+1 (555) 000-0000" name="phone"/>
 </div>
 </div>
 </section>
@@ -92,20 +92,20 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <div class="space-y-2 md:col-span-2">
 <label class="font-label text-sm font-bold text-on-surface-variant ml-2">College/University</label>
-<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="National Institute of Technology"/>
+<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="National Institute of Technology" name="college"/>
 </div>
 <div class="space-y-2">
 <label class="font-label text-sm font-bold text-on-surface-variant ml-2">Degree</label>
-<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="B.Tech"/>
+<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="B.Tech" name="degree"/>
 </div>
 <div class="space-y-2">
 <label class="font-label text-sm font-bold text-on-surface-variant ml-2">Branch</label>
-<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="Computer Science &amp; Engineering"/>
+<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="Computer Science &amp; Engineering" name="branch"/>
 </div>
 <div class="space-y-2">
 <label class="font-label text-sm font-bold text-on-surface-variant ml-2">Current Year</label>
 <div class="relative">
-<select class="w-full appearance-none bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm">
+<select class="w-full appearance-none bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" name="year">
 <option>1st Year</option>
 <option>2nd Year</option>
 <option>3rd Year</option>
@@ -151,15 +151,15 @@
 <div>
 <p class="font-headline font-bold text-on-secondary-container mb-1">Mochii's Tip</p>
 <p class="font-body text-on-secondary-container/80 text-sm leading-relaxed">
-                            "Keeping your profile updated helps me find the best keywords for your JD Match! 🐾"
+                            "Keeping your profile updated helps me find the best keywords for your JD Match."
                         </p>
 </div>
 </div>
 </section>
 <!-- Actions -->
 <div class="mt-12 flex justify-end gap-4">
-<button class="px-8 py-3 rounded-full font-label font-bold text-on-surface-variant hover:bg-surface-variant transition-colors">Cancel</button>
-<button class="px-10 py-3 bg-primary rounded-full font-label font-bold text-on-primary tactile-shadow hover:scale-[1.02] active:scale-[0.98] transition-all">Save Changes</button>
+<button class="px-8 py-3 rounded-full font-label font-bold text-on-surface-variant hover:bg-surface-variant transition-colors" data-action="reset-profile" type="button">Cancel</button>
+<button class="px-10 py-3 bg-primary rounded-full font-label font-bold text-on-primary tactile-shadow hover:scale-[1.02] active:scale-[0.98] transition-all" data-action="save-profile" type="button">Save Changes</button>
 </div>
 </div>
 </main>
@@ -170,6 +170,7 @@
 <script src="app.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.__MEOWFOLIO_V2__) return;
     const user = AppState.getUser();
     
     // Set initial values
@@ -238,3 +239,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 </body></html>
+

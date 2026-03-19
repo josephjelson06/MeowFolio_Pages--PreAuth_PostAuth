@@ -30,7 +30,7 @@
       }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="dotted-bg font-body text-on-surface">
+<body class="dotted-bg font-body text-on-surface" data-page="landing" data-shell="public">
 <!-- 1. NAVBAR -->
 <nav class="sticky top-0 z-50 bg-surface/90 backdrop-blur-sm border-b-2 border-charcoal">
 <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -46,7 +46,7 @@
 </div>
 <div class="flex items-center gap-4">
 <a href="login.html" class="px-6 py-2 font-label font-bold text-on-surface hover:text-coral transition-colors no-underline">Login</a>
-<a href="choose-path.html" class="bg-coral text-white px-8 py-3 rounded-full font-label font-bold card-border shadow-tactile hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#2D2D2D] transition-all no-underline">Get Started</a>
+<a href="signup.html" class="bg-coral text-white px-8 py-3 rounded-full font-label font-bold card-border shadow-tactile hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#2D2D2D] transition-all no-underline" data-action="start-building">Get Started</a>
 </div>
 </div>
 </nav>
@@ -64,11 +64,11 @@
                     Even a cat got hired. You're next. 🐾
                 </p>
 <div class="flex flex-col sm:flex-row gap-6 pt-4">
-<button class="bg-coral text-white px-10 py-5 rounded-xl font-headline font-bold text-lg flex items-center justify-center gap-2 card-border shadow-tactile hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+<button class="bg-coral text-white px-10 py-5 rounded-xl font-headline font-bold text-lg flex items-center justify-center gap-2 card-border shadow-tactile hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all" data-action="start-building" type="button">
                         Build my resume 
                         <span class="material-symbols-outlined">arrow_forward</span>
 </button>
-<button class="bg-white text-charcoal px-10 py-5 rounded-xl font-headline font-bold text-lg card-border shadow-tactile hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+<button class="bg-white text-charcoal px-10 py-5 rounded-xl font-headline font-bold text-lg card-border shadow-tactile hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all" data-action="start-building" type="button">
                         Upload my resume
                     </button>
 </div>
@@ -133,7 +133,7 @@
 <!-- CTA Card -->
 <div class="flex-none w-80 snap-center bg-coral p-8 rounded-xl card-border shadow-tactile-lg flex flex-col items-center justify-center text-center">
 <h3 class="font-headline text-3xl chunky-heading mb-6 text-white">Write your story</h3>
-<button class="bg-white text-charcoal px-8 py-4 rounded-full font-bold card-border shadow-tactile hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all" onclick="window.location.href='choose-path.html'">Get Started Now</button>
+<button class="bg-white text-charcoal px-8 py-4 rounded-full font-bold card-border shadow-tactile hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all" data-action="start-building" type="button">Get Started Now</button>
 </div>
 </div>
 </div>
@@ -283,7 +283,7 @@
 <h4 class="font-black text-white mb-8 text-lg uppercase tracking-wider">Platform</h4>
 <ul class="space-y-4 text-white/60 font-bold">
 <li><a class="hover:text-coral transition-colors" href="landing.html">Home</a></li>
-<li><a class="hover:text-coral transition-colors" href="pick-template.html">Templates</a></li>
+<li><a class="hover:text-coral transition-colors" data-action="start-building" href="signup.html">Templates</a></li>
 <li><a class="hover:text-coral transition-colors" href="learn.html">Resume Tips</a></li>
 <li><a class="hover:text-coral transition-colors" href="about.html">Success Stories</a></li>
 </ul>

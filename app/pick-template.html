@@ -16,7 +16,7 @@
         .skeleton-line { background: #e6e2dc; border-radius: 4px; }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-surface">
+<body class="bg-surface" data-page="pick-template" data-shell="public">
 <!-- TopNavBar -->
 <nav class="sticky top-0 z-50 bg-surface-container-high/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-outline-variant/20">
 <div class="flex items-center gap-2">
@@ -26,8 +26,8 @@
 <span class="headline text-2xl font-extrabold tracking-tight text-on-surface">MeowFolio</span>
 </div>
 <div class="flex items-center gap-4">
-<button class="px-6 py-2 rounded-full font-label font-bold text-on-surface hover:bg-surface-container-highest transition-colors">Log in</button>
-<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label font-bold shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all">Download</button>
+<button class="px-6 py-2 rounded-full font-label font-bold text-on-surface hover:bg-surface-container-highest transition-colors" data-action="go-login" type="button">Log in</button>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label font-bold shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all" data-action="start-building" type="button">Download</button>
 <span class="material-symbols-outlined text-on-surface-variant text-3xl">account_circle</span>
 </div>
 </nav>
@@ -86,7 +86,7 @@
 <div class="px-4">
 <h3 class="headline text-2xl font-bold text-on-surface">Minimal</h3>
 <p class="text-on-surface-variant text-sm mt-1 mb-6">Best for 1st years &amp; entry-level roles looking for a clean, focused narrative.</p>
-<button class="w-full py-4 rounded-xl bg-surface-container-highest text-on-surface font-label font-bold hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2 group-hover:shadow-lg group-hover:shadow-primary/20">
+<button class="w-full py-4 rounded-xl bg-surface-container-highest text-on-surface font-label font-bold hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2 group-hover:shadow-lg group-hover:shadow-primary/20" data-action="start-building" type="button">
                         Use this template
                         <span class="material-symbols-outlined text-xl">arrow_forward</span>
 </button>
@@ -130,7 +130,7 @@
                         <span class="material-symbols-outlined text-primary fill-1" style="font-variation-settings: 'FILL' 1;">stars</span>
 </h3>
 <p class="text-on-surface-variant text-sm mt-1 mb-6">Optimized for professionals with 2-5 years of experience. Dense but breathable.</p>
-<button class="w-full py-4 rounded-xl bg-primary text-on-primary font-label font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.97] transition-all flex items-center justify-center gap-2">
+<button class="w-full py-4 rounded-xl bg-primary text-on-primary font-label font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.97] transition-all flex items-center justify-center gap-2" data-action="start-building" type="button">
                         Use this template
                         <span class="material-symbols-outlined text-xl">arrow_forward</span>
 </button>
@@ -168,7 +168,7 @@
 <div class="px-4">
 <h3 class="headline text-2xl font-bold text-on-surface">Two-Column</h3>
 <p class="text-on-surface-variant text-sm mt-1 mb-6">Best for CS/IT and creative roles. Separate your skills from your stories effectively.</p>
-<button class="w-full py-4 rounded-xl bg-surface-container-highest text-on-surface font-label font-bold hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2 group-hover:shadow-lg group-hover:shadow-primary/20">
+<button class="w-full py-4 rounded-xl bg-surface-container-highest text-on-surface font-label font-bold hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2 group-hover:shadow-lg group-hover:shadow-primary/20" data-action="start-building" type="button">
                         Use this template
                         <span class="material-symbols-outlined text-xl">arrow_forward</span>
 </button>
@@ -182,8 +182,8 @@
 <p class="text-on-surface-variant">Don't worry, you can switch templates at any time during the editing process without losing your data.</p>
 </div>
 <div class="flex gap-4">
-<button class="px-8 py-3 rounded-full border border-outline font-label font-bold text-on-surface hover:bg-surface-container-highest transition-colors">View Demo</button>
-<button class="px-8 py-3 rounded-full bg-secondary text-on-secondary font-label font-bold shadow-lg shadow-secondary/20 hover:scale-105 transition-all">Quick Start</button>
+<button class="px-8 py-3 rounded-full border border-outline font-label font-bold text-on-surface hover:bg-surface-container-highest transition-colors" onclick="window.location.href='learn.html'" type="button">View Demo</button>
+<button class="px-8 py-3 rounded-full bg-secondary text-on-secondary font-label font-bold shadow-lg shadow-secondary/20 hover:scale-105 transition-all" data-action="start-building" type="button">Quick Start</button>
 </div>
 </div>
 </main>
