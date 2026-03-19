@@ -157,13 +157,6 @@
         return formatDate(date);
     }
 
-    function greetingForTime() {
-        const hour = new Date().getHours();
-        if (hour < 12) return 'Good morning';
-        if (hour < 18) return 'Good afternoon';
-        return 'Good evening';
-    }
-
     function mergeDeep(target, source) {
         if (Array.isArray(source)) return clone(source);
         if (!source || typeof source !== 'object') return source;
@@ -1245,12 +1238,6 @@
         return skill ? skill.trim() : null;
     }
 
-    function updateCustomizeSetting(setting, value) {
-        if (editorModule && editorModule.updateCustomizeSetting) {
-            editorModule.updateCustomizeSetting(setting, value);
-        }
-    }
-
     function handleClickAction(event) {
         const trigger = event.target.closest('[data-action]');
         if (!trigger) return;
@@ -1473,16 +1460,6 @@
         }
     }
 
-    function replaceTextNodes(matcher, replacer) {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-        const nodes = [];
-        while (walker.nextNode()) nodes.push(walker.currentNode);
-        nodes.forEach((node) => {
-            const value = node.nodeValue || '';
-            if (matcher(value)) node.nodeValue = replacer(value);
-        });
-    }
-
     function updateLegalBranding() {
         if (publicContentModule && publicContentModule.updateLegalBranding) {
             publicContentModule.updateLegalBranding();
@@ -1499,32 +1476,6 @@
         if (publicContentModule && publicContentModule.initLearnPage) {
             publicContentModule.initLearnPage();
         }
-    }
-
-    function replaceTextContent(selector, matcher, replacement) {
-        document.querySelectorAll(selector).forEach((node) => {
-            const text = node.textContent?.trim();
-            if (text && matcher(text)) node.textContent = replacement(text);
-        });
-    }
-
-    function injectLearningNav(meta) {
-        const main = document.querySelector('main');
-        if (!main || document.getElementById('meowfolio-learning-nav')) return;
-        const wrapper = document.createElement('section');
-        wrapper.id = 'meowfolio-learning-nav';
-        wrapper.className = 'mt-16 pt-10 border-t border-outline-variant/20 flex flex-col md:flex-row items-center justify-between gap-4';
-        wrapper.innerHTML = `
-            <a class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface-container-low text-on-surface font-headline font-bold no-underline" href="${meta.previous}">
-                <span class="material-symbols-outlined">arrow_back</span>
-                ${meta.previous === 'learn.html' ? 'Back to Curriculum' : 'Previous Chapter'}
-            </a>
-            <a class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-primary text-on-primary font-headline font-bold no-underline" href="${meta.next}">
-                ${meta.next === 'editor-content.html' ? 'Start Building' : 'Next Chapter'}
-                <span class="material-symbols-outlined">arrow_forward</span>
-            </a>
-        `;
-        main.appendChild(wrapper);
     }
 
     function initChapterPage() {

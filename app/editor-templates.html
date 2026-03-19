@@ -283,33 +283,6 @@
 </div>
 </div>
 </div>
-    <script>
-        if (window.__MEOWFOLIO_V2__) {
-            /* Runtime-owned in app.js */
-        } else {
-        // Selection logic for template cards
-        const templateCards = document.querySelectorAll('.template-card');
-        templateCards.forEach((card) => {
-            card.addEventListener('click', () => {
-                templateCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-            });
-        });
-
-        // Filter tabs logic
-        const filterBtns = document.querySelectorAll('.flex.items-center.gap-2.overflow-x-auto button');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => {
-                    b.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
-                    b.classList.add('bg-surface-container-lowest', 'text-on-surface-variant', 'border', 'border-outline-variant/20');
-                });
-                btn.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant', 'border', 'border-outline-variant/20');
-                btn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
-            });
-        });
-        }
-    </script>
 <script src="page-modules.js"></script>
 <script src="pages-profile.js"></script>
 <script src="pages-editor.js"></script>

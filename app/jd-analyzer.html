@@ -162,35 +162,6 @@
 <script src="pages-analysis.js"></script>
 <script src="pages-public-content.js"></script>
 <script src="app.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.__MEOWFOLIO_V2__) return;
-    // Handle Start Analysis Button
-    const analyzeBtn = document.querySelector('a[href="jd-results.html"]');
-    if (analyzeBtn) {
-        analyzeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Get text to ensure they entered something (optional mock check)
-            const text = document.querySelector('textarea').value;
-            if (!text.trim()) {
-                UI.showToast("Please paste a Job Description first!", "error");
-                return;
-            }
-            
-            // Show loading state
-            analyzeBtn.innerHTML = `<span class="material-symbols-outlined animate-spin" style="animation: spin 1s linear infinite;">refresh</span> Analyzing JD...`;
-            analyzeBtn.classList.add('opacity-80', 'cursor-not-allowed', 'pointer-events-none');
-            UI.showToast("Analyzing keywords and requirements...", "info");
-            
-            // Simulate API logic
-            setTimeout(() => {
-                window.location.href = 'jd-results.html';
-            }, 1500);
-        });
-    }
-});
-</script>
 </body></html>
 
 

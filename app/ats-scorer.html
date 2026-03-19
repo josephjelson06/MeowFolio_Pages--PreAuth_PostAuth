@@ -191,28 +191,6 @@
 <script src="pages-analysis.js"></script>
 <script src="pages-public-content.js"></script>
 <script src="app.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.__MEOWFOLIO_V2__) return;
-    // Handle Run Scan Button
-    const runBtn = document.querySelector('button.bg-primary');
-    if (runBtn) {
-        runBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Show loading state
-            runBtn.innerHTML = `<span class="material-symbols-outlined animate-spin" style="animation: spin 1s linear infinite;">refresh</span> Scanning...`;
-            runBtn.classList.add('opacity-80', 'cursor-not-allowed');
-            UI.showToast("ATS scan started...", "info");
-            
-            // Simulate API request/processing delay
-            setTimeout(() => {
-                window.location.href = 'ats-report.html';
-            }, 1500);
-        });
-    }
-});
-</script>
 </body></html>
 
 

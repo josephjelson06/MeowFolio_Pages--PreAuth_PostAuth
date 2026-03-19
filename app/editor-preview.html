@@ -35,7 +35,7 @@
                 Customize
             </button>
 <div class="relative group">
-<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95" data-action="export-active-resume" type="button">
 <span class="material-symbols-outlined text-lg">download</span>
                     Download
                 </button>
@@ -258,25 +258,5 @@
 <script src="pages-analysis.js"></script>
 <script src="pages-public-content.js"></script>
 <script src="app.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Sync header with app state user
-    const user = AppState.getUser();
-    const nameEl = document.querySelector('.resume-page h1');
-    const emailEl = document.querySelector('.resume-page .flex.justify-center span:first-child');
-    
-    // Fallbacks if elements exist
-    if (nameEl && user.name) nameEl.textContent = user.name;
-    if (emailEl && user.email) emailEl.textContent = user.email;
-
-    // Handle Download
-    const dlBtn = document.querySelector('button.bg-primary');
-    if (dlBtn && dlBtn.textContent.includes('Download')) {
-        dlBtn.addEventListener('click', () => {
-             UI.showToast("Generating high-res PDF...", "info");
-        });
-    }
-});
-</script>
 </body></html>
 
