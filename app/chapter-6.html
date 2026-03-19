@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Learn with Mochii - Chapter 6</title>
+<link rel="stylesheet" href="shared.css"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="tailwind-config.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #9d4223 0%, #f4845f 100%);
+        }
+        .glass-card {
+            background: rgba(230, 226, 220, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<meta name="view-transition" content="same-origin" /></head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed">
+<!-- TopAppBar -->
+<nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-outline-variant/10">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer">menu</span>
+<h1 class="font-headline font-bold text-xl tracking-tight">Learn with Mochii</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer">account_circle</span>
+</div>
+</nav>
+<!-- Progress & Navigation Breadcrumbs -->
+<header class="px-6 pt-8 max-w-5xl mx-auto">
+<div class="flex flex-wrap items-center gap-2 mb-6">
+<span class="text-label-md text-on-surface-variant font-label">Home</span>
+<span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
+<span class="text-label-md text-on-surface-variant font-label">Curriculum</span>
+<span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
+<span class="text-label-md text-primary font-bold font-label">The Impact Formula</span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 mb-12">
+<div class="flex justify-between items-end mb-3">
+<div>
+<span class="text-xs uppercase tracking-widest font-label font-bold text-on-surface-variant opacity-60">Course Progress</span>
+<p class="text-label-md text-on-surface-variant font-medium">Chapter 5 of 7</p>
+</div>
+<span class="text-primary font-headline font-bold text-2xl">75%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-1000" style="width: 75%;"></div>
+</div>
+</div>
+</header>
+<main class="px-6 pb-32 max-w-5xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-16">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div class="max-w-2xl">
+<span class="inline-block px-4 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-full text-xs font-bold font-label mb-4">CHAPTER 6</span>
+<h2 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tight text-on-background leading-none">
+                        Proofing &amp; <span class="text-primary">Polish.</span>
+</h2>
+<p class="mt-6 text-lg text-on-surface-variant leading-relaxed">
+                        The final stretch. Before you hit submit, we need to ensure every pixel is aligned and every comma is in its place. Precision is the silent signal of professionalism.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Bento Grid: The Checklist -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+<!-- Main Checklist Card -->
+<div class="md:col-span-2 bg-surface-container-lowest p-8 rounded-lg shadow-sm">
+<div class="flex items-center gap-3 mb-8">
+<div class="p-3 bg-primary-container rounded-2xl">
+<span class="material-symbols-outlined text-on-primary-container">fact_check</span>
+</div>
+<h3 class="font-headline text-2xl font-bold">Mochii Checklist</h3>
+</div>
+<ul class="space-y-6">
+<li class="flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="w-6 h-6 rounded-md border-2 border-outline-variant flex-shrink-0 mt-1 group-hover:border-primary transition-colors"></div>
+<div>
+<p class="font-headline font-semibold text-on-surface">The Spelling Sweep</p>
+<p class="text-sm text-on-surface-variant mt-1">Check for "your/you're" and common typos that auto-correct misses.</p>
+</div>
+</li>
+<li class="flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="w-6 h-6 rounded-md border-2 border-outline-variant flex-shrink-0 mt-1 group-hover:border-primary transition-colors"></div>
+<div>
+<p class="font-headline font-semibold text-on-surface">Contact Info Verification</p>
+<p class="text-sm text-on-surface-variant mt-1">Dial your own number. Click your own email link. Do they work?</p>
+</div>
+</li>
+<li class="flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="w-6 h-6 rounded-md border-2 border-outline-variant flex-shrink-0 mt-1 group-hover:border-primary transition-colors"></div>
+<div>
+<p class="font-headline font-semibold text-on-surface">Layout Alignment</p>
+<p class="text-sm text-on-surface-variant mt-1">Check for "widows" (single words on a new line) and consistent margins.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Small Detail Card -->
+<div class="bg-secondary-container p-8 rounded-lg flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-on-secondary-container text-4xl mb-4">spellcheck</span>
+<h4 class="font-headline text-xl font-bold text-on-secondary-container">The 10-Minute Rule</h4>
+<p class="mt-4 text-on-secondary-fixed-variant leading-relaxed">
+                        Step away from your screen for 10 minutes before the final proofread. Fresh eyes find the hidden flaws.
+                    </p>
+</div>
+<div class="mt-8 pt-8 border-t border-on-secondary-container/10">
+<button class="w-full py-4 bg-surface-container-lowest rounded-full font-bold font-label text-secondary hover:shadow-lg transition-all active:scale-95">
+                        Download Guide
+                    </button>
+</div>
+</div>
+</section>
+<!-- Mochii Moment (Asymmetric Layout) -->
+<section class="relative py-12">
+<div class="absolute inset-0 bg-surface-container-high rounded-xl -rotate-1 scale-105 z-0"></div>
+<div class="relative z-10 bg-surface-container-lowest p-8 md:p-12 rounded-xl flex flex-col md:flex-row gap-12 items-center">
+<div class="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden flex-shrink-0 border-4 border-primary-fixed shadow-xl">
+<img alt="Cute orange cat looking thoughtful" class="w-full h-full object-cover" data-alt="A cute orange cat looking thoughtful with big eyes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCh7LhHqH1kI_YnSkF-9-sCXWFLkR2psjAXzkgWJ5zcYItMZ2T_Y4icnoiQei4KQtpCvS5D3V5Md0vZiv1ZkHvKSAKt8rUo9X-we9pg1xeDi6qOASbesEAiY56_2wDcnWC1ZehUOuLKzu0K8gGUrKPoDFYPYhygq2VP6FTbGfy1LPq5DN-BqKEqhUAB7wTJQNgfmqjNUnrcX3tSmquFQ4bbGyokBcwGvBjp4rX3H__-6Qo1mdTYYLeqTQj97JK5bfxn1CaBOcRPH43b"/>
+</div>
+<div class="flex-1">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-xs font-bold font-label mb-6">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                        MOCHII MOMENT
+                    </div>
+<h3 class="font-headline text-3xl font-bold mb-4 text-on-surface">The Resume Incident</h3>
+<p class="text-on-surface-variant text-lg leading-relaxed italic">
+                        "In my 47th resume application, I was so excited that I listed my primary skill as 'Exellent Attention to Detail.' Yes, I misspelled 'Excellent.' I didn't get the job, but I did get a very kind email from the recruiter about the irony. Now, I proofread three times—and so should you!"
+                    </p>
+</div>
+</div>
+</section>
+<!-- Final Action Section -->
+<section class="mt-24 text-center">
+<h4 class="font-headline text-2xl font-bold mb-8 text-on-surface">Ready for the final submission?</h4>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+<button class="px-10 py-5 bg-gradient-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95">
+                    Submit Final Version
+                </button>
+<button class="px-10 py-5 bg-surface-container-highest text-on-surface rounded-full font-headline font-bold text-lg hover:bg-surface-dim transition-all">
+                    Save as Draft
+                </button>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-24 right-6 flex items-center gap-3 px-6 py-4 bg-primary text-on-primary rounded-xl shadow-2xl hover:shadow-primary/30 transition-all active:scale-90 z-50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label font-bold">Mochii's Tip</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-container-highest/90 backdrop-blur-xl border-t border-outline-variant/20 px-4 py-3 z-40">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<div class="flex flex-col items-center gap-1 text-primary cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="text-[10px] font-bold font-label">Lessons</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="text-[10px] font-bold font-label">Practice</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-[10px] font-bold font-label">Community</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold font-label">Profile</span>
+</div>
+</div>
+</nav>
+<script src="app.js"></script></body></html>

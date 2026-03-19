@@ -50,7 +50,7 @@ const AppState = {
     logout() {
         localStorage.removeItem('meowfolio_user');
         localStorage.removeItem('meowfolio_resumes'); // Or keep them, but clearing simulates full logout
-        window.location.href = 'editor-preview.html'; // Fallback to landing/preview
+        window.location.href = 'landing.html'; // Redirect to landing page
     }
 };
 
@@ -58,8 +58,10 @@ const AppState = {
 const UI = {
     // 0. Componentize Top Nav
     injectNavbar() {
-        // Skip for editor-preview as it has a custom pre-auth nav
-        if (window.location.pathname.includes('editor-preview.html')) return;
+        // Skip for PreAuth pages — they have their own custom navbars
+        const preAuthPages = ['editor-preview','landing','choose-path','pick-template','learn','chapter-','login','signup','about','privacy','terms','404','500'];
+        const currentPath = window.location.pathname;
+        if (preAuthPages.some(p => currentPath.includes(p))) return;
 
         const user = AppState.getUser();
         // Fallback initials if no avatar

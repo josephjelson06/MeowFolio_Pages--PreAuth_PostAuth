@@ -50,7 +50,13 @@ tailwind.config = {
                 "on-error": "#ffffff",
                 "on-error-container": "#93000a",
                 "outline": "#89726b",
-                "outline-variant": "#dcc1b8"
+                "outline-variant": "#dcc1b8",
+                // PreAuth landing page aliases
+                "charcoal": "#2D2D2D",
+                "coral": "#F4845F",
+                "lavender": "#C9B8E8",
+                "mint": "#A8D5BA",
+                "cream": "#FDF9F3"
             },
             fontFamily: {
                 "headline": ["Plus Jakarta Sans"],
@@ -63,6 +69,11 @@ tailwind.config = {
                 "xl": "3rem",
                 "full": "9999px"
             },
+            boxShadow: {
+                'tactile': '4px 4px 0px 0px #2D2D2D',
+                'tactile-lg': '8px 8px 0px 0px #2D2D2D',
+                'tactile-sm': '2px 2px 0px 0px #2D2D2D',
+            }
         },
     },
 }

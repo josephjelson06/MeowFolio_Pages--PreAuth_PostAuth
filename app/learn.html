@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="tailwind-config.js"></script>
+<style>
+        body {
+            background-color: #fdf9f3;
+            background-image: radial-gradient(#dcc1b8 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-peach {
+            background: rgba(230, 226, 220, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        .tactile-card {
+            box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .tactile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 16px 40px rgba(28, 28, 24, 0.08);
+        }
+        .chunky-button:active {
+            transform: scale(0.97);
+        }
+    </style>
+<meta name="view-transition" content="same-origin" /></head>
+<body class="text-on-surface">
+<!-- Top Navigation Bar -->
+<nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 px-6 py-4">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-8">
+<span class="font-headline text-2xl font-extrabold tracking-tight text-primary">MeowFolio</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors" href="landing.html">Home</a>
+<a class="font-label text-sm font-semibold text-primary" href="learn.html">Learn</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors" href="landing.html#faq">FAQ</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors" href="about.html">About</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="font-label text-sm font-bold px-5 py-2 hover:bg-surface-container-high rounded-full transition-colors">Login</button>
+<button class="chunky-button font-label text-sm font-bold px-6 py-2.5 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20">Get Started</button>
+</div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 py-12 lg:py-24">
+<!-- Hero Section -->
+<section class="grid lg:grid-cols-2 gap-16 items-center mb-24">
+<div class="space-y-8">
+<div class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-container rounded-full text-on-secondary-container">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="font-label text-sm font-bold tracking-wide">Mochii's Resume School</span>
+</div>
+<h1 class="font-headline text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight">
+                    Learn with <span class="text-primary">Mochii</span>
+</h1>
+<p class="text-xl text-on-surface-variant max-w-lg leading-relaxed">
+                    Mochii survived 47 rejections before landing a dream job at a fish factory. Now, she's here to show you how to beat the bots and stand out.
+                </p>
+<div class="flex flex-wrap gap-3">
+<div class="px-5 py-2 bg-surface-container-highest rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">menu_book</span>
+<span class="font-label font-bold text-sm">7 chapters</span>
+</div>
+<div class="px-5 py-2 bg-surface-container-highest rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">schedule</span>
+<span class="font-label font-bold text-sm">~45 min</span>
+</div>
+</div>
+<!-- Progress Path -->
+<div class="pt-6 space-y-4">
+<span class="font-label text-[10px] uppercase font-black tracking-widest text-outline">Recommended Path</span>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-xs">1</div>
+<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-outline">2</div>
+<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-outline">3</div>
+<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-outline">4</div>
+<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
+<div class="flex items-center justify-center w-8 h-8 bg-tertiary-fixed rounded-full">
+<span class="material-symbols-outlined text-on-tertiary-fixed text-lg" style="font-variation-settings: 'FILL' 1;">flag</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute -inset-4 bg-primary-container/20 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity"></div>
+<div class="relative bg-surface-container-low rounded-xl aspect-square overflow-hidden flex items-center justify-center p-12 border-4 border-surface-container-highest">
+<img alt="Mochii the cat with graduation cap" class="w-full h-full object-cover rounded-lg shadow-2xl rotate-3" data-alt="A cute cat wearing a tiny graduation cap" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeyODlZ7nqfGSEPkkWcrV1iz1xDl2QBKns1Wo1fyk4kmEN76omuzKACEeQ7_OACIlHLG6sK1xgvXy41UOXdPfQt1FPTk_OfUtsD45DLuGCOGMtJEZyx1xU4vMYTLOEcQn4AyYzu2aVsF_CdjMmzC7K6M_TzX2-hJuW1saSW4nkZiWUw8ucLkwwIXF4tsciJAqnxOxS1Q0PmW6UpzFdkPkn8nZhJc6jHy7V_Pg0C2kuC4TaIB6a7vW385nPD9QeyA_ztKq4xrtVi1fx"/>
+<div class="absolute bottom-10 right-10 bg-surface-container-lowest p-4 rounded-xl shadow-xl flex items-center gap-3 border border-outline-variant/20">
+<div class="w-10 h-10 bg-tertiary-fixed rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="font-label text-xs font-bold">Mochii Certified</p>
+<p class="text-[10px] text-outline">100% Meow Proof</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Chapter Grid -->
+<section class="space-y-12">
+<div class="flex items-end justify-between border-b border-outline-variant/20 pb-6">
+<div>
+<span class="font-label text-xs uppercase font-black tracking-widest text-primary mb-2 block">All Chapters</span>
+<h2 class="font-headline text-4xl font-bold">The Curriculum</h2>
+</div>
+<button class="flex items-center gap-2 font-label text-sm font-bold text-primary group">
+                    View Course Syllabus
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="tactile-card bg-surface-container-lowest rounded-lg overflow-hidden relative group border border-outline-variant/10">
+<div class="h-2 bg-primary w-full"></div>
+<div class="p-8 space-y-6">
+<div class="flex justify-between items-start">
+<span class="font-headline text-6xl font-black text-outline-variant/20 absolute -right-2 top-8 group-hover:text-primary/10 transition-colors">01</span>
+<div class="px-3 py-1 bg-surface-container-low rounded-full">
+<span class="font-label text-[10px] font-bold text-outline">5 MIN READ</span>
+</div>
+<span class="material-symbols-outlined text-3xl text-primary-container" style="font-variation-settings: 'FILL' 1;">mood</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-xl font-extrabold group-hover:text-primary transition-colors">First Impressions</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Why the first 6 seconds are all you have to win the recruiter's heart.</p>
+</div>
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+                            Read chapter
+                            <span class="material-symbols-outlined text-sm">east</span>
+</a>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="tactile-card bg-surface-container-lowest rounded-lg overflow-hidden relative group border border-outline-variant/10">
+<div class="h-2 bg-secondary w-full"></div>
+<div class="p-8 space-y-6">
+<div class="flex justify-between items-start">
+<span class="font-headline text-6xl font-black text-outline-variant/20 absolute -right-2 top-8 group-hover:text-secondary/10 transition-colors">02</span>
+<div class="px-3 py-1 bg-surface-container-low rounded-full">
+<span class="font-label text-[10px] font-bold text-outline">8 MIN READ</span>
+</div>
+<span class="material-symbols-outlined text-3xl text-secondary" style="font-variation-settings: 'FILL' 1;">potted_plant</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-xl font-extrabold group-hover:text-secondary transition-colors">The Layout Grid</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Structural secrets to keep your resume organized and readable.</p>
+</div>
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+                            Read chapter
+                            <span class="material-symbols-outlined text-sm">east</span>
+</a>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="tactile-card bg-surface-container-lowest rounded-lg overflow-hidden relative group border border-outline-variant/10">
+<div class="h-2 bg-tertiary w-full"></div>
+<div class="p-8 space-y-6">
+<div class="flex justify-between items-start">
+<span class="font-headline text-6xl font-black text-outline-variant/20 absolute -right-2 top-8 group-hover:text-tertiary/10 transition-colors">03</span>
+<div class="px-3 py-1 bg-surface-container-low rounded-full">
+<span class="font-label text-[10px] font-bold text-outline">6 MIN READ</span>
+</div>
+<span class="material-symbols-outlined text-3xl text-tertiary" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-xl font-extrabold group-hover:text-tertiary transition-colors">Action Verbs</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Swap boring duties for high-impact power words that pop.</p>
+</div>
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+                            Read chapter
+                            <span class="material-symbols-outlined text-sm">east</span>
+</a>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="tactile-card bg-surface-container-lowest rounded-lg overflow-hidden relative group border border-outline-variant/10">
+<div class="h-2 bg-primary-container w-full"></div>
+<div class="p-8 space-y-6">
+<div class="flex justify-between items-start">
+<span class="font-headline text-6xl font-black text-outline-variant/20 absolute -right-2 top-8 group-hover:text-primary-container/10 transition-colors">04</span>
+<div class="px-3 py-1 bg-surface-container-low rounded-full">
+<span class="font-label text-[10px] font-bold text-outline">4 MIN READ</span>
+</div>
+<span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 1;">robot_2</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-xl font-extrabold group-hover:text-primary transition-colors">Beating the ATS</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Optimization tricks to bypass the robotic resume gatekeepers.</p>
+</div>
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+                            Read chapter
+                            <span class="material-symbols-outlined text-sm">east</span>
+</a>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="tactile-card bg-surface-container-lowest rounded-lg overflow-hidden relative group border border-outline-variant/10">
+<div class="h-2 bg-secondary-container w-full"></div>
+<div class="p-8 space-y-6">
+<div class="flex justify-between items-start">
+<span class="font-headline text-6xl font-black text-outline-variant/20 absolute -right-2 top-8 group-hover:text-secondary/10 transition-colors">05</span>
+<div class="px-3 py-1 bg-surface-container-low rounded-full">
+<span class="font-label text-[10px] font-bold text-outline">10 MIN READ</span>
+</div>
+<span class="material-symbols-outlined text-3xl text-secondary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-xl font-extrabold group-hover:text-secondary-container transition-colors">The Wow Factor</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Adding personality and flair without being unprofessional.</p>
+</div>
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+                            Read chapter
+                            <span class="material-symbols-outlined text-sm">east</span>
+</a>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="tactile-card bg-surface-container-lowest rounded-lg overflow-hidden relative group border border-outline-variant/10">
+<div class="h-2 bg-tertiary-fixed w-full"></div>
+<div class="p-8 space-y-6">
+<div class="flex justify-between items-start">
+<span class="font-headline text-6xl font-black text-outline-variant/20 absolute -right-2 top-8 group-hover:text-tertiary-fixed/10 transition-colors">06</span>
+<div class="px-3 py-1 bg-surface-container-low rounded-full">
+<span class="font-label text-[10px] font-bold text-outline">7 MIN READ</span>
+</div>
+<span class="material-symbols-outlined text-3xl text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-xl font-extrabold group-hover:text-tertiary-fixed-variant transition-colors">Proofing &amp; Polish</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">The final checklist to ensure zero errors before hitting send.</p>
+</div>
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+                            Read chapter
+                            <span class="material-symbols-outlined text-sm">east</span>
+</a>
+</div>
+</div>
+<!-- Card 7 -->
+<div class="tactile-card bg-surface-container-lowest rounded-lg overflow-hidden relative group border border-outline-variant/10">
+<div class="h-2 bg-primary w-full"></div>
+<div class="p-8 space-y-6">
+<div class="flex justify-between items-start">
+<span class="font-headline text-6xl font-black text-outline-variant/20 absolute -right-2 top-8 group-hover:text-primary/10 transition-colors">07</span>
+<div class="px-3 py-1 bg-surface-container-low rounded-full">
+<span class="font-label text-[10px] font-bold text-outline">5 MIN READ</span>
+</div>
+<span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 1;">send</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-xl font-extrabold group-hover:text-primary transition-colors">Submission Strategy</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">How to follow up and manage multiple applications like a pro.</p>
+</div>
+<a class="inline-flex items-center gap-2 font-label text-xs font-black uppercase tracking-widest text-primary pt-4" href="landing.html">
+                            Read chapter
+                            <span class="material-symbols-outlined text-sm">east</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom CTA Section -->
+<section class="mt-24">
+<div class="bg-primary-container rounded-lg p-12 lg:p-20 text-center relative overflow-hidden">
+<!-- Abstract background shapes -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary-container/20 rounded-full -ml-20 -mb-20 blur-3xl"></div>
+<div class="relative z-10 space-y-8">
+<h2 class="font-headline text-4xl lg:text-5xl font-extrabold text-on-primary tracking-tight">Ready to build yours?</h2>
+<p class="text-xl text-on-primary-container max-w-xl mx-auto leading-relaxed">
+                        Knowledge is power, but a finished resume is a paycheck. Put everything Mochii taught you into practice.
+                    </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+<button class="chunky-button px-10 py-5 bg-surface-container-lowest text-primary font-headline font-bold text-lg rounded-full shadow-xl">
+                            Build my resume
+                        </button>
+<button class="px-8 py-5 border-2 border-on-primary text-on-primary font-headline font-bold text-lg rounded-full hover:bg-on-primary/10 transition-colors">
+                            Explore Templates
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant/30 px-6 py-16">
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12">
+<div class="col-span-2 space-y-6">
+<span class="font-headline text-2xl font-extrabold tracking-tight text-primary">MeowFolio</span>
+<p class="text-on-surface-variant text-sm max-w-xs leading-relaxed">
+                        Helping dreamers land jobs through feline-curated career wisdom and premium design.
+                    </p>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant cursor-pointer hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined text-sm">share</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-label text-xs font-black uppercase tracking-widest text-outline mb-6">Platform</h4>
+<ul class="space-y-4">
+<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="landing.html">Home</a></li>
+<li><a class="text-sm font-semibold text-primary" href="learn.html">Learn</a></li>
+<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="landing.html#faq">FAQ</a></li>
+<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">About</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label text-xs font-black uppercase tracking-widest text-outline mb-6">Company</h4>
+<ul class="space-y-4">
+<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="landing.html">Contact</a></li>
+<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">Careers</a></li>
+<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="privacy.html">Privacy</a></li>
+<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="terms.html">Terms</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-16 pt-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-sm text-outline">© 2024 MeowFolio Learning Platform. All rights reserved.</p>
+<div class="flex gap-8">
+<span class="text-xs font-bold text-outline uppercase tracking-widest">Designed for Dreamers</span>
+</div>
+</div>
+</div>
+</footer>
+<script src="app.js"></script></body></html>

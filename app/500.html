@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Oops! - MeowFolio</title>
+<!-- Tailwind CSS with Plugins -->
+<link rel="stylesheet" href="shared.css"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="tailwind-config.js"></script>
+<style data-purpose="custom-layout">
+    /* Dotted Grid Texture for Background */
+    .bg-dotted-grid {
+      background-image: radial-gradient(#F4845F 1px, transparent 1px);
+      background-size: 24px 24px;
+      background-color: #FAF6F0;
+      opacity: 0.15;
+    }
+
+    /* Kawaii Illustration Style: Thick Outlines & Offset Shadow */
+    .kawaii-outline {
+      border: 3px solid #2D3436;
+    }
+    
+    .kawaii-shadow {
+      box-shadow: 8px 8px 0px 0px rgba(244, 132, 95, 0.2);
+    }
+
+    /* Character Animation */
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-bob {
+      animation: bob 3s ease-in-out infinite;
+    }
+  </style>
+<meta name="view-transition" content="same-origin" /></head>
+<body class="font-sans bg-surface min-h-screen flex items-center justify-center p-6 relative">
+<!-- BEGIN: Background Texture -->
+<div aria-hidden="true" class="fixed inset-0 bg-dotted-grid pointer-events-none"></div>
+<!-- END: Background Texture -->
+<!-- BEGIN: Error Card Container -->
+<main class="relative z-10 w-full max-w-lg" data-purpose="error-card-container">
+<div class="bg-card kawaii-outline rounded-[40px] p-10 md:p-14 text-center kawaii-shadow">
+<!-- BEGIN: Illustration Section -->
+<div class="mb-8 flex justify-center" data-purpose="mascot-illustration">
+<div class="relative w-48 h-48 animate-bob">
+<!-- Mascot Illustration: Mochii tripped over cable -->
+<!-- Using a placeholder SVG concept for the kawaii character -->
+<svg class="w-full h-full" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<!-- Cable -->
+<path d="M20 160 Q 100 180 180 140" fill="none" stroke="#2D3436" stroke-width="4"></path>
+<!-- Mochii Body -->
+<rect fill="#FFFFFF" height="80" rx="40" stroke="#2D3436" stroke-width="4" width="100" x="50" y="70"></rect>
+<!-- Ears -->
+<path d="M60 72 Q 50 40 80 60" fill="#FFFFFF" stroke="#2D3436" stroke-width="4"></path>
+<path d="M140 72 Q 150 40 120 60" fill="#FFFFFF" stroke="#2D3436" stroke-width="4"></path>
+<!-- Eyes (Tripped/Dizzy) -->
+<path d="M75 105 L 85 115 M 85 105 L 75 115" stroke="#2D3436" stroke-linecap="round" stroke-width="3"></path>
+<path d="M115 105 L 125 115 M 125 105 L 115 115" stroke="#2D3436" stroke-linecap="round" stroke-width="3"></path>
+<!-- Blush -->
+<circle cx="65" cy="125" fill="#F4845F" opacity="0.3" r="8"></circle>
+<circle cx="135" cy="125" fill="#F4845F" opacity="0.3" r="8"></circle>
+<!-- Mouth -->
+<path d="M95 130 Q 100 135 105 130" fill="none" stroke="#2D3436" stroke-linecap="round" stroke-width="3"></path>
+<!-- Paws -->
+<circle cx="70" cy="150" fill="#FFFFFF" r="12" stroke="#2D3436" stroke-width="4"></circle>
+<circle cx="130" cy="150" fill="#FFFFFF" r="12" stroke="#2D3436" stroke-width="4"></circle>
+</svg>
+</div>
+</div>
+<!-- END: Illustration Section -->
+<!-- BEGIN: Content Section -->
+<div class="space-y-4 mb-10" data-purpose="text-content">
+<h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+          Oops! Something went wrong.
+        </h1>
+<p class="text-lg text-gray-600 font-medium">
+          Mochii tripped over a cable. We're getting things back on track.
+        </p>
+</div>
+<!-- END: Content Section -->
+<!-- BEGIN: Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 justify-center items-center" data-purpose="navigation-actions">
+<button class="w-full sm:w-auto px-8 py-4 bg-primary text-white font-bold rounded-full kawaii-outline hover:translate-y-0.5 transition-transform shadow-kawaii active:shadow-none" id="btn-try-again">
+          Try again
+        </button>
+<button class="w-full sm:w-auto px-8 py-4 bg-white text-primary font-bold rounded-full border-3 border-primary kawaii-outline hover:translate-y-0.5 transition-transform shadow-kawaii active:shadow-none" id="btn-back-editor">
+          Back to Editor
+        </button>
+</div>
+<!-- END: Action Buttons -->
+<!-- BEGIN: Footer Branding -->
+<footer class="mt-12 flex flex-col items-center justify-center opacity-40 hover:opacity-100 transition-opacity" data-purpose="branding">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-primary rounded-full border-2 border-gray-900"></div>
+<span class="text-sm font-extrabold uppercase tracking-widest text-gray-900">MeowFolio</span>
+</div>
+</footer>
+<!-- END: Footer Branding -->
+</div>
+</main>
+<!-- END: Error Card Container -->
+<!-- BEGIN: Interactive Logic -->
+<script data-purpose="button-interaction">
+    document.getElementById('btn-try-again').addEventListener('click', () => {
+      // Logic for reloading or retrying
+      window.location.reload();
+    });
+
+    document.getElementById('btn-back-editor').addEventListener('click', () => {
+      // Mock navigation for editor
+      console.log('Navigating back to editor...');
+    });
+  </script>
+<!-- END: Interactive Logic -->
+<script src="app.js"></script></body></html>

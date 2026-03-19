@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="tailwind-config.js"></script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .tactile-shadow {
+        box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.06);
+      }
+      .glass-card {
+        background: rgba(230, 226, 220, 0.6);
+        backdrop-filter: blur(20px);
+      }
+    </style>
+<meta name="view-transition" content="same-origin" /></head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed-variant">
+<!-- TopNavBar -->
+<nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 px-6 py-4">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+<span class="font-headline font-extrabold text-2xl tracking-tight">MeowFolio</span>
+</div>
+<div class="hidden md:flex items-center gap-8 font-label font-semibold text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="landing.html">Home</a>
+<a class="hover:text-primary transition-colors" href="landing.html">Projects</a>
+<a class="text-primary border-b-2 border-primary pb-1" href="about.html">About</a>
+<a class="hover:text-primary transition-colors" href="learn.html">Blog</a>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-label font-bold tactile-shadow hover:scale-[1.03] active:scale-[0.97] transition-all">
+                Contact Me
+            </button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="px-6 py-24 bg-surface-bright overflow-hidden">
+<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+<div class="space-y-8">
+<div class="inline-flex items-center gap-2 bg-primary-fixed px-4 py-1.5 rounded-full">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+<span class="text-on-primary-fixed-variant font-label text-sm font-bold uppercase tracking-wider">The Story</span>
+</div>
+<h1 class="font-headline text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tighter">
+                    Built by a student. <span class="text-primary-container">For students.</span>
+</h1>
+<p class="text-xl text-on-surface-variant leading-relaxed max-w-lg">
+                    We know the struggle of finding your first internship. MeowFolio was born from the frustration of complex tools and poor design, creating a space where your skills shine without the hassle.
+                </p>
+</div>
+<div class="relative">
+<div class="absolute -top-12 -left-12 w-64 h-64 bg-secondary-container rounded-full blur-3xl opacity-30"></div>
+<div class="relative bg-surface-container-lowest rounded-xl p-8 tactile-shadow rotate-3 border border-outline-variant/10">
+<img class="w-full h-[400px] object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-700" data-alt="Developer and a cute cat mascot with graduation cap" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeZmi3TJlL6Ck-bfG-Js_yQxey0M4nufvW9NdQAQY1pmaZeO63nM1nBUxv42kSlsiO7zaT8ve4VXGJ06VchB6_GddMy1bPxkuNGLhZ81ea0XI7Jq32mRgEE1KO1yEYPJHYiSan9csyfR00-_BAUtEbEyrGPSGqjcSUEo5WXxQ7RjtojFxPBPF5rw4ofeaRI1D00e1FeIyLVlmrCbay9Kqz0m6TTp6S2DGMIGC9yMa-vdceWWS5YIylzf_B-cqSUXrtG7ql2x1ZbB78"/>
+<div class="absolute -bottom-6 -right-6 bg-tertiary-fixed p-6 rounded-lg tactile-shadow -rotate-6">
+<span class="font-headline font-bold text-on-tertiary-fixed">Class of 2024 ✨</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Mission Block -->
+<section class="px-6 py-32 bg-surface-container-low">
+<div class="max-w-4xl mx-auto text-center space-y-12">
+<span class="material-symbols-outlined text-primary text-6xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h2 class="font-headline text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                Resume building shouldn't require a <span class="underline decoration-primary-container decoration-8 underline-offset-4">design degree.</span>
+</h2>
+<p class="text-2xl text-on-surface-variant font-medium leading-relaxed italic">
+                "Our mission is simple: to make the most powerful typesetting tools accessible through a playful, intuitive interface. Because your potential shouldn't be hidden behind a bad layout."
+            </p>
+</div>
+</section>
+<!-- Mochii's Origin -->
+<section class="px-6 py-24 bg-surface-bright">
+<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+<div class="order-2 md:order-1 relative">
+<div class="bg-surface-container-high rounded-lg p-4 tactile-shadow overflow-hidden">
+<img class="w-full aspect-square object-cover rounded-lg" data-alt="Cozy cat at a desk looking at job rejections" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsu6acxTDMNeE2LP-8MdnN4BkDRlohW9VTPcrZ75oPd-KPSc83RLZITX7qDNNpsnySNFiEVMF86GYOvmuOp5ogMKK3Gb4sBjEo6JOB5ZfW5lVeEMWrhq8aDDNh3KaR-UdD_vdYE2u8bAqc-WGd4qfCWlmg3etaFFCfrG9VAYn5LSijHqrA73_FtUvnCTafGm_nxDL0tCoImwujPFL7ZKcTRwyZHiOwJTFBtOgOXrh11YcF5UPz6X9kOJzumNCuhc2CmCpy6xBOIZkH"/>
+</div>
+<!-- Lavender Callout -->
+<div class="absolute -bottom-8 left-12 bg-secondary-container p-6 rounded-lg tactile-shadow border-4 border-white max-w-xs transform hover:scale-105 transition-transform">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<p class="font-headline font-bold text-on-secondary-container leading-tight">
+                            Mochii says: I got rejected in Comic Sans. Never again.
+                        </p>
+</div>
+</div>
+</div>
+<div class="order-1 md:order-2 space-y-8">
+<h2 class="font-headline text-5xl font-extrabold tracking-tight">Meet Mochii</h2>
+<div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
+<p>Mochii wasn't always a tech-savvy cat. Legend has it, he spent months trying to format a two-column resume in a standard word processor, only for it to break every time he added a new skill.</p>
+<p>After 42 rejection emails—all formatted beautifully by the companies themselves—Mochii decided that enough was enough. He teamed up with a human student to build a tool that handles the "scary tech" so you can focus on the words.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Developer Section -->
+<section class="px-6 py-24 bg-surface-container">
+<div class="max-w-3xl mx-auto">
+<div class="bg-surface-container-lowest rounded-xl p-10 tactile-shadow flex flex-col md:flex-row gap-10 items-center md:items-start relative">
+<div class="w-40 h-40 bg-primary-fixed rounded-full overflow-hidden border-8 border-white tactile-shadow flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Developer portrait with friendly smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHzp3WLBA6M9i0ST5pN2DNB04nr49QEuQeDL_eWjuTD4kxAljiFEHNMLlKFIkxRxDWrr1r1clC2Vh6nMK1Mj6FEnincm8SQ6MomYFz0XLWeuVx7O8iilm-Jrr-U_96oy7KY5G1Ko148jyElLnAkX9Gi1PzXchScsRMkV68_vmKFs36YyZL21uMNV3xiDNstypDfBPgDaORjzfQ1TLc1Jul553z0v2A00StXPDr6lu0S3fGCBPpGSyfmeQUZKtFCV2viLECXmYvoMSh"/>
+</div>
+<div class="space-y-6 text-center md:text-left">
+<div>
+<h3 class="font-headline text-3xl font-bold">The Human Behind the Cat</h3>
+<div class="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
+<span class="bg-tertiary-fixed px-4 py-1 rounded-full text-sm font-bold text-on-tertiary-fixed-variant">BTech Student</span>
+<span class="bg-secondary-fixed px-4 py-1 rounded-full text-sm font-bold text-on-secondary-fixed-variant">Solo Developer</span>
+</div>
+</div>
+<p class="text-on-surface-variant leading-relaxed italic">
+                        "I'm currently a senior engineering student who spends more time thinking about UI typography than my actual coursework. MeowFolio is my way of giving back to the community that helped me grow."
+                    </p>
+<div class="flex gap-6 justify-center md:justify-start border-t border-outline-variant/10 pt-6">
+<a class="flex items-center gap-2 font-label font-bold text-primary hover:opacity-70 transition-opacity" href="landing.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">code</span> GitHub
+                        </a>
+<a class="flex items-center gap-2 font-label font-bold text-primary hover:opacity-70 transition-opacity" href="landing.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">work</span> LinkedIn
+                        </a>
+<a class="flex items-center gap-2 font-label font-bold text-primary hover:opacity-70 transition-opacity" href="landing.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mail</span> Email
+                        </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Why LaTeX? Section -->
+<section class="px-6 py-32 bg-[#F5F0EB]">
+<div class="max-w-7xl mx-auto space-y-20">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div class="max-w-2xl space-y-4">
+<h2 class="font-headline text-5xl font-extrabold tracking-tight">The "Why" Behind LaTeX</h2>
+<p class="text-xl text-on-surface-variant">We use the world's most powerful typesetting system so you don't have to.</p>
+</div>
+<div class="bg-primary/5 px-6 py-4 rounded-lg border border-primary/10">
+<span class="font-mono text-primary font-bold">\documentclass{MeowFolio}</span>
+</div>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl tactile-shadow border-t-8 border-primary hover:-translate-y-2 transition-transform duration-300">
+<div class="w-14 h-14 bg-primary-fixed rounded-lg flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+</div>
+<h4 class="font-headline text-2xl font-bold mb-4">Pixel-perfect</h4>
+<p class="text-on-surface-variant leading-relaxed">Mathematical precision in every margin, line-break, and font pairing. No awkward gaps or weird spacing.</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl tactile-shadow border-t-8 border-secondary hover:-translate-y-2 transition-transform duration-300">
+<div class="w-14 h-14 bg-secondary-fixed rounded-lg flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">search_check</span>
+</div>
+<h4 class="font-headline text-2xl font-bold mb-4">ATS-safe</h4>
+<p class="text-on-surface-variant leading-relaxed">Robots love LaTeX. Our output is structured perfectly for Applicant Tracking Systems to read every word correctly.</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl tactile-shadow border-t-8 border-tertiary hover:-translate-y-2 transition-transform duration-300">
+<div class="w-14 h-14 bg-tertiary-fixed rounded-lg flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">language</span>
+</div>
+<h4 class="font-headline text-2xl font-bold mb-4">Universal Consistency</h4>
+<p class="text-on-surface-variant leading-relaxed">It looks the same on a recruiter's Mac as it does on your laptop. True consistency across all platforms and devices.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Values Strip -->
+<div class="bg-inverse-surface py-12 px-6 overflow-hidden">
+<div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-12">
+<div class="flex items-center gap-4 group">
+<span class="material-symbols-outlined text-primary-fixed text-4xl group-hover:rotate-12 transition-transform">redeem</span>
+<span class="text-inverse-on-surface font-headline text-2xl font-bold">Always free</span>
+</div>
+<div class="flex items-center gap-4 group">
+<span class="material-symbols-outlined text-secondary-fixed text-4xl group-hover:rotate-12 transition-transform">school</span>
+<span class="text-inverse-on-surface font-headline text-2xl font-bold">Student-first</span>
+</div>
+<div class="flex items-center gap-4 group">
+<span class="material-symbols-outlined text-tertiary-fixed text-4xl group-hover:rotate-12 transition-transform">verified_user</span>
+<span class="text-inverse-on-surface font-headline text-2xl font-bold">Honest by default</span>
+</div>
+</div>
+</div>
+<!-- Closing Section -->
+<section class="px-6 py-32 bg-surface flex flex-col items-center text-center">
+<div class="relative mb-16">
+<div class="absolute inset-0 bg-primary-container blur-3xl opacity-20 scale-150"></div>
+<img class="w-64 h-64 object-cover rounded-full border-8 border-white tactile-shadow relative z-10" data-alt="Mochii mascot holding a sign saying Go get that internship" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDU1WPEs4rhDHail9pzQ_f76n__5zvuM5FenPagtDP1BH2XruHw8lqF-ZcU5mHti9BxT-2iaWa6fmi_0_hioaLq9zssVtkcWjS5dBc6fqQM6LXJtJeARFSdRGz-M3r7xkCYR-mTlW4F5qF3SXWI6NHx9bJov48J9j3QcRIEATWXky7lOd2FjKyNsJc7aAuxVjggyZo-C48emlsXzbTyPi-7SEWcZiw5oDop_23Yi34GGz3C1kdTSoZwOq_MxgGzQKEiDncNOZHNZ6h_"/>
+<div class="absolute -top-4 -right-12 bg-primary text-on-primary px-6 py-3 rounded-xl tactile-shadow font-bold text-xl rotate-12 z-20">
+                Go get that internship! 🚀
+            </div>
+</div>
+<h2 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tight mb-8">Ready to write your story?</h2>
+<button class="bg-primary text-on-primary px-12 py-6 rounded-full font-label font-black text-2xl tactile-shadow hover:scale-[1.05] active:scale-[0.95] transition-all hover:bg-primary-container">
+            Build my resume
+        </button>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-container-highest px-6 py-16">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+<div class="space-y-4 text-center md:text-left">
+<div class="flex items-center gap-2 justify-center md:justify-start">
+<span class="material-symbols-outlined text-primary">pets</span>
+<span class="font-headline font-bold text-xl">MeowFolio</span>
+</div>
+<p class="text-on-surface-variant font-medium">© 2024 MeowFolio. Built with Lavender and Coral.</p>
+</div>
+<div class="flex gap-8 font-label font-bold text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="landing.html">Twitter</a>
+<a class="hover:text-primary transition-colors" href="landing.html">GitHub</a>
+<a class="hover:text-primary transition-colors" href="landing.html">LinkedIn</a>
+<a class="hover:text-primary transition-colors" href="privacy.html">Privacy Policy</a>
+</div>
+</div>
+</footer>
+<script src="app.js"></script></body></html>
