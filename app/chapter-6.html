@@ -25,19 +25,19 @@
 <!-- TopAppBar -->
 <nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-outline-variant/10">
 <div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer">menu</span>
+<span class="material-symbols-outlined text-on-surface-variant p-2 rounded-full">menu</span>
 <h1 class="font-headline font-bold text-xl tracking-tight">Learn with Mochii</h1>
 </div>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-variant rounded-full transition-colors cursor-pointer">account_circle</span>
+<span class="material-symbols-outlined text-on-surface-variant p-2 rounded-full">account_circle</span>
 </div>
 </nav>
 <!-- Progress & Navigation Breadcrumbs -->
 <header class="px-6 pt-8 max-w-5xl mx-auto">
 <div class="flex flex-wrap items-center gap-2 mb-6">
-<span class="text-label-md text-on-surface-variant font-label">Home</span>
+<a class="text-label-md text-on-surface-variant font-label no-underline" href="landing.html">Home</a>
 <span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
-<span class="text-label-md text-on-surface-variant font-label">Curriculum</span>
+<a class="text-label-md text-on-surface-variant font-label no-underline" href="learn.html">Curriculum</a>
 <span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
 <span class="text-label-md text-primary font-bold font-label">The Impact Formula</span>
 </div>
@@ -113,9 +113,9 @@
                     </p>
 </div>
 <div class="mt-8 pt-8 border-t border-on-secondary-container/10">
-<button class="w-full py-4 bg-surface-container-lowest rounded-full font-bold font-label text-secondary hover:shadow-lg transition-all active:scale-95">
+<a class="w-full py-4 bg-surface-container-lowest rounded-full font-bold font-label text-secondary hover:shadow-lg transition-all active:scale-95 block text-center no-underline" href="chapter-7.html">
                         Download Guide
-                    </button>
+                    </a>
 </div>
 </div>
 </section>
@@ -142,36 +142,36 @@
 <section class="mt-24 text-center">
 <h4 class="font-headline text-2xl font-bold mb-8 text-on-surface">Ready for the final submission?</h4>
 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-<button class="px-10 py-5 bg-gradient-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95">
+<a class="px-10 py-5 bg-gradient-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95 no-underline" href="chapter-7.html">
                     Submit Final Version
-                </button>
-<button class="px-10 py-5 bg-surface-container-highest text-on-surface rounded-full font-headline font-bold text-lg hover:bg-surface-dim transition-all">
+                </a>
+<a class="px-10 py-5 bg-surface-container-highest text-on-surface rounded-full font-headline font-bold text-lg hover:bg-surface-dim transition-all no-underline" href="learn.html">
                     Save as Draft
-                </button>
+                </a>
 </div>
 </section>
 </main>
 <!-- FAB -->
-<button class="fixed bottom-24 right-6 flex items-center gap-3 px-6 py-4 bg-primary text-on-primary rounded-xl shadow-2xl hover:shadow-primary/30 transition-all active:scale-90 z-50">
+<div class="fixed bottom-24 right-6 flex items-center gap-3 px-6 py-4 bg-primary text-on-primary rounded-xl shadow-2xl z-50" aria-hidden="true">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
 <span class="font-label font-bold">Mochii's Tip</span>
-</button>
+</div>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 right-0 bg-surface-container-highest/90 backdrop-blur-xl border-t border-outline-variant/20 px-4 py-3 z-40">
 <div class="max-w-md mx-auto flex justify-between items-center">
-<div class="flex flex-col items-center gap-1 text-primary cursor-pointer">
+<div class="flex flex-col items-center gap-1 text-primary">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
 <span class="text-[10px] font-bold font-label">Lessons</span>
 </div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60">
 <span class="material-symbols-outlined">edit_note</span>
 <span class="text-[10px] font-bold font-label">Practice</span>
 </div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60">
 <span class="material-symbols-outlined">groups</span>
 <span class="text-[10px] font-bold font-label">Community</span>
 </div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60">
 <span class="material-symbols-outlined">person</span>
 <span class="text-[10px] font-bold font-label">Profile</span>
 </div>

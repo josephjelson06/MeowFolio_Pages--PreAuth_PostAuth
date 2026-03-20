@@ -30,9 +30,9 @@
 <!-- TopAppBar -->
 <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md px-6 py-4 flex items-center justify-between">
 <div class="flex items-center gap-4">
-<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="p-2 rounded-full" aria-hidden="true">
 <span class="material-symbols-outlined text-on-surface-variant" data-icon="menu">menu</span>
-</button>
+</span>
 <h1 class="text-xl font-headline font-bold text-on-surface">Learn with Mochii</h1>
 </div>
 <div class="flex items-center gap-2">
@@ -94,7 +94,7 @@
 <div class="lg:col-span-7 lg:pl-12">
 <h3 class="text-3xl font-headline font-bold mb-6">A Bullet Point's Soul</h3>
 <p class="text-on-surface-variant text-lg mb-8 leading-relaxed">
-                    Recruiters spend 6 seconds per resume. They aren't looking for a list of chores. They are looking for **Evidence of Value**. Mochii learned that every bullet needs to be a mini-story with a beginning (the action), a middle (the task), and an end (the victory).
+                    Recruiters spend 6 seconds per resume. They aren't looking for a list of chores. They are looking for <strong>Evidence of Value</strong>. Mochii learned that every bullet needs to be a mini-story with a beginning (the action), a middle (the task), and an end (the victory).
                 </p>
 <div class="flex flex-wrap gap-4">
 <div class="px-5 py-3 bg-surface-container-highest rounded-full text-sm font-bold border border-outline-variant/20">#EngineeringExpertise</div>
@@ -198,16 +198,16 @@
 </div>
 <h3 class="text-4xl font-headline font-black mb-6">Ready to Rewrite?</h3>
 <p class="text-primary-fixed mb-8 max-w-lg mx-auto">Open your resume and find one task. Apply the formula and watch it transform from a duty to an achievement.</p>
-<button class="bg-surface-container-lowest text-primary px-10 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all active:scale-95">
+<div class="bg-surface-container-lowest text-primary px-10 py-4 rounded-full font-bold text-lg inline-block" aria-hidden="true">
                 Download Bullet Workbook
-            </button>
+            </div>
 </section>
 </main>
 <!-- FAB -->
-<button class="fixed bottom-28 right-8 bg-primary text-on-primary px-6 py-4 rounded-xl flex items-center gap-3 shadow-xl z-50 hover:shadow-2xl transition-all">
+<div class="fixed bottom-28 right-8 bg-primary text-on-primary px-6 py-4 rounded-xl flex items-center gap-3 shadow-xl z-50" aria-hidden="true">
 <span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
 <span class="font-headline font-bold text-sm">Mochii's Tip</span>
-</button>
+</div>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 right-0 bg-surface-container-highest/90 backdrop-blur-xl border-t border-outline-variant/10 px-6 py-3 z-50">
 <div class="max-w-md mx-auto flex justify-between items-center">
