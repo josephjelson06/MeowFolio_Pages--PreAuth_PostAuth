@@ -12,85 +12,59 @@
 
 <meta name="view-transition" content="same-origin" /></head>
 <body class="bg-surface" data-page="ats-scorer" data-shell="app">
-<div class="flex flex-col h-screen overflow-hidden">
-<!-- TopNavBar -->
-<header class="h-20 px-8 flex items-center justify-between border-b border-outline-variant/10 bg-surface z-50">
-<div class="flex items-center gap-4 w-1/4">
-<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pets</span>
-</div>
-<span class="font-headline font-extrabold text-xl tracking-tight">MeowFolio</span>
-</div>
-<!-- Center Navigation -->
-<nav class="flex items-center gap-8">
-<a class="text-sm font-label font-medium text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
-<a class="text-sm font-label font-medium text-on-surface-variant hover:text-primary transition-colors" href="resumes.html">Resumes</a>
-<a class="text-sm font-label font-medium text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
-<a class="text-sm font-label nav-link-active" href="ats-scorer.html">ATS Scorer</a>
-</nav>
-<!-- Right Controls -->
-<div class="flex items-center justify-end gap-6 w-1/4">
+<!-- Top Navigation Bar -->
+<nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b-2 border-on-surface/10 px-6 py-4 flex items-center justify-between">
 <div class="flex items-center gap-2">
-<button class="px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label font-bold text-sm hover:bg-surface-container-high transition-colors">ATS Score</button>
-<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label font-bold text-sm shadow-sm hover:shadow-md transition-all" data-action="export-active-resume" type="button">Download</button>
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center tactile-card">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
 </div>
-<div class="h-8 w-[1px] bg-outline-variant/30"></div>
-<!-- User Avatar with Dropdown -->
-<div class="relative dropdown group">
-<button class="flex items-center gap-1 hover:opacity-80 transition-opacity">
-<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container overflow-hidden">
+<span class="font-headline font-bold text-xl tracking-tight">MeowFolio</span>
+</div>
+<div class="hidden lg:flex items-center gap-8">
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="resumes.html">Resumes</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
+<a class="font-label text-sm font-bold text-primary border-b-2 border-primary pb-1" href="ats-scorer.html">ATS Scorer</a>
+</div>
+<div class="flex items-center gap-4 md:gap-6">
+<a href="editor-content.html" class="chunky-button bg-primary text-on-primary px-5 py-2 rounded-full font-label font-bold text-sm hidden sm:block text-center no-underline" data-action="create-resume">Create New</a>
+<div class="relative group">
+<button class="flex items-center gap-1 p-1 rounded-full border-2 border-on-surface hover:ring-4 ring-primary/20 transition-all">
+<div class="w-8 h-8 rounded-full overflow-hidden">
 <span class="material-symbols-outlined">person</span>
 </div>
-<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
 </button>
-<!-- Dropdown Menu -->
-<div class="dropdown-menu hidden absolute right-0 top-full mt-2 w-48 bg-surface-container-lowest border border-outline-variant/20 rounded-xl shadow-xl overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
-<span class="material-symbols-outlined text-sm">account_circle</span>
-                            My Profile
-                        </a>
-<div class="h-[1px] bg-outline-variant/10 my-1 mx-2"></div>
-<a class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-error hover:bg-error-container/10 transition-colors" href="index.html" data-action="logout">
-<span class="material-symbols-outlined text-sm">logout</span>
-                            Logout
-                        </a>
+<div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border-2 border-on-surface rounded-xl shadow-[4px_4px_0px_0px_rgba(28,28,24,1)] overflow-hidden">
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
+<span class="material-symbols-outlined text-lg">person</span>
+                        My Profile
+                    </a>
+<div class="h-[1px] bg-on-surface/10"></div>
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-error hover:bg-error-container transition-colors" href="index.html" data-action="logout">
+<span class="material-symbols-outlined text-lg">logout</span>
+                        Logout
+                    </a>
 </div>
 </div>
 </div>
-</header>
-<!-- Workspace Layout -->
-<div class="flex-1 flex overflow-hidden p-6 gap-6">
-<!-- Left Panel: Resume Selection -->
-<section class="w-[400px] flex flex-col gap-6 overflow-y-auto pr-2">
-<div class="bg-surface-container-low p-8 rounded-lg flex flex-col gap-8 flex-1 border border-outline-variant/10 shadow-sm">
+</nav>
+
+<main class="max-w-[1920px] mx-auto p-6">
+<div class="flex gap-6">
+<section class="w-[380px] flex flex-col gap-6">
+<div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10">
 <header>
 <span class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-2 block">Preparation</span>
 <h2 class="font-headline text-3xl font-extrabold text-on-surface">Select Resume</h2>
 </header>
-<div class="flex flex-col gap-4">
-<!-- High-fidelity Resume Card -->
-<div class="group relative bg-surface-container-lowest rounded-2xl p-4 custom-shadow border border-outline-variant/10 cursor-pointer hover:border-primary/30 transition-all overflow-hidden">
+<div class="mt-6 group relative bg-surface-container-lowest rounded-2xl p-4 custom-shadow border border-outline-variant/10">
 <div class="resume-skeleton w-full aspect-[3/4] rounded-lg p-6 flex flex-col gap-4 mb-4">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-primary-fixed shrink-0"></div>
-<div class="flex-1 space-y-2">
 <div class="h-2 w-1/2 bg-outline-variant/30 rounded"></div>
-<div class="h-2 w-1/4 bg-outline-variant/20 rounded"></div>
-</div>
-</div>
-<div class="space-y-3 pt-4 border-t border-outline-variant/10">
-<div class="h-2 w-full bg-outline-variant/20 rounded"></div>
-<div class="h-2 w-full bg-outline-variant/20 rounded"></div>
-<div class="h-2 w-3/4 bg-outline-variant/20 rounded"></div>
-</div>
-<div class="space-y-3 pt-2">
 <div class="h-2 w-full bg-outline-variant/20 rounded"></div>
 <div class="h-2 w-5/6 bg-outline-variant/20 rounded"></div>
-</div>
-<div class="mt-auto flex justify-between items-end">
-<div class="h-8 w-8 bg-tertiary-fixed rounded-sm"></div>
-<div class="h-2 w-1/4 bg-outline-variant/10 rounded"></div>
-</div>
+<div class="h-2 w-full bg-outline-variant/20 rounded"></div>
+<div class="h-2 w-3/4 bg-outline-variant/20 rounded"></div>
 </div>
 <div class="flex items-center justify-between px-2">
 <div class="flex flex-col min-w-0">
@@ -102,89 +76,101 @@
 </button>
 </div>
 </div>
+
+<div class="mt-6 flex flex-col gap-3">
+<p class="text-xs font-label font-bold text-on-surface-variant">ATS FORMATTING RULES</p>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span class="text-sm font-medium">No tables used</span>
 </div>
-<!-- Checklist -->
-<div class="flex flex-col gap-4">
-<label class="text-xs font-label font-bold text-on-surface-variant">ATS FORMATTING RULES</label>
-<div class="flex flex-col gap-3">
-<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest shadow-sm">
-<div class="w-6 h-6 rounded-full bg-tertiary-fixed flex items-center justify-center">
-<span class="material-symbols-outlined text-on-tertiary-fixed text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
-</div>
-<span class="text-sm font-medium text-on-surface">No tables used</span>
-</div>
-<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest shadow-sm">
-<div class="w-6 h-6 rounded-full bg-tertiary-fixed flex items-center justify-center">
-<span class="material-symbols-outlined text-on-tertiary-fixed text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
-</div>
-<span class="text-sm font-medium text-on-surface">Standard fonts only</span>
-</div>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span class="text-sm font-medium">Standard fonts only</span>
 </div>
 </div>
 </div>
 </section>
-<!-- Right Panel: Run Scan State -->
-<section class="flex-1 bg-surface-container-low rounded-lg p-10 flex flex-col items-center justify-center text-center overflow-y-auto">
-<div class="max-w-md flex flex-col items-center gap-8">
-<!-- Hero Mochii Illustration -->
-<div class="relative w-64 h-64 bg-surface-container-highest rounded-full flex items-center justify-center shadow-inner group">
-<!-- Mascot Body -->
+
+<section class="flex-1 bg-surface-container-low rounded-lg p-8 border border-outline-variant/10">
+<div class="flex items-center justify-between gap-4 mb-6">
+<header>
+<span class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-2 block">Analysis Workspace</span>
+<h2 class="font-headline text-3xl font-extrabold text-on-surface">ATS Scorer</h2>
+</header>
+<div class="flex items-center gap-2 p-1.5 bg-surface-container-high rounded-full">
+<button type="button" class="px-5 py-2 rounded-full font-label font-bold text-sm bg-primary text-on-primary" data-ats-view-toggle="input">Input</button>
+<button type="button" class="px-5 py-2 rounded-full font-label font-bold text-sm bg-surface-container-lowest text-on-surface-variant" data-ats-view-toggle="report">Report</button>
+</div>
+</div>
+
+<div data-ats-input-view>
+<div class="max-w-md flex flex-col items-center gap-8 mx-auto py-8">
+<div class="relative w-64 h-64 bg-surface-container-highest rounded-full flex items-center justify-center shadow-inner">
 <div class="w-40 h-40 bg-white rounded-full flex items-center justify-center relative shadow-lg">
-<!-- Eyes -->
 <div class="absolute w-2 h-2 bg-[#1c1c18] rounded-full left-12 top-16"></div>
 <div class="absolute w-2 h-2 bg-[#1c1c18] rounded-full right-12 top-16"></div>
-<!-- Blush -->
-<div class="absolute w-4 h-4 bg-primary-fixed-dim rounded-full blur-[2px] opacity-40 top-[70px] left-8"></div>
-<div class="absolute w-4 h-4 bg-primary-fixed-dim rounded-full blur-[2px] opacity-40 top-[70px] right-8"></div>
-<!-- Mouth -->
 <div class="w-6 h-2 border-b-2 border-[#1c1c18] rounded-full mt-8"></div>
 </div>
-<!-- Animated Magnifying Glass -->
-<div class="absolute bottom-10 right-10 w-24 h-24 rotate-[-15deg] transition-transform duration-500 group-hover:scale-110">
-<div class="w-16 h-16 rounded-full border-[6px] border-primary-container bg-surface-container-lowest/40 backdrop-blur-sm flex items-center justify-center relative">
-<div class="w-full h-[1px] bg-primary/20 absolute rotate-45"></div>
-<div class="w-10 h-10 bg-surface-container-lowest/30 rounded-full border border-primary/10"></div>
 </div>
-<div class="w-3 h-10 bg-primary-container rounded-full absolute -bottom-4 left-1/2 -translate-x-1/2 -rotate-12 origin-top"></div>
-</div>
-<!-- Resume Sheet -->
-<div class="absolute top-10 left-10 w-20 h-28 bg-white rounded shadow-md border border-outline-variant/10 p-2 flex flex-col gap-2 -rotate-[10deg]">
-<div class="h-2 w-3/4 bg-surface-container-highest rounded"></div>
-<div class="h-1 w-full bg-surface-container rounded"></div>
-<div class="h-1 w-full bg-surface-container rounded"></div>
-<div class="h-1 w-2/3 bg-surface-container rounded"></div>
-<div class="mt-auto h-4 w-4 bg-primary-container rounded-full self-end"></div>
-</div>
-</div>
-<div class="space-y-4">
+<div class="space-y-4 text-center">
 <h2 class="font-headline text-3xl font-extrabold text-on-surface">Ready for your ATS Scan?</h2>
-<p class="text-on-surface-variant font-medium leading-relaxed max-w-sm">
-                            Select your resume from the left panel and Mochii will analyze it against common applicant tracking systems.
-                        </p>
+<p class="text-on-surface-variant font-medium leading-relaxed max-w-sm">Select your resume from the left panel and run a complete ATS analysis.</p>
 </div>
-<a href="ats-report.html" class="w-full max-w-xs py-5 rounded-full bg-primary-container text-on-primary-container font-headline font-extrabold text-xl flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all no-underline" data-action="run-ats-scan">
+<a href="ats-scorer.html?view=report" class="w-full max-w-xs py-5 rounded-full bg-primary-container text-on-primary-container font-headline font-extrabold text-xl flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all no-underline" data-action="run-ats-scan">
 <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">analytics</span>
                         Run ATS Scan</a>
 </div>
+</div>
+
+<div class="hidden flex flex-col gap-8" data-ats-results-view>
+<div class="flex items-start justify-between">
+<div>
+<span class="text-[10px] font-label font-bold uppercase tracking-widest text-secondary mb-2 block">Summary Report</span>
+<h2 class="font-headline text-4xl font-extrabold text-on-surface">ATS Score Report</h2>
+</div>
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-container-highest" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364" stroke-dashoffset="80" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-3xl font-headline font-extrabold text-on-surface" data-ats-score>0%</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase" data-ats-rating>Ready</span>
+</div>
+</div>
+</div>
+
+<div class="grid grid-cols-4 gap-4">
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-tertiary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Formatting</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="formatting">0/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Keywords</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="keywords">0/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-secondary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Structure</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="structure">0/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary-container shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Readability</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="readability">0/100</p>
+</div>
+</div>
+
+<div class="flex flex-col gap-4">
+<h3 class="font-headline text-xl font-bold text-on-surface">What to Fix</h3>
+<div class="flex flex-col gap-3" data-ats-issues></div>
+</div>
+
+<a href="editor-content.html" class="w-full py-5 rounded-full bg-secondary text-on-secondary font-headline font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:bg-secondary/90 transition-all no-underline" data-action="open-ats-suggestions">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                        Generate Suggestions</a>
+</div>
 </section>
 </div>
-</div>
-<!-- Floating Mochii Component (Static for UI) -->
-<div class="fixed bottom-12 right-12 flex flex-col items-center gap-4">
-<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-xl border border-outline-variant/20 relative">
-<p class="text-xs font-medium text-on-surface italic">"Let's see if your resume is readable!"</p>
-<div class="absolute -bottom-2 right-8 w-4 h-4 bg-surface-container-lowest rotate-45 border-b border-r border-outline-variant/20"></div>
-</div>
-<div class="w-20 h-20 bg-primary-fixed rounded-full flex items-center justify-center shadow-lg group cursor-pointer hover:scale-110 transition-transform">
-<div class="w-14 h-14 bg-white rounded-full flex items-center justify-center relative overflow-hidden">
-<div class="absolute w-1.5 h-1.5 bg-[#1c1c18] rounded-full left-4 top-6"></div>
-<div class="absolute w-1.5 h-1.5 bg-[#1c1c18] rounded-full right-4 top-6"></div>
-<div class="w-4 h-1.5 border-b-2 border-[#1c1c18] rounded-full mt-4"></div>
-<div class="absolute top-1 left-2 w-3 h-3 bg-primary-fixed-dim rounded-full blur-[1px] opacity-60"></div>
-<div class="absolute top-1 right-2 w-3 h-3 bg-primary-fixed-dim rounded-full blur-[1px] opacity-60"></div>
-</div>
-</div>
-</div>
+</main>
 <script src="page-modules.js"></script>
 <script src="pages-profile.js"></script>
 <script src="pages-editor.js"></script>
