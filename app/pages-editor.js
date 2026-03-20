@@ -16,11 +16,77 @@
             setTemplatesFilter
         } = runtime;
 
+        function normalizeEditorTab(tab) {
+            return tab === 'templates' || tab === 'customize' ? tab : 'content';
+        }
+
+        function getEditorTabFromUrl() {
+            const tab = new URLSearchParams(window.location.search).get('tab');
+            return normalizeEditorTab(tab);
+        }
+
+        function setEditorTabInUrl(tab) {
+            const nextTab = normalizeEditorTab(tab);
+            const url = new URL(window.location.href);
+            if (nextTab === 'content') {
+                url.searchParams.delete('tab');
+            } else {
+                url.searchParams.set('tab', nextTab);
+            }
+            window.history.replaceState({}, '', url.toString());
+        }
+
+        function setEditorTab(tab, options) {
+            const nextTab = normalizeEditorTab(tab);
+            const shouldSyncUrl = !(options && options.syncUrl === false);
+
+            document.querySelectorAll('[data-editor-panel]').forEach((panel) => {
+                panel.classList.toggle('hidden', panel.dataset.editorPanel !== nextTab);
+            });
+
+            document.querySelectorAll('[data-editor-tab]').forEach((button) => {
+                const active = button.dataset.editorTab === nextTab;
+                button.classList.toggle('bg-primary', active);
+                button.classList.toggle('text-on-primary', active);
+                button.classList.toggle('tactile-shadow', active);
+                button.classList.toggle('text-on-surface-variant', !active);
+                button.classList.toggle('hover:bg-surface-container-high', !active);
+            });
+
+            if (shouldSyncUrl) {
+                setEditorTabInUrl(nextTab);
+            }
+        }
+
+        function wireEditorTabs() {
+            const root = document.querySelector('[data-editor-tabs]');
+            if (!root || root.dataset.bound === 'true') return;
+            root.dataset.bound = 'true';
+
+            root.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-editor-tab]');
+                if (!button) return;
+                event.preventDefault();
+                const nextTab = normalizeEditorTab(button.dataset.editorTab);
+                setEditorTab(nextTab);
+                if (nextTab === 'templates') initEditorTemplatesPage();
+                if (nextTab === 'customize') initEditorCustomizePage();
+                if (nextTab === 'content') renderPreview();
+            });
+        }
+
         function initEditorContentPage() {
             const resumeId = Store.ensureActiveResume({ createIfMissing: true });
             const draft = Store.getDraft(resumeId);
             hydrateEditorBindings(draft);
             renderRepeatableLists(draft);
+
+            // Unified editor view: initialize all left-side panels once, then show active tab.
+            initEditorTemplatesPage();
+            initEditorCustomizePage();
+            wireEditorTabs();
+            setEditorTab(getEditorTabFromUrl(), { syncUrl: false });
+
             renderPreview();
             updateActiveResumeLabels();
             setResumeHeaderContext();
@@ -132,6 +198,7 @@
             initEditorContentPage,
             initEditorTemplatesPage,
             initEditorCustomizePage,
+            setEditorTab,
             updateCustomizeSetting,
             handleCustomizeInteraction,
             handleCustomizeRange,

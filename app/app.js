@@ -36,7 +36,9 @@
     const RETIRED_REDIRECTS = {
         'choose-path': 'signup.html',
         'pick-template': 'editor-templates.html',
-        'editor-preview': 'editor-content.html'
+        'editor-preview': 'editor-content.html',
+        'editor-templates': 'editor-content.html?tab=templates',
+        'editor-customize': 'editor-content.html?tab=customize'
     };
 
     const DEFAULT_CUSTOMIZE = {
@@ -1385,7 +1387,12 @@
                 return;
             case 'confirm-template':
                 event.preventDefault();
-                UI.navigate('editor-customize.html');
+                if (editorModule && editorModule.setEditorTab && getCurrentPage() === 'editor-content') {
+                    editorModule.setEditorTab('customize');
+                    initEditorCustomizePage();
+                } else {
+                    UI.navigate('editor-content.html?tab=customize');
+                }
                 return;
             case 'reset-customize':
                 event.preventDefault();
@@ -1397,7 +1404,12 @@
                 event.preventDefault();
                 Store.syncResumeMeta(Store.ensureActiveResume({ createIfMissing: true }));
                 UI.showToast('Customization applied.', 'success');
-                UI.navigate('editor-content.html');
+                if (editorModule && editorModule.setEditorTab && getCurrentPage() === 'editor-content') {
+                    editorModule.setEditorTab('content');
+                    initEditorContentPage();
+                } else {
+                    UI.navigate('editor-content.html');
+                }
                 return;
             case 'run-jd-analysis':
                 event.preventDefault();

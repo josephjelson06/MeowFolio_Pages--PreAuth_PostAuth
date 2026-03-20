@@ -20,43 +20,71 @@
         }
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
+        .template-card {
+            border: 2px solid #e6e2dc;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .template-card:hover {
+            border-color: #f4845f;
+            transform: translateY(-2px);
+        }
+        .template-card.active {
+            border-color: #9d4223;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 12px rgba(157, 66, 35, 0.1);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 8px;
+            background: #e6e2dc;
+            border-radius: 4px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #9d4223;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
 <body class="text-on-surface flex flex-col h-screen overflow-hidden" data-page="editor-content" data-shell="app">
 <!-- Global Navigation Bar -->
-<nav class="h-20 bg-surface-container-lowest border-b border-outline-variant/20 px-8 flex items-center justify-between z-30">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center tactile-shadow overflow-hidden">
-<img alt="MeowFolio Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAStCi4fEBcIIHo2ft7jS0U5TGZcDY81MZ8QqePnvtcZfqRWuwawV_bY1RWdeG8OTRnqvPi95EJaM0B3aD18-WdFF3IHThbEDzq_d50EL3vDKNuIYY8TNVp4i3Sd7IcVuWbYqmjl35XtWp6fjWcKtqvHtZ5TuxXzRKjaCsktpHH63Es0dYMfeHkx_EoJ_d92fEWRZ7NWWDr_rrM83Cc2XTnp02lLQ2jmbfN43USIEzAWOWj1-WVCTeRNZ5ZcpNII8eFMVL1IVpyvEuY"/>
+<nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b-2 border-on-surface/10 px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center tactile-card">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
 </div>
-<span class="font-headline font-extrabold text-2xl tracking-tight text-primary">MeowFolio</span>
+<span class="font-headline font-bold text-xl tracking-tight">MeowFolio</span>
 </div>
-<div class="hidden md:flex items-center bg-surface-container-low p-1 rounded-full border border-outline-variant/10">
-<a class="px-6 py-2 rounded-full font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
-<a class="px-6 py-2 rounded-full font-label font-bold text-sm bg-white text-primary shadow-sm" href="resumes.html">Resumes</a>
-<a class="px-6 py-2 rounded-full font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
-<a class="px-6 py-2 rounded-full font-label font-bold text-sm text-on-surface-variant hover:text-primary transition-colors" href="ats-scorer.html">ATS Scorer</a>
+<div class="hidden lg:flex items-center gap-8">
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
+<a class="font-label text-sm font-bold text-primary border-b-2 border-primary pb-1" href="resumes.html">Resumes</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="ats-scorer.html">ATS Scorer</a>
 </div>
-<div class="flex items-center gap-4">
-<button class="bg-primary/10 text-primary px-6 py-2.5 rounded-full font-headline font-bold text-sm hover:bg-primary/20 transition-colors" data-action="share-page" type="button">
-            Share
-        </button>
-<div class="flex items-center gap-2 pl-4 border-l border-outline-variant/30">
+<div class="flex items-center gap-4 md:gap-6">
+<button class="chunky-button bg-primary/10 text-primary px-5 py-2 rounded-full font-label font-bold text-sm" data-action="share-page" type="button">Share</button>
 <div class="relative group">
-<button class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined text-on-secondary-container">person</span>
-</button>
-<div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl paper-shadow border border-outline-variant/20 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-on-surface" href="profile.html">
-<span class="material-symbols-outlined text-lg">person</span>
-                            My Profile
-                        </a>
-<div class="h-px bg-outline-variant/10 mx-2 my-1"></div>
-<a class="flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors text-sm font-bold font-headline text-error" href="index.html" data-action="logout">
-<span class="material-symbols-outlined text-lg text-error">logout</span>
-                            Logout
-                        </a>
+<button class="flex items-center gap-1 p-1 rounded-full border-2 border-on-surface hover:ring-4 ring-primary/20 transition-all">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<img alt="User Profile Icon" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcJP14wtmre-YIUTVM9YzZDc5UNmURSygGM3cyjrgRDZ1DWTuGRkXMgjjLPcWB3AD87ov3ZMkLLymT3HvRz5spNCnnG1_YIg0DWUwP0WLilRVmjjGhdtYQJ7CzA-wNm5m8ik56C_EXvcgBYza6W44Hh9fptSwJI-fL5cVdbjQaNo9brn5uMw8JdTlGITb5q4eGMXBu4NxbBZmEOMik0fTKuZkz2-b7W-0FqoUuV_9qPyWlXoU8eraKkD2nSv1vPGqD47TL3saVgaYn"/>
 </div>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
+</button>
+<div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border-2 border-on-surface rounded-xl shadow-[4px_4px_0px_0px_rgba(28,28,24,1)] overflow-hidden">
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
+<span class="material-symbols-outlined text-lg">person</span>
+                        My Profile
+                    </a>
+<div class="h-[1px] bg-on-surface/10"></div>
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-error hover:bg-error-container transition-colors" href="index.html" data-action="logout">
+<span class="material-symbols-outlined text-lg">logout</span>
+                        Logout
+                    </a>
 </div>
 </div>
 </div>
@@ -67,15 +95,17 @@
 <!-- Editor Column -->
 <section class="w-[45%] bg-surface-container-low flex flex-col overflow-y-auto custom-scrollbar">
 <div class="px-12 py-10 max-w-2xl mx-auto w-full">
-<!-- Inner Nav Tabs (Instead of sidebar) -->
-<div class="flex items-center gap-2 mb-10 bg-surface-container-lowest p-1.5 rounded-2xl w-fit border border-outline-variant/10">
-<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary font-bold text-sm tactile-shadow">
+<!-- Inner Nav Tabs -->
+<div class="flex items-center gap-2 mb-10 bg-surface-container-lowest p-1.5 rounded-2xl w-fit border border-outline-variant/10" data-editor-tabs>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary font-bold text-sm tactile-shadow" data-editor-tab="content" type="button">
 <span class="material-symbols-outlined text-lg">edit_note</span>
                         Content
                     </button>
-<a href="editor-templates.html" class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high font-bold text-sm transition-colors no-underline"><span class="material-symbols-outlined text-lg">dashboard</span>Templates</a>
-<a href="editor-customize.html" class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high font-bold text-sm transition-colors no-underline"><span class="material-symbols-outlined text-lg">palette</span>Design</a>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high font-bold text-sm transition-colors" data-editor-tab="templates" type="button"><span class="material-symbols-outlined text-lg">dashboard</span>Templates</button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high font-bold text-sm transition-colors" data-editor-tab="customize" type="button"><span class="material-symbols-outlined text-lg">palette</span>Design</button>
 </div>
+
+<div data-editor-panel="content">
 <div class="mb-10">
 <h2 class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mb-2">Edit Details</h2>
 <p class="text-on-surface-variant font-medium">Customize your professional profile identity.</p>
@@ -226,7 +256,94 @@
 </div>
 <div class="mt-12 flex gap-4">
 <button class="flex-1 bg-surface-container-highest py-4 rounded-xl font-headline font-bold hover:bg-surface-variant transition-colors" data-action="save-draft" type="button">Save Draft</button>
-<a href="editor-templates.html" class="flex-1 bg-secondary text-on-secondary py-4 rounded-xl font-headline font-bold tactile-shadow block text-center no-underline">Finish Content</a>
+<button class="flex-1 bg-secondary text-on-secondary py-4 rounded-xl font-headline font-bold tactile-shadow block text-center" data-editor-tab="templates" type="button">Finish Content</button>
+</div>
+</div>
+
+<div class="hidden" data-editor-panel="templates">
+<div class="mb-8">
+<h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface mb-2">Choose Template</h2>
+<p class="text-on-surface-variant text-sm font-medium">Select a layout that best represents your professional story.</p>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar no-scrollbar mb-8">
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label text-sm font-bold shadow-sm whitespace-nowrap" data-template-filter="All" type="button">All</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap" data-template-filter="Minimal" type="button">Minimal</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap" data-template-filter="Two-column" type="button">Two-column</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap" data-template-filter="Compact" type="button">Compact</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap" data-template-filter="Modern" type="button">Modern</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 font-label text-sm font-bold hover:bg-white transition-colors whitespace-nowrap" data-template-filter="Creative" type="button">Creative</button>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="template-card active group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer" data-template-id="minimal">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10"></div>
+<div class="px-1"><h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Minimal</h3></div>
+</div>
+<div class="template-card group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer" data-template-id="two-column">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10"></div>
+<div class="px-1"><h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Two-Column</h3></div>
+</div>
+<div class="template-card group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer" data-template-id="compact">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10"></div>
+<div class="px-1"><h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Compact</h3></div>
+</div>
+<div class="template-card group relative bg-surface-container-lowest p-3 rounded-2xl cursor-pointer" data-template-id="modern">
+<div class="aspect-[3/4] bg-surface-variant rounded-xl overflow-hidden mb-3 relative border border-outline-variant/10"></div>
+<div class="px-1"><h3 class="font-headline text-base font-bold text-on-surface mb-1">MeowFolio Modern</h3></div>
+</div>
+</div>
+<div class="mt-10 flex gap-4">
+<button class="flex-1 bg-surface-container-highest py-3.5 rounded-xl font-headline font-bold hover:bg-surface-variant transition-colors border-2 border-outline-variant/20 text-sm" data-editor-tab="content" type="button">Back to Content</button>
+<a href="editor-content.html?tab=customize" class="flex-1 bg-secondary text-on-secondary py-3.5 rounded-xl font-headline font-bold tactile-shadow border-2 border-white/20 text-sm block text-center no-underline" data-action="confirm-template">Confirm Template</a>
+</div>
+</div>
+
+<div class="hidden" data-editor-panel="customize">
+<div class="mb-10">
+<h2 class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mb-2">Customize</h2>
+<p class="text-on-surface-variant font-medium">Fine-tune the typography and layout of your resume.</p>
+</div>
+<div class="space-y-8">
+<div class="space-y-3">
+<label class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-2">Font Type</label>
+<div class="grid grid-cols-3 gap-3 bg-surface-container rounded-2xl p-1.5 border border-outline-variant/10">
+<button class="py-2.5 rounded-xl bg-white tactile-shadow text-sm font-bold text-on-surface" data-setting="fontType" data-value="sans" type="button">Sans</button>
+<button class="py-2.5 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-highest transition-colors" data-setting="fontType" data-value="serif" type="button">Serif</button>
+<button class="py-2.5 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-highest transition-colors" data-setting="fontType" data-value="mono" type="button">Mono</button>
+</div>
+</div>
+<div class="space-y-3">
+<label class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-2">Font Size</label>
+<div class="grid grid-cols-3 gap-3 bg-surface-container rounded-2xl p-1.5 border border-outline-variant/10">
+<button class="py-2.5 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-highest transition-colors" data-setting="fontSize" data-value="small" type="button">Small</button>
+<button class="py-2.5 rounded-xl bg-white tactile-shadow text-sm font-bold text-on-surface" data-setting="fontSize" data-value="medium" type="button">Medium</button>
+<button class="py-2.5 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container-highest transition-colors" data-setting="fontSize" data-value="large" type="button">Large</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-3xl p-8 space-y-8 border border-outline-variant/10 tactile-shadow">
+<div class="space-y-4">
+<div class="flex justify-between items-center"><label class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant">Margins</label><span class="text-xs font-bold text-primary" data-setting-value="margins">24px</span></div>
+<input class="w-full" max="48" min="8" type="range" value="24" data-setting="margins"/>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center"><label class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant">Section Spacing</label><span class="text-xs font-bold text-primary" data-setting-value="sectionSpacing">16px</span></div>
+<input class="w-full" max="32" min="4" type="range" value="16" data-setting="sectionSpacing"/>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center"><label class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant">Line Height</label><span class="text-xs font-bold text-primary" data-setting-value="lineHeight">1.5</span></div>
+<input class="w-full" max="2" min="1" step="0.1" type="range" value="1.5" data-setting="lineHeight"/>
+</div>
+</div>
+<div class="space-y-3">
+<label class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-2">Text Alignment</label>
+<div class="grid grid-cols-2 gap-3 bg-surface-container rounded-2xl p-1.5 border border-outline-variant/10">
+<button class="py-3 rounded-xl bg-white tactile-shadow flex items-center justify-center gap-2 font-bold text-sm" data-setting="align" data-value="left" type="button"><span class="material-symbols-outlined text-base">format_align_left</span>Left</button>
+<button class="py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors" data-setting="align" data-value="center" type="button"><span class="material-symbols-outlined text-base">format_align_center</span>Center</button>
+</div>
+</div>
+</div>
+<div class="mt-12 flex gap-4">
+<button class="flex-1 bg-surface-container-highest py-4 rounded-xl font-headline font-bold hover:bg-surface-variant transition-colors" data-action="reset-customize" type="button">Reset Defaults</button>
+<a href="editor-content.html" class="flex-1 bg-secondary text-on-secondary py-4 rounded-xl font-headline font-bold tactile-shadow block text-center no-underline" data-action="apply-customize">Apply Changes</a>
 </div>
 </div>
 </section>
