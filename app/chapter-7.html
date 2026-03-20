@@ -11,6 +11,11 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        .card-border { border: 2px solid #2D2D2D; }
+        .chunky-heading { font-weight: 800; letter-spacing: -0.02em; }
+        .tactile-card { box-shadow: 4px 4px 0px 0px #2D2D2D; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .tactile-card:hover { transform: translate(2px, 2px); box-shadow: none; }
+        .chunky-button:active { transform: scale(0.97); }
         .bg-frosted {
             background-color: rgba(230, 226, 220, 0.6);
             backdrop-filter: blur(20px);
@@ -23,22 +28,25 @@
         ::-webkit-scrollbar-thumb { background: #dcc1b8; border-radius: 10px; }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed-variant" data-page="chapter-7" data-shell="public">
+<body class="dotted-bg font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed-variant" data-page="chapter-7" data-shell="public">
 <!-- Top Navigation Bar -->
-<nav class="sticky top-0 z-50 bg-surface-container-highest/80 backdrop-blur-md px-6 py-4 border-b border-outline-variant/20">
-<div class="max-w-7xl mx-auto flex items-center justify-between">
+<nav class="sticky top-0 z-50 bg-surface/90 backdrop-blur-sm border-b-2 border-charcoal">
+<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 <div class="flex items-center gap-8">
-<span class="text-2xl font-headline font-extrabold text-primary tracking-tight">MeowFolio</span>
-<div class="hidden md:flex gap-6">
-<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html">Home</a>
-<a class="font-label text-sm font-semibold text-primary transition-colors no-underline" href="learn.html">Learn</a>
-<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html#faq">FAQ</a>
-<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="about.html">About</a>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-coral text-3xl" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="font-headline chunky-heading text-xl tracking-tight text-on-surface">MeowFolio</span>
+</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="font-label font-bold text-on-surface hover:text-coral transition-colors no-underline" href="landing.html">Home</a>
+<a class="font-label font-bold text-on-surface hover:text-coral transition-colors no-underline" href="learn.html">Learn</a>
+<a class="font-label font-bold text-on-surface hover:text-coral transition-colors no-underline" href="landing.html#faq">FAQ</a>
+<a class="font-label font-bold text-on-surface hover:text-coral transition-colors no-underline" href="about.html">About</a>
 </div>
 </div>
 <div class="flex items-center gap-4">
-<a class="px-6 py-2.5 font-label text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-all rounded-full no-underline" href="login.html">Login</a>
-<a class="px-6 py-2.5 font-label text-sm font-bold bg-primary text-on-primary rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all no-underline" href="signup.html">Get Started</a>
+<a class="px-6 py-2 font-label font-bold text-on-surface hover:text-coral transition-colors no-underline" href="login.html">Login</a>
+<a class="chunky-button bg-coral text-white px-8 py-3 rounded-full font-label font-bold card-border shadow-tactile hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#2D2D2D] transition-all no-underline" href="signup.html">Get Started</a>
 </div>
 </div>
 </nav>
@@ -48,7 +56,7 @@
 <header class="flex flex-col md:flex-row md:items-end justify-between gap-6">
 <div class="max-w-2xl">
 <span class="bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-4">Final Module</span>
-<h1 class="font-headline text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight text-on-surface mb-6">
+<h1 class="font-headline chunky-heading text-5xl md:text-6xl leading-[1.1] tracking-tight text-on-surface mb-6">
                         Submission <br/><span class="text-primary-container">Strategy</span>
 </h1>
 <p class="text-on-surface-variant text-lg leading-relaxed font-medium">
@@ -141,11 +149,11 @@
 <section class="flex justify-between items-center py-12 border-t border-outline-variant/20 mt-12">
 <div class="flex flex-col">
 <span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Previous</span>
-<a class="text-on-surface font-headline font-bold hover:text-primary transition-colors no-underline" href="chapter-6.html">Proofing &amp; Polish</a>
+<a class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-charcoal font-label font-bold card-border shadow-tactile hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all no-underline" href="chapter-6.html">Proofing &amp; Polish</a>
 </div>
 <div class="flex flex-col items-end">
 <span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Next</span>
-<a class="text-primary font-headline font-bold hover:text-primary-container transition-colors flex items-center gap-2 no-underline" href="editor-content.html">
+<a class="inline-flex items-center gap-2 bg-coral text-white px-8 py-3 rounded-full font-label font-bold card-border shadow-tactile hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#2D2D2D] transition-all no-underline" href="editor-content.html">
                 Start Building
                 <span class="material-symbols-outlined">trending_flat</span>
 </a>
