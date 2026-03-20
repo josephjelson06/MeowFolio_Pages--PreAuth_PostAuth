@@ -24,38 +24,25 @@
     </style>
 <meta name="view-transition" content="same-origin" /></head>
 <body class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed-variant" data-page="chapter-7" data-shell="public">
-<!-- TopAppBar -->
-<nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md px-6 py-4 flex items-center justify-between">
+<!-- Top Navigation Bar -->
+<nav class="sticky top-0 z-50 bg-surface-container-highest/80 backdrop-blur-md px-6 py-4 border-b border-outline-variant/20">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-headline font-extrabold text-primary tracking-tight">MeowFolio</span>
+<div class="hidden md:flex gap-6">
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html">Home</a>
+<a class="font-label text-sm font-semibold text-primary transition-colors no-underline" href="learn.html">Learn</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html#faq">FAQ</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="about.html">About</a>
+</div>
+</div>
 <div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-on-surface-variant">menu</span>
-<span class="font-headline font-bold text-lg tracking-tight">Learn with Mochii</span>
+<a class="px-6 py-2.5 font-label text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-all rounded-full no-underline" href="login.html">Login</a>
+<a class="px-6 py-2.5 font-label text-sm font-bold bg-primary text-on-primary rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all no-underline" href="signup.html">Get Started</a>
 </div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-on-surface-variant p-2 rounded-full">account_circle</span>
 </div>
 </nav>
-<main class="max-w-5xl mx-auto px-6 py-8 pb-32">
-<!-- Breadcrumbs -->
-<nav class="flex items-center gap-2 text-label text-sm text-on-surface-variant mb-8">
-<a class="hover:text-primary no-underline" href="landing.html">Home</a>
-<span class="material-symbols-outlined text-xs">chevron_right</span>
-<a class="hover:text-primary no-underline" href="learn.html">Curriculum</a>
-<span class="material-symbols-outlined text-xs">chevron_right</span>
-<span class="font-semibold text-on-surface">The Impact Formula</span>
-</nav>
-<!-- ProgressBar -->
-<div class="mb-12 bg-surface-container-low p-6 rounded-lg border border-outline-variant/10">
-<div class="flex justify-between items-end mb-3">
-<div>
-<span class="block text-label font-bold text-primary-fixed-variant text-xs uppercase tracking-widest mb-1">Course Progress</span>
-<h3 class="font-headline font-extrabold text-2xl text-on-surface">Chapter 5 of 7</h3>
-</div>
-<span class="font-headline font-bold text-primary text-3xl">75%</span>
-</div>
-<div class="w-full bg-surface-container-highest h-4 rounded-full overflow-hidden">
-<div class="signature-gradient h-full rounded-full transition-all duration-1000" style="width: 75%;"></div>
-</div>
-</div>
+<main class="max-w-5xl mx-auto px-6 py-12">
 <!-- Hero Section -->
 <section class="mb-20">
 <header class="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -151,39 +138,20 @@
                 Good Luck! *
             </div>
 </section>
-<!-- Final CTA -->
-<section class="text-center mb-16">
-<p class="text-on-surface-variant font-medium mb-8">Ready to showcase your journey?</p>
-<a class="group signature-gradient text-on-primary px-12 py-6 rounded-full font-headline font-extrabold text-xl shadow-xl transition-all hover:scale-105 active:scale-95 inline-flex items-center gap-3 mx-auto no-underline" href="editor-content.html">
-                Open MeowFolio
-                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<section class="flex justify-between items-center py-12 border-t border-outline-variant/20 mt-12">
+<div class="flex flex-col">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Previous</span>
+<a class="text-on-surface font-headline font-bold hover:text-primary transition-colors no-underline" href="chapter-6.html">Proofing &amp; Polish</a>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Next</span>
+<a class="text-primary font-headline font-bold hover:text-primary-container transition-colors flex items-center gap-2 no-underline" href="editor-content.html">
+                Start Building
+                <span class="material-symbols-outlined">trending_flat</span>
 </a>
+</div>
 </section>
 </main>
-<!-- FAB -->
-<div class="fixed bottom-24 right-6 bg-surface-container-lowest text-on-surface p-4 rounded-xl flex items-center gap-3 shadow-lg border border-outline-variant/30 z-40" aria-hidden="true">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
-<span class="font-headline font-bold text-sm">Mochii's Tip</span>
-</div>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 right-0 bg-surface-container-highest border-t border-outline-variant/20 px-4 py-3 flex justify-around items-center z-50">
-<div class="flex flex-col items-center gap-1 text-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
-<span class="text-[10px] font-bold">Lessons</span>
-</div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant">
-<span class="material-symbols-outlined">edit_note</span>
-<span class="text-[10px] font-bold">Practice</span>
-</div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant">
-<span class="material-symbols-outlined">groups</span>
-<span class="text-[10px] font-bold">Community</span>
-</div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant">
-<span class="material-symbols-outlined">person</span>
-<span class="text-[10px] font-bold">Profile</span>
-</div>
-</nav>
 <script src="page-modules.js"></script>
 <script src="pages-profile.js"></script>
 <script src="pages-editor.js"></script>

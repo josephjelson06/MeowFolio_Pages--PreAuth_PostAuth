@@ -48,8 +48,8 @@
 </div>
 </div>
 <div class="flex items-center gap-4">
-<button class="font-label text-sm font-bold px-5 py-2 hover:bg-surface-container-high rounded-full transition-colors" data-action="go-login" type="button">Login</button>
-<button class="chunky-button font-label text-sm font-bold px-6 py-2.5 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20" data-action="start-building" type="button">Get Started</button>
+<a class="font-label text-sm font-bold px-5 py-2 hover:bg-surface-container-high rounded-full transition-colors no-underline" href="login.html">Login</a>
+<a class="chunky-button font-label text-sm font-bold px-6 py-2.5 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 no-underline" href="signup.html">Get Started</a>
 </div>
 </div>
 </nav>
@@ -75,23 +75,6 @@
 <div class="px-5 py-2 bg-surface-container-highest rounded-full flex items-center gap-2">
 <span class="material-symbols-outlined text-primary text-xl">schedule</span>
 <span class="font-label font-bold text-sm">~45 min</span>
-</div>
-</div>
-<!-- Progress Path -->
-<div class="pt-6 space-y-4">
-<span class="font-label text-[10px] uppercase font-black tracking-widest text-outline">Recommended Path</span>
-<div class="flex items-center gap-2">
-<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-xs">1</div>
-<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
-<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-outline">2</div>
-<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
-<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-outline">3</div>
-<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
-<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-outline">4</div>
-<div class="w-8 h-1 bg-outline-variant/30 rounded-full"></div>
-<div class="flex items-center justify-center w-8 h-8 bg-tertiary-fixed rounded-full">
-<span class="material-symbols-outlined text-on-tertiary-fixed text-lg" style="font-variation-settings: 'FILL' 1;">flag</span>
-</div>
 </div>
 </div>
 </div>
@@ -273,71 +256,23 @@
 </div>
 </div>
 </section>
-<!-- Bottom CTA Section -->
-<section class="mt-24">
-<div class="bg-primary-container rounded-lg p-12 lg:p-20 text-center relative overflow-hidden">
-<!-- Abstract background shapes -->
-<div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-<div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary-container/20 rounded-full -ml-20 -mb-20 blur-3xl"></div>
-<div class="relative z-10 space-y-8">
-<h2 class="font-headline text-4xl lg:text-5xl font-extrabold text-on-primary tracking-tight">Ready to build yours?</h2>
-<p class="text-xl text-on-primary-container max-w-xl mx-auto leading-relaxed">
-                        Knowledge is power, but a finished resume is a paycheck. Put everything Mochii taught you into practice.
-                    </p>
-<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-<button class="chunky-button px-10 py-5 bg-surface-container-lowest text-primary font-headline font-bold text-lg rounded-full shadow-xl" data-action="start-building" type="button">
-                            Build my resume
-                        </button>
-<button class="px-8 py-5 border-2 border-on-primary text-on-primary font-headline font-bold text-lg rounded-full hover:bg-on-primary/10 transition-colors" data-action="start-building" type="button">
-                            Explore Templates
-                        </button>
-</div>
-</div>
+<section class="flex flex-wrap items-center justify-between gap-4 py-12 border-t border-outline-variant/20 mt-12">
+<a class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-high text-on-surface font-label font-bold no-underline" href="landing.html">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    Previous
+                </a>
+<div class="flex flex-wrap items-center gap-3">
+<a class="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-primary text-on-primary font-label font-bold no-underline" href="chapter-1.html">
+                        Start Chapter 1
+                        <span class="material-symbols-outlined">play_arrow</span>
+                    </a>
+<a class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-high text-on-surface font-label font-bold no-underline" href="chapter-1.html">
+                        Next
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
 </div>
 </section>
 </main>
-<!-- Footer -->
-<footer class="bg-surface-container-low border-t border-outline-variant/30 px-6 py-16">
-<div class="max-w-7xl mx-auto">
-<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12">
-<div class="col-span-2 space-y-6">
-<span class="font-headline text-2xl font-extrabold tracking-tight text-primary">MeowFolio</span>
-<p class="text-on-surface-variant text-sm max-w-xs leading-relaxed">
-                        Helping dreamers land jobs through feline-curated career wisdom and premium design.
-                    </p>
-<div class="flex gap-4">
-<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant cursor-pointer hover:bg-primary hover:text-on-primary transition-all">
-<span class="material-symbols-outlined text-sm">share</span>
-</div>
-</div>
-</div>
-<div>
-<h4 class="font-label text-xs font-black uppercase tracking-widest text-outline mb-6">Platform</h4>
-<ul class="space-y-4">
-<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="landing.html">Home</a></li>
-<li><a class="text-sm font-semibold text-primary" href="learn.html">Learn</a></li>
-<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="landing.html#faq">FAQ</a></li>
-<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">About</a></li>
-</ul>
-</div>
-<div>
-<h4 class="font-label text-xs font-black uppercase tracking-widest text-outline mb-6">Company</h4>
-<ul class="space-y-4">
-<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="landing.html">Contact</a></li>
-<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">Careers</a></li>
-<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="privacy.html">Privacy</a></li>
-<li><a class="text-sm font-semibold hover:text-primary transition-colors" href="terms.html">Terms</a></li>
-</ul>
-</div>
-</div>
-<div class="mt-16 pt-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-sm text-outline">&copy; 2024 MeowFolio Learning Platform. All rights reserved.</p>
-<div class="flex gap-8">
-<span class="text-xs font-bold text-outline uppercase tracking-widest">Designed for Dreamers</span>
-</div>
-</div>
-</div>
-</footer>
 <script src="page-modules.js"></script>
 <script src="pages-profile.js"></script>
 <script src="pages-editor.js"></script>

@@ -21,34 +21,24 @@
 <meta name="view-transition" content="same-origin" /></head>
 <body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container" data-page="chapter-4" data-shell="public">
 <!-- Top Navigation Bar -->
-<nav class="sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 px-6 py-4">
+<nav class="sticky top-0 z-50 bg-surface-container-highest/80 backdrop-blur-md px-6 py-4 border-b border-outline-variant/20">
 <div class="max-w-7xl mx-auto flex items-center justify-between">
 <div class="flex items-center gap-8">
 <span class="font-headline text-2xl font-extrabold tracking-tight text-primary">MeowFolio</span>
 <div class="hidden md:flex items-center gap-6">
-<a class="font-label text-sm font-semibold hover:text-primary transition-colors" href="landing.html">Home</a>
-<a class="font-label text-sm font-semibold text-primary" href="learn.html">Learn</a>
-<a class="font-label text-sm font-semibold hover:text-primary transition-colors" href="landing.html#faq">FAQ</a>
-<a class="font-label text-sm font-semibold hover:text-primary transition-colors" href="about.html">About</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html">Home</a>
+<a class="font-label text-sm font-semibold text-primary transition-colors no-underline" href="learn.html">Learn</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html#faq">FAQ</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="about.html">About</a>
 </div>
 </div>
 <div class="flex items-center gap-4">
-<a class="font-label text-sm font-semibold px-4 py-2 hover:bg-surface-container-high rounded-full transition-all no-underline" href="login.html">Login</a>
-<a class="font-label text-sm font-semibold bg-primary text-on-primary px-6 py-2 rounded-full shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95 no-underline" href="signup.html">Get Started</a>
+<a class="px-6 py-2.5 font-label text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-all rounded-full no-underline" href="login.html">Login</a>
+<a class="px-6 py-2.5 font-label text-sm font-bold bg-primary text-on-primary rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all no-underline" href="signup.html">Get Started</a>
 </div>
 </div>
 </nav>
-<!-- Reading Progress Bar -->
-<div class="fixed top-[73px] left-0 w-full h-1.5 bg-surface-container-high z-50">
-<div class="h-full bg-gradient-to-r from-primary to-primary-container progress-bar-fill rounded-r-full transition-all duration-300"></div>
-</div>
 <main class="max-w-4xl mx-auto px-6 py-12 md:py-24">
-<!-- Breadcrumbs -->
-<nav class="mb-12 flex items-center gap-2 overflow-x-auto whitespace-nowrap">
-<a class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold hover:text-primary" href="landing.html">Learn with Mochii</a>
-<span class="material-symbols-outlined text-xs text-outline-variant">chevron_right</span>
-<span class="font-label text-xs uppercase tracking-widest text-primary font-bold">Chapter 4</span>
-</nav>
 <!-- Hero Section -->
 <header class="mb-24 relative">
 <div class="absolute -top-12 -right-12 w-64 h-64 bg-secondary-fixed/30 zigzag-blob blur-3xl -z-10"></div>
@@ -163,51 +153,20 @@
 <div class="absolute top-4 right-4 bg-tertiary-fixed text-on-tertiary-container font-label text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">READABLE</div>
 </div>
 </section>
-<!-- Final Storytelling Block -->
-<section class="mb-12 text-center py-16 bg-surface-container rounded-lg border border-outline-variant/5">
-<h3 class="font-headline text-2xl font-bold mb-4">You've Met the Robot!</h3>
-<p class="text-on-surface-variant max-w-lg mx-auto mb-10 leading-relaxed">Congratulations, you've completed Chapter 4. You're now equipped to bypass the gatekeepers and get your resume into human hands.</p>
-<div class="flex flex-col sm:flex-row gap-4 justify-center">
-<a class="px-8 py-4 bg-primary text-on-primary rounded-full font-bold shadow-lg hover:shadow-primary/25 transition-all active:scale-95 no-underline" href="chapter-5.html">Next: Chapter 5</a>
-<div class="px-8 py-4 bg-surface-container-highest text-on-surface rounded-full font-bold" aria-hidden="true">Review Traps</div>
+<section class="flex justify-between items-center py-12 border-t border-outline-variant/20 mt-12">
+<div class="flex flex-col">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Previous</span>
+<a class="text-on-surface font-headline font-bold hover:text-primary transition-colors no-underline" href="chapter-3.html">Action Verbs</a>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Next</span>
+<a class="text-primary font-headline font-bold hover:text-primary-container transition-colors flex items-center gap-2 no-underline" href="chapter-5.html">
+                Project Storytelling
+                <span class="material-symbols-outlined">trending_flat</span>
+</a>
 </div>
 </section>
 </main>
-<!-- Footer -->
-<footer class="bg-surface-container-low py-16 border-t border-outline-variant/10">
-<div class="max-w-7xl mx-auto px-6">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-<div>
-<span class="font-headline text-xl font-black text-primary mb-6 block">MeowFolio</span>
-<p class="text-on-surface-variant text-sm leading-relaxed">Empowering job seekers with playful wisdom and editorial design. Let's land that dream job together.</p>
-</div>
-<div class="flex flex-col gap-4">
-<span class="font-label text-xs font-black uppercase tracking-widest text-on-surface-variant">Links</span>
-<a class="text-sm hover:text-primary transition-colors" href="landing.html">Home</a>
-<a class="text-sm hover:text-primary transition-colors" href="learn.html">Learn</a>
-<a class="text-sm hover:text-primary transition-colors" href="landing.html#faq">FAQ</a>
-</div>
-<div class="flex flex-col gap-4">
-<span class="font-label text-xs font-black uppercase tracking-widest text-on-surface-variant">Company</span>
-<a class="text-sm hover:text-primary transition-colors" href="about.html">About</a>
-<a class="text-sm hover:text-primary transition-colors" href="about.html">Contact</a>
-<a class="text-sm hover:text-primary transition-colors" href="privacy.html">Privacy</a>
-</div>
-<div class="flex flex-col gap-4">
-<span class="font-label text-xs font-black uppercase tracking-widest text-on-surface-variant">Legal</span>
-<a class="text-sm hover:text-primary transition-colors" href="terms.html">Terms</a>
-<a class="text-sm hover:text-primary transition-colors" href="privacy.html">Cookie Policy</a>
-</div>
-</div>
-<div class="pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-xs text-on-surface-variant">&copy; 2024 MeowFolio Learning Platform. All rights reserved.</p>
-<div class="flex gap-6">
-<span class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant" aria-hidden="true"><span class="material-symbols-outlined text-[18px]">share</span></span>
-<span class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant" aria-hidden="true"><span class="material-symbols-outlined text-[18px]">mail</span></span>
-</div>
-</div>
-</div>
-</footer>
 <script src="page-modules.js"></script>
 <script src="pages-profile.js"></script>
 <script src="pages-editor.js"></script>

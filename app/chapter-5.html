@@ -20,34 +20,24 @@
         }
     </style>
 <meta name="view-transition" content="same-origin" /></head>
-<body class="bg-background text-on-surface min-h-screen pb-32" data-page="chapter-5" data-shell="public">
-<!-- TopAppBar -->
-<header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md px-6 py-4 flex items-center justify-between">
+<body class="bg-background text-on-surface min-h-screen" data-page="chapter-5" data-shell="public">
+<!-- Top Navigation Bar -->
+<nav class="sticky top-0 z-50 bg-surface-container-highest/80 backdrop-blur-md px-6 py-4 border-b border-outline-variant/20">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-headline font-extrabold text-primary tracking-tight">MeowFolio</span>
+<div class="hidden md:flex gap-6">
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html">Home</a>
+<a class="font-label text-sm font-semibold text-primary transition-colors no-underline" href="learn.html">Learn</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="landing.html#faq">FAQ</a>
+<a class="font-label text-sm font-semibold hover:text-primary transition-colors no-underline" href="about.html">About</a>
+</div>
+</div>
 <div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-on-surface-variant">menu</span>
-<h1 class="text-xl font-bold font-headline text-on-surface">Learn with Mochii</h1>
-</div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-3xl">account_circle</span>
-</div>
-</header>
-<!-- ProgressBar -->
-<div class="px-6 py-4 bg-surface-container-low">
-<div class="flex justify-between items-end mb-2">
-<span class="text-label-md font-bold text-on-surface-variant uppercase tracking-wider text-xs">Course Progress</span>
-<span class="text-body-sm text-on-surface-variant">Chapter 5 of 7</span>
-</div>
-<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
-<div class="h-full bg-primary-container w-[75%] rounded-full"></div>
+<a class="px-6 py-2.5 font-label text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-all rounded-full no-underline" href="login.html">Login</a>
+<a class="px-6 py-2.5 font-label text-sm font-bold bg-primary text-on-primary rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all no-underline" href="signup.html">Get Started</a>
 </div>
 </div>
-<!-- Breadcrumbs -->
-<nav class="px-6 py-4 flex items-center gap-2 text-sm">
-<span class="text-on-surface-variant">Home</span>
-<span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
-<span class="text-on-surface-variant">Curriculum</span>
-<span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
-<span class="text-primary font-semibold">The Impact Formula</span>
 </nav>
 <main class="max-w-5xl mx-auto px-6 py-12">
 <!-- Hero Section -->
@@ -163,47 +153,20 @@
 </div>
 </div>
 </section>
+<section class="flex justify-between items-center py-12 border-t border-outline-variant/20 mt-12">
+<div class="flex flex-col">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Previous</span>
+<a class="text-on-surface font-headline font-bold hover:text-primary transition-colors no-underline" href="chapter-4.html">Beating the ATS</a>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant/50 font-bold mb-1">Next</span>
+<a class="text-primary font-headline font-bold hover:text-primary-container transition-colors flex items-center gap-2 no-underline" href="chapter-6.html">
+                Proofing &amp; Polish
+                <span class="material-symbols-outlined">trending_flat</span>
+</a>
+</div>
+</section>
 </main>
-<!-- FAB -->
-<div class="fixed bottom-24 right-6 z-50">
-<div class="flex items-center gap-3 bg-primary text-on-primary px-6 py-4 rounded-full shadow-lg" aria-hidden="true">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
-<span class="font-bold font-label">Mochii's Tip</span>
-</div>
-</div>
-<!-- Mochii Tip Callout (Contextual) -->
-<div class="fixed bottom-40 left-6 right-6 md:left-auto md:w-80 z-40 bg-white p-6 rounded-lg shadow-xl border-t-4 border-secondary-container">
-<div class="flex items-start gap-4">
-<div class="bg-secondary-container p-2 rounded-lg">
-<span class="material-symbols-outlined text-secondary">tips_and_updates</span>
-</div>
-<div>
-<h5 class="font-bold text-sm mb-1">GitHub links</h5>
-<p class="text-xs text-on-surface-variant leading-normal">
-                    Don't just link the repo. Link the specific file where the "meat" of the logic exists. It shows you value the recruiter's time.
-                </p>
-</div>
-</div>
-</div>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 right-0 bg-surface-container-highest/90 backdrop-blur-lg border-t border-outline-variant/30 px-6 py-3 flex justify-between items-center z-50">
-<div class="flex flex-col items-center gap-1 text-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
-<span class="text-[10px] font-bold font-label">Lessons</span>
-</div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined">edit_note</span>
-<span class="text-[10px] font-bold font-label">Practice</span>
-</div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined">groups</span>
-<span class="text-[10px] font-bold font-label">Community</span>
-</div>
-<div class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined">person</span>
-<span class="text-[10px] font-bold font-label">Profile</span>
-</div>
-</nav>
 <script src="page-modules.js"></script>
 <script src="pages-profile.js"></script>
 <script src="pages-editor.js"></script>

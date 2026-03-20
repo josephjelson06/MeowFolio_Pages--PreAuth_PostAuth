@@ -24,23 +24,9 @@
             });
         }
 
-        function injectLearningNav(meta) {
-            const main = document.querySelector('main');
-            if (!main || document.getElementById('meowfolio-learning-nav')) return;
-            const wrapper = document.createElement('section');
-            wrapper.id = 'meowfolio-learning-nav';
-            wrapper.className = 'mt-16 pt-10 border-t border-outline-variant/20 flex flex-col md:flex-row items-center justify-between gap-4';
-            wrapper.innerHTML = `
-                <a class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-surface-container-low text-on-surface font-headline font-bold no-underline" href="${meta.previous}">
-                    <span class="material-symbols-outlined">arrow_back</span>
-                    ${meta.previous === 'learn.html' ? 'Back to Curriculum' : 'Previous Chapter'}
-                </a>
-                <a class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-primary text-on-primary font-headline font-bold no-underline" href="${meta.next}">
-                    ${meta.next === 'editor-content.html' ? 'Start Building' : 'Next Chapter'}
-                    <span class="material-symbols-outlined">arrow_forward</span>
-                </a>
-            `;
-            main.appendChild(wrapper);
+        function injectLearningNav() {
+            // Chapter pages now own explicit, static previous/next navigation in HTML.
+            // Keep this as a no-op to avoid re-injecting legacy chrome.
         }
 
         function updateLegalBranding() {
@@ -65,7 +51,7 @@
                 Array.from(document.querySelectorAll('button')).slice(0, 2).forEach((button) => button.setAttribute('data-action', 'start-building'));
             }
 
-            if (['about', 'privacy', 'terms', 'learn'].includes(page)) {
+            if (['about', 'privacy', 'terms'].includes(page)) {
                 document.querySelectorAll('button').forEach((button) => {
                     const label = button.textContent.trim().toLowerCase();
                     if (label.includes('get started') || label.includes('build my resume') || label.includes('create resume') || label.includes("let's build") || label.includes('contact me') || label.includes('contact mochii support') || label.includes('try the editor') || label.includes('download guide') || label.includes("i've completed")) {
@@ -92,21 +78,6 @@
             if (!meta) return;
 
             document.title = `Learn with Mochii | ${meta.title}`;
-            replaceTextContent('span, p, h1, h2, h3, h4, a', (text) => text === 'The Impact Formula', () => meta.title);
-            replaceTextContent('span, p, h1, h2, h3, h4', (text) => text === 'Chapter 5 of 7', () => meta.progressLabel);
-            replaceTextContent('span, p, h1, h2, h3, h4', (text) => text === '75%', () => `${meta.percent}%`);
-
-            document.querySelectorAll('[style*="width: 75%"], [class*="w-[75%]"]').forEach((node) => {
-                if (node instanceof HTMLElement) node.style.width = `${meta.percent}%`;
-            });
-
-            document.querySelectorAll('a[href="landing.html"]').forEach((link) => {
-                const label = link.textContent.trim().toLowerCase();
-                if (label.includes('continue to chapter')) link.href = meta.next;
-                if (label === 'the resume mythos' || label === 'previous') link.href = meta.previous;
-                if (label.includes('sectioning for impact')) link.href = meta.next;
-            });
-
             injectLearningNav(meta);
         }
 
