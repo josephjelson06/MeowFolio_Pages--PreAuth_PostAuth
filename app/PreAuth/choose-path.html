@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link rel="stylesheet" href="shared.css" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="tailwind-config.js"></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdf9f3;
+            color: #1c1c18;
+        }
+
+        .editorial-shadow {
+            box-shadow: 0px 12px 32px rgba(28, 28, 24, 0.06);
+        }
+
+        .glass-card {
+            background: rgba(230, 226, 220, 0.6);
+            backdrop-filter: blur(20px);
+        }
+
+        .gradient-cta {
+            background: linear-gradient(135deg, #9d4223 0%, #f4845f 100%);
+        }
+    </style>
+    <meta name="view-transition" content="same-origin" />
+</head>
+
+<body class="bg-background min-h-screen flex flex-col" data-page="choose-path" data-shell="public">
+    <!-- TopNavBar (Rendered as per JSON guidelines with customized links for Pre-auth) -->
+    <nav
+        class="sticky top-0 z-50 bg-surface-container-highest px-8 py-4 flex items-center justify-between editorial-shadow">
+        <div class="flex items-center gap-8">
+            <span class="font-headline text-2xl font-bold text-primary tracking-tight">MeowFolio</span>
+            <div class="hidden md:flex items-center gap-6">
+                <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors"
+                    href="index.html">Dashboard</a>
+                <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors"
+                    href="resumes.html">Resumes</a>
+                <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors"
+                    href="jd-analyzer.html">JD Analyzer</a>
+                <a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors"
+                    href="ats-scorer.html">ATS Scorer</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button
+                class="px-6 py-2.5 rounded-full font-label text-sm font-bold text-primary border-2 border-primary/20 hover:bg-primary-fixed transition-all"
+                data-action="go-login" type="button">Log in</button>
+            <button
+                class="px-6 py-2.5 rounded-full font-label text-sm font-bold text-on-primary gradient-cta shadow-lg active:scale-95 transition-all"
+                data-action="start-building" type="button">Get Started</button>
+        </div>
+    </nav>
+    <main class="flex-grow flex flex-col items-center justify-center px-6 py-12 max-w-7xl mx-auto w-full">
+        <!-- Progress Bar Section -->
+        <div class="w-full max-w-2xl mb-16">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+                    </div>
+                    <span class="font-label text-xs font-bold text-primary">Choose Path</span>
+                </div>
+                <div class="flex-grow h-1 bg-surface-container-highest mx-4 rounded-full overflow-hidden">
+                    <div class="w-0 h-full bg-primary/20"></div>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <div
+                        class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+                        <span class="material-symbols-outlined">style</span>
+                    </div>
+                    <span class="font-label text-xs font-bold text-on-surface-variant">Template</span>
+                </div>
+                <div class="flex-grow h-1 bg-surface-container-highest mx-4 rounded-full"></div>
+                <div class="flex flex-col items-center gap-2">
+                    <div
+                        class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+                        <span class="material-symbols-outlined">edit_note</span>
+                    </div>
+                    <span class="font-label text-xs font-bold text-on-surface-variant">Edit</span>
+                </div>
+                <div class="flex-grow h-1 bg-surface-container-highest mx-4 rounded-full"></div>
+                <div class="flex flex-col items-center gap-2">
+                    <div
+                        class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+                        <span class="material-symbols-outlined">download</span>
+                    </div>
+                    <span class="font-label text-xs font-bold text-on-surface-variant">Download</span>
+                </div>
+            </div>
+        </div>
+        <!-- Hero Greeting -->
+        <div class="text-center mb-12">
+            <h1 class="font-headline text-5xl md:text-6xl font-extrabold text-on-surface tracking-tighter mb-4">
+                Let's land your <span class="text-primary italic">dream job.</span>
+            </h1>
+            <p class="font-body text-lg text-on-surface-variant max-w-lg mx-auto">
+                Select how you'd like to start your journey today. Mochii is here to help!
+            </p>
+        </div>
+        <!-- Main Path Selection Interaction Area -->
+        <div class="relative w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <!-- Mochii Mascot (Absolute Centered) -->
+            <div class="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                <div class="relative group">
+                    <div
+                        class="absolute -inset-4 bg-tertiary-fixed rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity">
+                    </div>
+                    <div class="w-48 h-48 relative flex items-center justify-center">
+                        <img alt="Mochii the Cat Mascot" class="w-40 h-40 object-contain drop-shadow-xl"
+                            data-alt="A cute orange robotic cat mascot illustration"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGOQnoZTYp0jw3bx-BQ5bJ3_TF-mIvA1_yG-4EgRT4HA5Hcfjh40EUDp2PrH8I8wYVZbcH_QGCC1n3Dv6gXQH1M0feOnoyaUZia8RjnLGw5AMbXxbwnyO61xZUEz7YG4ZgFVqfP5a7B0xfQRDB8tfdHgW7QnpHa5LHVZNrvEE52eGyCEqZcO9pqFYDf6_LRNhGzE2gzRsTmbT8Ltun8_gyGoFXIcMGKosTcgs-2_LVzGfxQc2P1rY1mbTvWJTcH5UOB7by9anCemFI" />
+                        <div
+                            class="absolute -top-6 -right-12 bg-surface-container-lowest editorial-shadow px-4 py-2 rounded-xl rotate-12 border border-outline-variant/20">
+                            <p class="font-label text-xs font-bold text-primary">Meow! You got this!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Path 1: Upload & Refine -->
+            <button
+                class="group relative flex flex-col items-center text-center p-12 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all editorial-shadow border border-transparent hover:border-outline-variant/30 overflow-hidden"
+                data-action="start-building" type="button">
+                <div
+                    class="w-24 h-24 mb-8 rounded-full bg-secondary-container flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-4xl"
+                        style="font-variation-settings: 'wght' 600;">upload_file</span>
+                </div>
+                <h3 class="font-headline text-2xl font-bold text-on-surface mb-3">Upload &amp; Refine</h3>
+                <p class="font-body text-on-surface-variant text-sm leading-relaxed max-w-xs">
+                    Import your existing PDF or Word resume and let our AI optimize it for ATS.
+                </p>
+                <div
+                    class="mt-8 flex items-center gap-2 text-primary font-label text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a class="no-underline" data-action="start-building" href="signup.html">Start Uploading</a> <span
+                        class="material-symbols-outlined">arrow_forward</span>
+                </div>
+                <!-- Bubble Badge -->
+                <div
+                    class="absolute -top-2 -right-2 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase editorial-shadow">
+                    Popular
+                </div>
+            </button>
+            <!-- Path 2: Build from Scratch -->
+            <button
+                class="group relative flex flex-col items-center text-center p-12 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all editorial-shadow border border-transparent hover:border-outline-variant/30 overflow-hidden"
+                data-action="start-building" type="button">
+                <div
+                    class="w-24 h-24 mb-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-4xl"
+                        style="font-variation-settings: 'wght' 600;">edit_square</span>
+                </div>
+                <h3 class="font-headline text-2xl font-bold text-on-surface mb-3">Build from Scratch</h3>
+                <p class="font-body text-on-surface-variant text-sm leading-relaxed max-w-xs">
+                    Start with a clean slate. We'll guide you through every step of the professional summary.
+                </p>
+                <div
+                    class="mt-8 flex items-center gap-2 text-primary font-label text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a class="no-underline" data-action="start-building" href="signup.html">Open Editor</a> <span
+                        class="material-symbols-outlined">arrow_forward</span>
+                </div>
+                <div
+                    class="absolute -top-2 -right-2 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase editorial-shadow">
+                    Kawaii
+                </div>
+            </button>
+        </div>
+        <!-- Trust / Benefits Section -->
+        <div class="mt-24 w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div
+                class="flex flex-col items-center text-center p-6 bg-surface-container-lowest rounded-lg editorial-shadow">
+                <span class="material-symbols-outlined text-tertiary mb-4"
+                    style="font-variation-settings: 'FILL' 1;">verified</span>
+                <h4 class="font-headline text-sm font-bold mb-1">ATS-Friendly</h4>
+                <p class="font-body text-xs text-on-surface-variant">Guaranteed to pass most corporate scanning systems.
+                </p>
+            </div>
+            <div
+                class="flex flex-col items-center text-center p-6 bg-surface-container-lowest rounded-lg editorial-shadow">
+                <span class="material-symbols-outlined text-tertiary mb-4"
+                    style="font-variation-settings: 'FILL' 1;">magic_button</span>
+                <h4 class="font-headline text-sm font-bold mb-1">AI Suggestions</h4>
+                <p class="font-body text-xs text-on-surface-variant">Smart action verbs and professional phrasing help.
+                </p>
+            </div>
+            <div
+                class="flex flex-col items-center text-center p-6 bg-surface-container-lowest rounded-lg editorial-shadow">
+                <span class="material-symbols-outlined text-tertiary mb-4"
+                    style="font-variation-settings: 'FILL' 1;">security</span>
+                <h4 class="font-headline text-sm font-bold mb-1">Private &amp; Secure</h4>
+                <p class="font-body text-xs text-on-surface-variant">Your data is encrypted and never shared without
+                    consent.</p>
+            </div>
+        </div>
+    </main>
+    <!-- Simple Pre-Auth Footer -->
+    <footer class="bg-surface-container-highest py-12 px-8 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="flex flex-col gap-2">
+                <span class="font-headline text-xl font-bold text-on-surface">MeowFolio</span>
+                <p class="font-body text-xs text-on-surface-variant max-w-xs">Helping professionals find their purr-fect
+                    career path through thoughtful design and AI guidance.</p>
+            </div>
+            <div class="flex gap-12">
+                <div class="flex flex-col gap-3">
+                    <span class="font-label text-xs font-bold text-on-surface uppercase tracking-widest">Product</span>
+                    <a class="text-xs text-on-surface-variant hover:text-primary transition-colors"
+                        data-action="start-building" href="signup.html">Templates</a>
+                    <a class="text-xs text-on-surface-variant hover:text-primary transition-colors"
+                        href="landing.html">Pricing</a>
+                    <a class="text-xs text-on-surface-variant hover:text-primary transition-colors"
+                        href="about.html">Success Stories</a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <span class="font-label text-xs font-bold text-on-surface uppercase tracking-widest">Company</span>
+                    <a class="text-xs text-on-surface-variant hover:text-primary transition-colors"
+                        href="about.html">About Us</a>
+                    <a class="text-xs text-on-surface-variant hover:text-primary transition-colors"
+                        href="privacy.html">Privacy</a>
+                    <a class="text-xs text-on-surface-variant hover:text-primary transition-colors"
+                        href="terms.html">Terms</a>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <div
+                    class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-primary-fixed transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined">public</span>
+                </div>
+                <div
+                    class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-primary-fixed transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined">alternate_email</span>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 mt-8 border-t border-outline-variant/20 flex justify-between items-center">
+            <p class="font-body text-[10px] text-on-surface-variant">&copy; 2024 MeowFolio Inc. All rights reserved.</p>
+            <p class="font-body text-[10px] text-on-surface-variant italic">Made with love and catnip.</p>
+        </div>
+    </footer>
+    <!-- <script src="page-modules.js"></script>
+<script src="pages-profile.js"></script>
+<script src="pages-editor.js"></script>
+<script src="pages-analysis.js"></script>
+<script src="pages-public-content.js"></script> -->
+    <!-- <script src="app.js"></script></body>-->
+
+</html>
