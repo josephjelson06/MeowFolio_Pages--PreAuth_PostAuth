@@ -1,0 +1,34 @@
+:root {
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --color-background: #fdf9f3;
+  --color-surface: #fdf9f3;
+  --color-surface-low: #f7f3ed;
+  --color-surface-base: #f1ede7;
+  --color-surface-high: #ebe8e2;
+  --color-surface-highest: #e6e2dc;
+  --color-card: #ffffff;
+
+  --color-text: #1c1c18;
+  --color-text-muted: #56423c;
+  --color-primary: #9d4223;
+  --color-primary-soft: #f4845f;
+  --color-primary-fixed: #ffdbd0;
+  --color-secondary: #655781;
+  --color-secondary-soft: #deccfd;
+  --color-tertiary: #3d6751;
+  --color-tertiary-soft: #bfedd1;
+  --color-outline: #dcc1b8;
+  --color-charcoal: #2d2d2d;
+  --color-lavender: #c9b8e8;
+  --color-mint: #a8d5ba;
+  --color-coral: #f4845f;
+
+  --radius-card: 1.5rem;
+  --radius-shell: 2rem;
+  --shadow-tactile-sm: 2px 2px 0px 0px #2d2d2d;
+  --shadow-tactile: 4px 4px 0px 0px #2d2d2d;
+  --shadow-tactile-lg: 8px 8px 0px 0px #2d2d2d;
+  --shadow-ambient: 0px 12px 32px rgba(28, 28, 24, 0.08);
+}
