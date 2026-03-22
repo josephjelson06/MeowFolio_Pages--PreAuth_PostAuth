@@ -1,0 +1,105 @@
+Repository Info
+Repository
+https://github.com/josephjelson06/meow_match.git
+Generated At
+22/03/2026, 06:58:02
+Format
+markdown
+Pack Summary
+Total Files
+70 files
+Total Tokens
+66,665 tokens
+Total Size
+276,937 chars
+Top 10 Files
+ResumeKitty/components/JsonEditorForm.tsx
+8,367
+tokens
+|
+42,317
+chars
+|
+12.6
+%
+ResumeKitty/components/MasterDetailEditModal.tsx
+7,107
+tokens
+|
+33,694
+chars
+|
+10.7
+%
+ResumeKitty/components/ResumeParser.tsx
+3,751
+tokens
+|
+16,236
+chars
+|
+5.6
+%
+backend/app/templates/jakes_resume.tex.jinja
+2,259
+tokens
+|
+7,565
+chars
+|
+3.4
+%
+backend/app/ai_prompts.py
+2,156
+tokens
+|
+8,673
+chars
+|
+3.2
+%
+backend/app/templates/swe_template.tex.jinja
+2,142
+tokens
+|
+7,230
+chars
+|
+3.2
+%
+backend/app/templates/entry_level_resume.tex.jinja
+2,088
+tokens
+|
+6,795
+chars
+|
+3.1
+%
+backend/app/templates/modern_resume.tex.jinja
+1,985
+tokens
+|
+6,745
+chars
+|
+3.0
+%
+backend/app/templates/plush_cv.tex.jinja
+1,924
+tokens
+|
+6,490
+chars
+|
+2.9
+%
+ResumeKitty/components/MatchAssistant.tsx
+1,913
+tokens
+|
+8,312
+chars
+|
+2.9
+%
