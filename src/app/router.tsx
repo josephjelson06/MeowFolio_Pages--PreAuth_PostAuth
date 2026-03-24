@@ -4,18 +4,21 @@ import { DashboardPage } from "./routes/DashboardPage";
 import { EditorPage } from "./routes/EditorPage";
 import { JdPage } from "./routes/JdPage";
 import { LandingPage } from "./routes/LandingPage";
+import { WorkspaceProvider } from "./workspace/WorkspaceContext";
 
 export function AppRouter() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/editor" element={<EditorPage />} />
-        <Route path="/ats" element={<AtsPage />} />
-        <Route path="/jd" element={<JdPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <WorkspaceProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/editor" element={<EditorPage />} />
+          <Route path="/ats" element={<AtsPage />} />
+          <Route path="/jd" element={<JdPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </WorkspaceProvider>
     </BrowserRouter>
   );
 }

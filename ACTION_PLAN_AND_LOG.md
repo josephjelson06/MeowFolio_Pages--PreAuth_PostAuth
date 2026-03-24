@@ -18,8 +18,12 @@
   complete for local state-driven editing
 - Phase 3 TeX draft and compile path:
   locally operational
-- Next major phase:
-  parsing/import flow into the canonical resume schema
+- Phase 4 parsing/import:
+  in progress with local pasted-text and file import into `ResumeData`
+- Phase 5 ATS/JD analysis:
+  in progress with deterministic scoring, render checks, and evidence breakdown
+- Shared workspace state:
+  complete for in-memory editor, ATS, and JD flow
 
 ## What has been done so far
 
@@ -181,6 +185,99 @@
   "local TeX-backed PDF generation is operational"
 - The next work is no longer engine setup.
   It is product work on top of the now-working resume pipeline.
+
+### 17. Phase 4 parsing/import started
+
+- A first local import parser was added in:
+  `src/lib/resume-import.ts`
+- The editor sidebar now includes a paste-based import section:
+  `src/components/editor/EditorSidebar.tsx`
+- This import flow:
+  - accepts pasted resume text
+  - detects common section headings
+  - maps imported content into the canonical `ResumeData` shape
+  - replaces the current editor state with imported schema data
+  - reports detected sections and import warnings back to the user
+- This first version is intentionally deterministic and local.
+  It is a bootstrap path, not the final AI/file-import pipeline.
+- The current build passes after the parsing/import addition.
+
+### 18. File upload intake added on top of the parser
+
+- A file-import API path was added for uploaded resume files:
+  `server/lib/import-file.ts`
+  `src/lib/import-client.ts`
+  `src/types/import.ts`
+- The editor import section now supports uploaded:
+  `.txt`
+  `.md`
+  `.pdf`
+  `.docx`
+- Uploaded files are converted to extracted text first, then routed through the same canonical `ResumeData` parser.
+- The upload flow now returns:
+  extracted text
+  detected sections
+  parsed resume data
+  import warnings
+- Local runtime verification was completed for:
+  text-file upload
+  PDF upload
+- The parser was also tightened to handle common noisy PDF lines such as page markers more safely.
+
+### 19. ATS and JD pages now consume canonical resume data
+
+- The old mock-only ATS and JD screens were replaced with schema-driven local analysis flows.
+- A deterministic analysis layer was added in:
+  `src/lib/analysis.ts`
+  `src/types/analysis.ts`
+- ATS and JD routes now hold real state instead of rendering static mock payloads:
+  `src/app/routes/AtsPage.tsx`
+  `src/app/routes/JdPage.tsx`
+- Both analysis sidebars now use reusable resume import controls:
+  `src/components/analysis/ResumeImportCard.tsx`
+- ATS now scores imported `ResumeData` directly with local rule checks and issue generation.
+- JD now compares imported `ResumeData` against pasted job description text using a deterministic keyword overlap pass.
+- The split left-right workspace structure for both pages was preserved.
+- `npm run build` passes after the ATS/JD refactor.
+
+### 20. Editor, ATS, and JD now share one in-memory workspace state
+
+- A shared workspace provider was added in:
+  `src/app/workspace/WorkspaceContext.tsx`
+- The app router now wraps routes with this shared workspace context:
+  `src/app/router.tsx`
+- `editor`, `ats`, and `jd` no longer own separate route-local resume state.
+- The following are now shared across workspace pages during the current browser session:
+  resume data
+  render options
+  job description text
+- This means:
+  imports or edits made in the editor can now carry into ATS and JD without rebuilding the state separately on each page.
+- This is still in-memory only.
+  No persistence or account-backed storage has been added yet.
+
+### 21. ATS and JD analysis quality upgraded
+
+- The deterministic analysis layer was expanded to become:
+  section-aware
+  render-aware
+  evidence-aware
+- ATS now considers shared render settings such as:
+  font size
+  page limit
+  bullet density
+  margin safety
+  section ordering
+- ATS report output now includes:
+  render checks
+  section signals
+  richer issue generation tied to both content and output settings
+- JD analysis now returns keyword-level evidence instead of only score buckets.
+- JD report output now includes:
+  matched evidence
+  keyword breakdown
+  clearer missing/partial suggestions grounded in where evidence is or is not present
+- `npm run build` passes after this analysis-quality pass.
 
 ## Rules to follow
 

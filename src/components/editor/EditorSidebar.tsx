@@ -1,4 +1,4 @@
-import type { ChangeEvent, ReactNode } from "react";
+import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import type {
   CompactItem,
   EducationItem,
@@ -8,6 +8,9 @@ import type {
   ResumeData,
   ResumeSectionKey
 } from "../../types/resume";
+import type { ResumeImportResult } from "../../types/import";
+import { requestImportedResumeFile } from "../../lib/import-client";
+import { importResumeFromText } from "../../lib/resume-import";
 import { skillsToText, splitDelimitedItems, splitLineItems, textToSkills } from "../../lib/resume";
 import { renderOptionsToText, textToSectionOrder, TEX_TEMPLATE_OPTIONS } from "../../lib/tex";
 import { Chip } from "../ui/Chip";
@@ -35,6 +38,18 @@ const compactSectionLabels: Record<
   Extract<ResumeSectionKey, "certifications" | "awards" | "leadership" | "extracurricular">,
   string
 > = {
+  certifications: "Certifications",
+  awards: "Awards",
+  leadership: "Leadership",
+  extracurricular: "Extracurricular"
+};
+
+const sectionLabels: Record<ResumeSectionKey, string> = {
+  summary: "Summary",
+  skills: "Skills",
+  education: "Education",
+  experience: "Experience",
+  projects: "Projects",
   certifications: "Certifications",
   awards: "Awards",
   leadership: "Leadership",
@@ -134,6 +149,14 @@ export function EditorSidebar({
   function commit(next: ResumeData) {
     onResumeChange(next);
   }
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [importText, setImportText] = useState("");
+  const [importStatus, setImportStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [importWarnings, setImportWarnings] = useState<string[]>([]);
+  const [importSections, setImportSections] = useState<ResumeSectionKey[]>([]);
+  const [importSourceLabel, setImportSourceLabel] = useState<string | null>(null);
 
   function updateRenderOptions(patch: Partial<RenderOptions>) {
     onRenderOptionsChange({
@@ -284,6 +307,109 @@ export function EditorSidebar({
     });
   }
 
+  function resetImportFeedback() {
+    setImportStatus("idle");
+    setImportMessage(null);
+    setImportWarnings([]);
+    setImportSections([]);
+    setImportSourceLabel(null);
+  }
+
+  function applyImportedResume(result: ResumeImportResult, successMessage: string, sourceLabel: string, nextImportText?: string) {
+    commit(result.resume);
+    setImportStatus("success");
+    setImportMessage(successMessage);
+    setImportWarnings(result.warnings);
+    setImportSections(result.summary.detectedSections);
+    setImportSourceLabel(sourceLabel);
+
+    if (typeof nextImportText === "string") {
+      setImportText(nextImportText);
+    }
+  }
+
+  function handleImportResume() {
+    if (!importText.trim()) {
+      setImportStatus("error");
+      setImportMessage("Paste resume text before trying to import it.");
+      setImportWarnings([]);
+      setImportSections([]);
+      return;
+    }
+
+    const result = importResumeFromText(importText);
+    const hasImportedData = Boolean(
+      result.resume.header.name ||
+        result.resume.summary ||
+        result.resume.experience.length ||
+        result.resume.education.length ||
+        result.resume.projects.length
+    );
+
+    if (!hasImportedData) {
+      setImportStatus("error");
+      setImportMessage("No structured resume content could be detected from that pasted text.");
+      setImportWarnings(result.warnings);
+      setImportSections(result.summary.detectedSections);
+      setImportSourceLabel("Pasted text");
+      return;
+    }
+
+    applyImportedResume(
+      result,
+      `Imported ${result.summary.experienceCount} experience, ${result.summary.educationCount} education, ${result.summary.projectCount} projects, and ${result.summary.skillCount} skills.`,
+      "Pasted text"
+    );
+  }
+
+  async function handleImportFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setImportStatus("loading");
+    setImportMessage(`Reading ${file.name}...`);
+    setImportWarnings([]);
+    setImportSections([]);
+    setImportSourceLabel(file.name);
+
+    try {
+      const response = await requestImportedResumeFile(file);
+      const { result } = response;
+      const hasImportedData = Boolean(
+        result.resume.header.name ||
+          result.resume.summary ||
+          result.resume.experience.length ||
+          result.resume.education.length ||
+          result.resume.projects.length
+      );
+
+      if (!hasImportedData) {
+        setImportStatus("error");
+        setImportMessage(`No structured resume content could be detected in ${file.name}.`);
+        setImportWarnings(result.warnings);
+        setImportSections(result.summary.detectedSections);
+        return;
+      }
+
+      applyImportedResume(
+        result,
+        `Imported ${file.name} with ${result.summary.experienceCount} experience, ${result.summary.educationCount} education, ${result.summary.projectCount} projects, and ${result.summary.skillCount} skills.`,
+        file.name,
+        response.extractedText
+      );
+    } catch (error) {
+      setImportStatus("error");
+      setImportMessage(error instanceof Error ? error.message : `Failed to import ${file.name}.`);
+      setImportWarnings([]);
+      setImportSections([]);
+    } finally {
+      event.target.value = "";
+    }
+  }
+
   return (
     <Panel className="h-full p-8">
       <div className="mb-8">
@@ -306,6 +432,85 @@ export function EditorSidebar({
       </div>
 
       <div className="mt-8 space-y-4">
+        <AccordionSection icon="upload_file" title="Import Resume Text">
+          <label className="space-y-2">
+            <FieldLabel>Paste resume text</FieldLabel>
+            <textarea
+              className={`${textareaClassName} min-h-[220px]`}
+              value={importText}
+              placeholder="Paste a resume here with headings like Summary, Experience, Education, Projects, and Skills. The parser will map what it can into the canonical schema, and you can clean up the rest in the editor."
+              onChange={(event) => {
+                setImportText(parseInputValue(event));
+                if (importStatus !== "idle" || importWarnings.length > 0 || importSections.length > 0 || importSourceLabel) {
+                  resetImportFeedback();
+                }
+              }}
+            />
+          </label>
+          <p className="mt-3 text-sm leading-6 text-on-surface-variant">
+            This first import path is deterministic and local. It works best when the pasted text has clear section headings and bullet lists.
+          </p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.md,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            className="hidden"
+            onChange={handleImportFile}
+          />
+          <div className="mt-4 flex flex-wrap gap-3">
+            <IconButton icon="upload" label="Import into editor" onClick={handleImportResume} />
+            <IconButton
+              icon="attach_file"
+              label={importStatus === "loading" ? "Processing file..." : "Choose file"}
+              onClick={() => fileInputRef.current?.click()}
+            />
+            <IconButton
+              icon="close"
+              label="Clear pasted text"
+              onClick={() => {
+                setImportText("");
+                resetImportFeedback();
+              }}
+              tone="danger"
+            />
+          </div>
+          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
+            Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB.
+          </p>
+          {importMessage ? (
+            <div
+              className={`mt-5 rounded-[1.25rem] border px-4 py-4 ${
+                importStatus === "error"
+                  ? "border-error-container bg-error-container/40 text-on-surface"
+                  : "border-outline-variant/20 bg-surface-container-highest text-on-surface"
+              }`}
+            >
+              <p className="text-sm font-semibold">{importMessage}</p>
+              {importSourceLabel ? (
+                <div className="mt-3">
+                  <Chip tone="lavender">{importSourceLabel}</Chip>
+                </div>
+              ) : null}
+              {importSections.length > 0 ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {importSections.map((section) => (
+                    <Chip key={section} tone="mint">
+                      {sectionLabels[section]}
+                    </Chip>
+                  ))}
+                </div>
+              ) : null}
+              {importWarnings.length > 0 ? (
+                <div className="mt-4 space-y-2 text-sm leading-6 text-on-surface-variant">
+                  {importWarnings.map((warning) => (
+                    <p key={warning}>{warning}</p>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </AccordionSection>
+
         <AccordionSection icon="dashboard" title="Render Settings">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <label className="space-y-2">
