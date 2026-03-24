@@ -107,6 +107,22 @@
   canonical resume schema, section structure, item shapes, render-related schema fields, and normalization ideas.
 - No design, styling, tech stack, routing, or implementation patterns were adopted from that project.
 
+### 12. Phase 1 schema contract started
+
+- A local schema contract was added in:
+  `RESUME_SCHEMA_CONTRACT.md`
+- First-class TypeScript types were added in:
+  `src/types/resume.ts`
+- The editor mock data was moved onto the canonical local resume model.
+- The current preview now reads from canonical resume-shaped data instead of a custom one-off mock object.
+
+### 13. Phase 2 editor wiring started
+
+- `EditorPage` now owns live `ResumeData` state.
+- `EditorSidebar` was converted from read-only mock fields into a controlled editor for the canonical schema.
+- `ResumePreview` now renders from live shared state instead of the old static sample.
+- The split editor layout was preserved while making the left and right panels actually connected.
+
 ## Rules to follow
 
 ### Product and build priority rules
