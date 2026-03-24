@@ -1,0 +1,24 @@
+Can the templates be shown in the 
+- landing pages
+- template selection page
+- resume editor page
+- preview modes?
+
+
+
+Flow:
+Landing/Home
+About
+
+Login/SignUp -> Both Continue with Google
+Upload or Create New Resume
+Template Selection
+
+
+
+Dashboard 
+View Resumes List -> Later maybe
+
+Resume Editor (Editor | Template | Customize - Preview)
+ATS
+JD

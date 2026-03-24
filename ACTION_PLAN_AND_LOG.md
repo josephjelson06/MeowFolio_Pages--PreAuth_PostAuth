@@ -10,6 +10,17 @@
 - Functionality comes before design polish.
 - The current React token system remains the active styling foundation for now.
 
+## Current status snapshot
+
+- Phase 1 schema foundation:
+  complete
+- Phase 2 live editor wiring:
+  complete for local state-driven editing
+- Phase 3 TeX draft and compile path:
+  locally operational
+- Next major phase:
+  parsing/import flow into the canonical resume schema
+
 ## What has been done so far
 
 ### 1. Initial HTML analysis
@@ -122,6 +133,54 @@
 - `EditorSidebar` was converted from read-only mock fields into a controlled editor for the canonical schema.
 - `ResumePreview` now renders from live shared state instead of the old static sample.
 - The split editor layout was preserved while making the left and right panels actually connected.
+
+### 14. Phase 3 TeX contract started
+
+- A local TeX rendering helper layer was added in:
+  `src/lib/tex.ts`
+- `RenderOptions` are now wired through the editor page and sidebar.
+- The editor now supports local render settings for:
+  template, page limit, margin, font size, max bullets, and section order.
+- The preview panel now generates a TeX draft from:
+  `ResumeData + RenderOptions`
+- This established the frontend-side contract for TeX generation before live PDF compilation.
+
+### 15. Compile service architecture added
+
+- A local server-side render service was added:
+  `server/index.ts`
+  `server/lib/compile.ts`
+- Shared render API types were added:
+  `src/types/render.ts`
+- A frontend API client was added:
+  `src/lib/render-client.ts`
+- The preview panel can now:
+  - check compiler health
+  - request PDF compilation
+  - display a compiled PDF when the backend returns one
+  - show a clear failure state when no TeX engine is installed
+- The editor now includes render settings that flow into the API payload:
+  template, page limit, margin, font size, bullet cap, section order
+- Dev/build wiring was updated:
+  `package.json`
+  `vite.config.ts`
+  `tsconfig.server.json`
+
+### 16. Local TeX engine installed and verified
+
+- `tectonic 0.15.0` was installed locally on March 24, 2026.
+- The local compile stack is now working end to end:
+  `/api/health` returns `engineAvailable: true`
+  `/api/render/tex` returns generated TeX correctly
+  `/api/render/pdf` returns a real compiled PDF
+- A live smoke test was run against the render service with sample resume payload data.
+- The PDF compile response returned `200` and produced a valid PDF file with a `%PDF-1.5` header.
+- This means the project has moved from:
+  "compile architecture exists"
+  to:
+  "local TeX-backed PDF generation is operational"
+- The next work is no longer engine setup.
+  It is product work on top of the now-working resume pipeline.
 
 ## Rules to follow
 
@@ -240,5 +299,9 @@
 ## Notes to keep in mind
 
 - The external repo context has been absorbed, but not adopted wholesale.
-- The main immediate risk is not styling, but prematurely building around the wrong schema.
-- The next meaningful implementation step should begin with the local schema contract, not with more visual surface area.
+- The main immediate risk is no longer TeX installation.
+  It is drifting the product before the parsing and analysis flows are tied cleanly to the canonical schema.
+- The next meaningful implementation step should focus on:
+  parsing/import
+  TeX template hardening
+  JD/ATS flows on top of the same schema

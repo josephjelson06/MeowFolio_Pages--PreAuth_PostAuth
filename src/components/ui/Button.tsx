@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { cx } from "../../lib/cx";
 
@@ -8,8 +8,10 @@ type Size = "sm" | "md" | "lg";
 interface ButtonProps {
   children: ReactNode;
   className?: string;
+  disabled?: boolean;
   href?: string;
   icon?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   size?: Size;
   to?: string;
   type?: "button" | "submit" | "reset";
@@ -32,6 +34,7 @@ const sizeClasses: Record<Size, string> = {
 function ButtonInner({
   children,
   className,
+  disabled,
   icon,
   size = "md",
   variant = "primary"
@@ -42,6 +45,7 @@ function ButtonInner({
         "inline-flex items-center justify-center gap-2 rounded-full font-label font-bold transition-all",
         variantClasses[variant],
         sizeClasses[size],
+        disabled && "cursor-not-allowed opacity-50",
         className
       )}
     >
@@ -51,11 +55,13 @@ function ButtonInner({
   );
 }
 
-export function Button({ children, href, to, type = "button", ...props }: ButtonProps) {
+export function Button({ children, href, to, type = "button", disabled, onClick, ...props }: ButtonProps) {
   if (to) {
     return (
       <Link to={to}>
-        <ButtonInner {...props}>{children}</ButtonInner>
+        <ButtonInner {...props} disabled={disabled}>
+          {children}
+        </ButtonInner>
       </Link>
     );
   }
@@ -63,13 +69,15 @@ export function Button({ children, href, to, type = "button", ...props }: Button
   if (href) {
     return (
       <a href={href}>
-        <ButtonInner {...props}>{children}</ButtonInner>
+        <ButtonInner {...props} disabled={disabled}>
+          {children}
+        </ButtonInner>
       </a>
     );
   }
 
   return (
-    <button type={type}>
+    <button type={type} onClick={onClick} disabled={disabled}>
       <ButtonInner {...props}>{children}</ButtonInner>
     </button>
   );

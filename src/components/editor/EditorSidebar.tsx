@@ -4,10 +4,12 @@ import type {
   EducationItem,
   ExperienceItem,
   ProjectItem,
+  RenderOptions,
   ResumeData,
   ResumeSectionKey
 } from "../../types/resume";
 import { skillsToText, splitDelimitedItems, splitLineItems, textToSkills } from "../../lib/resume";
+import { renderOptionsToText, textToSectionOrder, TEX_TEMPLATE_OPTIONS } from "../../lib/tex";
 import { Chip } from "../ui/Chip";
 import { Panel } from "../ui/Panel";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -18,6 +20,8 @@ interface EditorSidebarProps {
   onClearResume: () => void;
   onLoadSample: () => void;
   onResumeChange: (resume: ResumeData) => void;
+  onRenderOptionsChange: (options: RenderOptions) => void;
+  renderOptions: RenderOptions;
   resume: ResumeData;
 }
 
@@ -119,9 +123,23 @@ function parseInputValue(event: ChangeEvent<HTMLInputElement | HTMLTextAreaEleme
   return event.target.value;
 }
 
-export function EditorSidebar({ onClearResume, onLoadSample, onResumeChange, resume }: EditorSidebarProps) {
+export function EditorSidebar({
+  onClearResume,
+  onLoadSample,
+  onResumeChange,
+  onRenderOptionsChange,
+  renderOptions,
+  resume
+}: EditorSidebarProps) {
   function commit(next: ResumeData) {
     onResumeChange(next);
+  }
+
+  function updateRenderOptions(patch: Partial<RenderOptions>) {
+    onRenderOptionsChange({
+      ...renderOptions,
+      ...patch
+    });
   }
 
   function updateHeader(field: keyof ResumeData["header"], value: string) {
@@ -288,6 +306,78 @@ export function EditorSidebar({ onClearResume, onLoadSample, onResumeChange, res
       </div>
 
       <div className="mt-8 space-y-4">
+        <AccordionSection icon="dashboard" title="Render Settings">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <label className="space-y-2">
+              <FieldLabel>Template</FieldLabel>
+              <select
+                className={fieldClassName}
+                value={renderOptions.templateId}
+                onChange={(event) => updateRenderOptions({ templateId: event.target.value })}
+              >
+                {TEX_TEMPLATE_OPTIONS.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="space-y-2">
+              <FieldLabel>Page Limit</FieldLabel>
+              <select
+                className={fieldClassName}
+                value={renderOptions.pageLimit}
+                onChange={(event) => updateRenderOptions({ pageLimit: Number(event.target.value) as 1 | 2 })}
+              >
+                <option value={1}>1 page</option>
+                <option value={2}>2 pages</option>
+              </select>
+            </label>
+            <label className="space-y-2">
+              <FieldLabel>Font Size</FieldLabel>
+              <input
+                className={fieldClassName}
+                type="number"
+                min={9}
+                max={14}
+                value={renderOptions.fontSize}
+                onChange={(event) => updateRenderOptions({ fontSize: Number(event.target.value) || 11 })}
+              />
+            </label>
+            <label className="space-y-2">
+              <FieldLabel>Max Bullets</FieldLabel>
+              <input
+                className={fieldClassName}
+                type="number"
+                min={1}
+                max={8}
+                value={renderOptions.maxBulletsPerEntry}
+                onChange={(event) =>
+                  updateRenderOptions({
+                    maxBulletsPerEntry: Number(event.target.value) || renderOptions.maxBulletsPerEntry
+                  })
+                }
+              />
+            </label>
+            <label className="space-y-2 md:col-span-2">
+              <FieldLabel>Margin</FieldLabel>
+              <input
+                className={fieldClassName}
+                value={renderOptions.margin}
+                onChange={(event) => updateRenderOptions({ margin: parseInputValue(event) })}
+              />
+            </label>
+            <label className="space-y-2 md:col-span-2">
+              <FieldLabel>Section Order</FieldLabel>
+              <textarea
+                className={textareaClassName}
+                value={renderOptionsToText(renderOptions.sectionOrder)}
+                onChange={(event) => updateRenderOptions({ sectionOrder: textToSectionOrder(parseInputValue(event)) })}
+              />
+            </label>
+          </div>
+        </AccordionSection>
+
         <AccordionSection icon="person" title="Personal Details">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <label className="space-y-2 md:col-span-2">
