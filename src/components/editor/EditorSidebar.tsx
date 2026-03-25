@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent, type DragEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { getTemplateDefinition, templateCatalog } from "../../data/templates";
+import { DEFAULT_RENDER_OPTIONS } from "../../types/resume";
 import type {
   CompactItem,
   EducationItem,
@@ -14,7 +15,6 @@ import type { ResumeImportResult } from "../../types/import";
 import { requestImportedResumeFile } from "../../lib/import-client";
 import { importResumeFromText } from "../../lib/resume-import";
 import { skillsToText, splitDelimitedItems, splitLineItems, textToSkills } from "../../lib/resume";
-import { renderOptionsToText, textToSectionOrder, TEX_TEMPLATE_OPTIONS } from "../../lib/tex";
 import { Chip } from "../ui/Chip";
 import { Panel } from "../ui/Panel";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -163,6 +163,66 @@ function WorkspaceSurface({
   );
 }
 
+function SegmentedButton({
+  active,
+  children,
+  onClick
+}: {
+  active: boolean;
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        active
+          ? "rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-on-surface shadow-tactile-sm"
+          : "rounded-xl px-4 py-2.5 text-sm font-bold text-on-surface-variant transition-colors hover:bg-surface-container-highest"
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+function RangeRow({
+  label,
+  max,
+  min,
+  onChange,
+  step = 1,
+  value,
+  valueLabel
+}: {
+  label: string;
+  max: number;
+  min: number;
+  onChange: (value: number) => void;
+  step?: number;
+  value: number;
+  valueLabel: string;
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <FieldLabel>{label}</FieldLabel>
+        <span className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">{valueLabel}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-outline-variant/30 accent-primary"
+      />
+    </div>
+  );
+}
+
 interface AccordionWorkspaceItem {
   content: ReactNode;
   icon: string;
@@ -267,13 +327,13 @@ export function EditorSidebar({
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [activeContentSection, setActiveContentSection] = useState<string | null>("personal");
-  const [activeDesignSection, setActiveDesignSection] = useState<string | null>("render");
   const [importText, setImportText] = useState("");
   const [importStatus, setImportStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importWarnings, setImportWarnings] = useState<string[]>([]);
   const [importSections, setImportSections] = useState<ResumeSectionKey[]>([]);
   const [importSourceLabel, setImportSourceLabel] = useState<string | null>(null);
+  const [templateFilter, setTemplateFilter] = useState<"all" | "balanced" | "tight" | "airy">("all");
 
   function updateRenderOptions(patch: Partial<RenderOptions>) {
     onRenderOptionsChange({
@@ -548,96 +608,14 @@ export function EditorSidebar({
     }
   }
 
-  const designSections: AccordionWorkspaceItem[] = [
-    {
-      id: "render",
-      icon: "dashboard",
-      title: "Render Settings",
-      content: (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <label className="space-y-2">
-              <FieldLabel>Template</FieldLabel>
-              <select
-                className={fieldClassName}
-                value={renderOptions.templateId}
-                onChange={(event) =>
-                  onTemplateChange((event.target.value || renderOptions.templateId) as RenderOptions["templateId"])
-                }
-              >
-                {TEX_TEMPLATE_OPTIONS.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>Page Limit</FieldLabel>
-              <select
-                className={fieldClassName}
-                value={renderOptions.pageLimit}
-                onChange={(event) => updateRenderOptions({ pageLimit: Number(event.target.value) as 1 | 2 })}
-              >
-                <option value={1}>1 page</option>
-                <option value={2}>2 pages</option>
-              </select>
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>Font Size</FieldLabel>
-              <input
-                className={fieldClassName}
-                type="number"
-                min={9}
-                max={14}
-                value={renderOptions.fontSize}
-                onChange={(event) => updateRenderOptions({ fontSize: Number(event.target.value) || 11 })}
-              />
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>Max Bullets</FieldLabel>
-              <input
-                className={fieldClassName}
-                type="number"
-                min={1}
-                max={8}
-                value={renderOptions.maxBulletsPerEntry}
-                onChange={(event) =>
-                  updateRenderOptions({
-                    maxBulletsPerEntry: Number(event.target.value) || renderOptions.maxBulletsPerEntry
-                  })
-                }
-              />
-            </label>
-            <label className="space-y-2 md:col-span-2">
-              <FieldLabel>Margin</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={renderOptions.margin}
-                onChange={(event) => updateRenderOptions({ margin: parseInputValue(event) })}
-              />
-            </label>
-            <label className="space-y-2 md:col-span-2">
-              <FieldLabel>Section Order</FieldLabel>
-              <textarea
-                className={textareaClassName}
-                value={renderOptionsToText(renderOptions.sectionOrder)}
-                onChange={(event) => updateRenderOptions({ sectionOrder: textToSectionOrder(parseInputValue(event)) })}
-              />
-            </label>
-          </div>
-
-          <div className="rounded-[1.25rem] bg-surface-container-low p-5">
-            <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Output behavior</p>
-            <div className="mt-3 space-y-2 text-sm leading-6 text-on-surface-variant">
-              <p>The rendered PDF on the right stays stable until you press compile.</p>
-              <p>These settings affect the next PDF render instead of changing the panel live while you type.</p>
-            </div>
-          </div>
-        </div>
-      )
+  const filteredTemplates = templateCatalog.filter((template) => {
+    if (templateFilter === "all") {
+      return true;
     }
-  ];
+
+    return template.density === templateFilter;
+  });
+  const marginValue = Number.parseFloat(renderOptions.margin) || 1;
 
   const contentSections: AccordionWorkspaceItem[] = [
     {
@@ -1026,7 +1004,7 @@ export function EditorSidebar({
         {activeTab === "templates" ? (
           <WorkspaceSurface
             title="Template Library"
-            description="Use this bounded panel to compare layouts and switch the active template without affecting the rest of the editor shell."
+            description="Compare layouts in this bounded panel, filter by resume style, and confirm the template you want to keep active."
           >
             <div className="workspace-scroll h-full overflow-y-auto pr-2">
               <div className="rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-high p-5">
@@ -1039,8 +1017,23 @@ export function EditorSidebar({
                 </div>
               </div>
 
-              <div className="mt-4 grid gap-5 xl:grid-cols-3">
-                {templateCatalog.map((template) => (
+              <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-2">
+                <SegmentedButton active={templateFilter === "all"} onClick={() => setTemplateFilter("all")}>
+                  All
+                </SegmentedButton>
+                <SegmentedButton active={templateFilter === "balanced"} onClick={() => setTemplateFilter("balanced")}>
+                  Balanced
+                </SegmentedButton>
+                <SegmentedButton active={templateFilter === "tight"} onClick={() => setTemplateFilter("tight")}>
+                  One-page
+                </SegmentedButton>
+                <SegmentedButton active={templateFilter === "airy"} onClick={() => setTemplateFilter("airy")}>
+                  Story-led
+                </SegmentedButton>
+              </div>
+
+              <div className="mt-4 grid gap-5 md:grid-cols-2">
+                {filteredTemplates.map((template) => (
                   <TemplateCard
                     key={template.id}
                     template={template}
@@ -1050,6 +1043,23 @@ export function EditorSidebar({
                   />
                 ))}
               </div>
+
+              <div className="mt-8 flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => onTabChange("content")}
+                  className="flex-1 rounded-xl border-2 border-outline-variant/20 bg-surface-container-highest py-3.5 text-sm font-bold text-on-surface transition-colors hover:bg-surface-container"
+                >
+                  Back to Content
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onTabChange("design")}
+                  className="flex-1 rounded-xl bg-secondary py-3.5 text-sm font-bold text-on-secondary shadow-tactile-sm transition-transform hover:-translate-y-px"
+                >
+                  Confirm Template
+                </button>
+              </div>
             </div>
           </WorkspaceSurface>
         ) : null}
@@ -1057,13 +1067,106 @@ export function EditorSidebar({
         {activeTab === "design" ? (
           <WorkspaceSurface
             title="Render Controls"
-            description="This panel owns the output settings that affect the next compile, without taking over the whole left column."
+            description="Fine-tune typography and spacing here, then compile on the right when you want to refresh the PDF preview."
           >
-            <AccordionWorkspace
-              items={designSections}
-              activeId={activeDesignSection}
-              onChange={setActiveDesignSection}
-            />
+            <div className="workspace-scroll h-full overflow-y-auto pr-2">
+              <div className="space-y-8">
+                <div className="space-y-3">
+                  <FieldLabel>Page Limit</FieldLabel>
+                  <div className="grid grid-cols-2 gap-3 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
+                    <SegmentedButton active={renderOptions.pageLimit === 1} onClick={() => updateRenderOptions({ pageLimit: 1 })}>
+                      1 Page
+                    </SegmentedButton>
+                    <SegmentedButton active={renderOptions.pageLimit === 2} onClick={() => updateRenderOptions({ pageLimit: 2 })}>
+                      2 Pages
+                    </SegmentedButton>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <FieldLabel>Font Size</FieldLabel>
+                  <div className="grid grid-cols-3 gap-3 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
+                    <SegmentedButton active={renderOptions.fontSize <= 10} onClick={() => updateRenderOptions({ fontSize: 10 })}>
+                      Small
+                    </SegmentedButton>
+                    <SegmentedButton active={renderOptions.fontSize === 11} onClick={() => updateRenderOptions({ fontSize: 11 })}>
+                      Medium
+                    </SegmentedButton>
+                    <SegmentedButton active={renderOptions.fontSize >= 12} onClick={() => updateRenderOptions({ fontSize: 12 })}>
+                      Large
+                    </SegmentedButton>
+                  </div>
+                </div>
+
+                <div className="rounded-[1.75rem] border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-tactile-sm">
+                  <div className="space-y-8">
+                    <RangeRow
+                      label="Margins"
+                      min={0.7}
+                      max={1.5}
+                      step={0.1}
+                      value={marginValue}
+                      valueLabel={`${marginValue.toFixed(1)}cm`}
+                      onChange={(value) => updateRenderOptions({ margin: `${value.toFixed(1)}cm` })}
+                    />
+                    <RangeRow
+                      label="Bullet Density"
+                      min={2}
+                      max={6}
+                      value={renderOptions.maxBulletsPerEntry}
+                      valueLabel={`${renderOptions.maxBulletsPerEntry} bullets`}
+                      onChange={(value) => updateRenderOptions({ maxBulletsPerEntry: value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <FieldLabel>Section Order</FieldLabel>
+                  <div className="rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-high p-5">
+                    <div className="flex flex-wrap gap-2">
+                      {renderOptions.sectionOrder.map((section) => (
+                        <Chip key={section} tone="soft">
+                          {sectionLabels[section]}
+                        </Chip>
+                      ))}
+                    </div>
+                    <p className="mt-4 text-sm leading-6 text-on-surface-variant">
+                      Reorder sections from the Content tab by dragging the accordion headers.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-[1.5rem] bg-surface-container-high p-5">
+                  <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Output behavior</p>
+                  <div className="mt-3 space-y-2 text-sm leading-6 text-on-surface-variant">
+                    <p>The PDF on the right stays visually stable until you press compile.</p>
+                    <p>These settings affect the next render instead of reflowing the preview live while you edit.</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onRenderOptionsChange({
+                        ...DEFAULT_RENDER_OPTIONS,
+                        templateId: renderOptions.templateId
+                      })
+                    }
+                    className="flex-1 rounded-xl border-2 border-outline-variant/20 bg-surface-container-highest py-4 font-bold text-on-surface transition-colors hover:bg-surface-container"
+                  >
+                    Reset Defaults
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onTabChange("content")}
+                    className="flex-1 rounded-xl bg-secondary py-4 font-bold text-on-secondary shadow-tactile-sm transition-transform hover:-translate-y-px"
+                  >
+                    Apply Changes
+                  </button>
+                </div>
+              </div>
+            </div>
           </WorkspaceSurface>
         ) : null}
 

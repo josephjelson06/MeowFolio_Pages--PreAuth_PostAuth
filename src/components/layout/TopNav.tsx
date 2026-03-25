@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { cx } from "../../lib/cx";
 import { BrandMark } from "../ui/BrandMark";
 import { Button } from "../ui/Button";
@@ -58,23 +58,15 @@ export function TopNav({
           {secondaryAction ? <Button to={secondaryAction.to} variant="ghost">{secondaryAction.label}</Button> : null}
           {primaryAction ? <Button to={primaryAction.to}>{primaryAction.label}</Button> : null}
           {isApp ? (
-            <>
-              <button
-                type="button"
-                className="hidden h-10 w-10 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container lg:flex"
-              >
-                <span className="material-symbols-outlined">notifications</span>
-              </button>
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-full border-2 border-charcoal px-2 py-1"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-fixed font-label text-xs font-bold text-primary">
-                  AT
-                </div>
-                <span className="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span>
-              </button>
-            </>
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 rounded-full border-2 border-charcoal px-2 py-1 transition-colors hover:bg-surface-container"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-fixed font-label text-xs font-bold text-primary">
+                AT
+              </div>
+              <span className="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span>
+            </Link>
           ) : null}
         </div>
       </div>

@@ -10,6 +10,7 @@ import { JdPage } from "./routes/JdPage";
 import { LandingPage } from "./routes/LandingPage";
 import { LearnPage } from "./routes/LearnPage";
 import { NotFoundPage } from "./routes/NotFoundPage";
+import { ProfilePage } from "./routes/ProfilePage";
 import { ResumesPage } from "./routes/ResumesPage";
 import { TemplatesPage } from "./routes/TemplatesPage";
 import { WorkspaceProvider } from "./workspace/WorkspaceContext";
@@ -29,6 +30,7 @@ export function AppRouter() {
           <Route path="/500" element={<ErrorPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/resumes" element={<ResumesPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/ats" element={<AtsPage />} />
           <Route path="/jd" element={<JdPage />} />
