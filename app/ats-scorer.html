@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MeowFolio | ATS Scorer</title>
+<link rel="stylesheet" href="shared.css"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="tailwind-config.js"></script>
+
+<meta name="view-transition" content="same-origin" /></head>
+<body class="bg-surface" data-page="ats-scorer" data-shell="app">
+<!-- Top Navigation Bar -->
+<nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b-2 border-on-surface/10 px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center tactile-card">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+<span class="font-headline font-bold text-xl tracking-tight">MeowFolio</span>
+</div>
+<div class="hidden lg:flex items-center gap-8">
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="index.html">Dashboard</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="resumes.html">Resumes</a>
+<a class="font-label text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
+<a class="font-label text-sm font-bold text-primary border-b-2 border-primary pb-1" href="ats-scorer.html">ATS Scorer</a>
+</div>
+<div class="flex items-center gap-4 md:gap-6">
+<a href="editor-content.html" class="chunky-button bg-primary text-on-primary px-5 py-2 rounded-full font-label font-bold text-sm hidden sm:block text-center no-underline" data-action="create-resume">Create New</a>
+<div class="relative group">
+<button class="flex items-center gap-1 p-1 rounded-full border-2 border-on-surface hover:ring-4 ring-primary/20 transition-all">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<span class="material-symbols-outlined">person</span>
+</div>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
+</button>
+<div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border-2 border-on-surface rounded-xl shadow-[4px_4px_0px_0px_rgba(28,28,24,1)] overflow-hidden">
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-on-surface hover:bg-surface-container transition-colors" href="profile.html">
+<span class="material-symbols-outlined text-lg">person</span>
+                        My Profile
+                    </a>
+<div class="h-[1px] bg-on-surface/10"></div>
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-label font-bold text-error hover:bg-error-container transition-colors" href="index.html" data-action="logout">
+<span class="material-symbols-outlined text-lg">logout</span>
+                        Logout
+                    </a>
+</div>
+</div>
+</div>
+</nav>
+
+<main class="max-w-[1920px] mx-auto p-6">
+<div class="flex gap-6">
+<section class="w-[380px] flex flex-col gap-6">
+<div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10">
+<header>
+<span class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-2 block">Preparation</span>
+<h2 class="font-headline text-3xl font-extrabold text-on-surface">Select Resume</h2>
+</header>
+<div class="mt-6 group relative bg-surface-container-lowest rounded-2xl p-4 custom-shadow border border-outline-variant/10">
+<div class="resume-skeleton w-full aspect-[3/4] rounded-lg p-6 flex flex-col gap-4 mb-4">
+<div class="h-2 w-1/2 bg-outline-variant/30 rounded"></div>
+<div class="h-2 w-full bg-outline-variant/20 rounded"></div>
+<div class="h-2 w-5/6 bg-outline-variant/20 rounded"></div>
+<div class="h-2 w-full bg-outline-variant/20 rounded"></div>
+<div class="h-2 w-3/4 bg-outline-variant/20 rounded"></div>
+</div>
+<div class="flex items-center justify-between px-2">
+<div class="flex flex-col min-w-0">
+<span class="text-[10px] font-bold text-primary uppercase tracking-tighter">Active Resume</span>
+<span class="font-bold text-on-surface truncate" data-active-resume-name>Senior_UX_Designer.pdf</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container transition-colors" data-action="cycle-active-resume" type="button">
+<span class="material-symbols-outlined text-lg">swap_horiz</span>
+</button>
+</div>
+</div>
+
+<div class="mt-6 flex flex-col gap-3">
+<p class="text-xs font-label font-bold text-on-surface-variant">ATS FORMATTING RULES</p>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span class="text-sm font-medium">No tables used</span>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span class="text-sm font-medium">Standard fonts only</span>
+</div>
+</div>
+</div>
+</section>
+
+<section class="flex-1 bg-surface-container-low rounded-lg p-8 border border-outline-variant/10">
+<div class="flex items-center justify-between gap-4 mb-6">
+<header>
+<span class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-2 block">Analysis Workspace</span>
+<h2 class="font-headline text-3xl font-extrabold text-on-surface">ATS Scorer</h2>
+</header>
+<div class="flex items-center gap-2 p-1.5 bg-surface-container-high rounded-full">
+<button type="button" class="px-5 py-2 rounded-full font-label font-bold text-sm bg-primary text-on-primary" data-ats-view-toggle="input">Input</button>
+<button type="button" class="px-5 py-2 rounded-full font-label font-bold text-sm bg-surface-container-lowest text-on-surface-variant" data-ats-view-toggle="report">Report</button>
+</div>
+</div>
+
+<div data-ats-input-view>
+<div class="max-w-md flex flex-col items-center gap-8 mx-auto py-8">
+<div class="relative w-64 h-64 bg-surface-container-highest rounded-full flex items-center justify-center shadow-inner">
+<div class="w-40 h-40 bg-white rounded-full flex items-center justify-center relative shadow-lg">
+<div class="absolute w-2 h-2 bg-[#1c1c18] rounded-full left-12 top-16"></div>
+<div class="absolute w-2 h-2 bg-[#1c1c18] rounded-full right-12 top-16"></div>
+<div class="w-6 h-2 border-b-2 border-[#1c1c18] rounded-full mt-8"></div>
+</div>
+</div>
+<div class="space-y-4 text-center">
+<h2 class="font-headline text-3xl font-extrabold text-on-surface">Ready for your ATS Scan?</h2>
+<p class="text-on-surface-variant font-medium leading-relaxed max-w-sm">Select your resume from the left panel and run a complete ATS analysis.</p>
+</div>
+<a href="ats-scorer.html?view=report" class="w-full max-w-xs py-5 rounded-full bg-primary-container text-on-primary-container font-headline font-extrabold text-xl flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all no-underline" data-action="run-ats-scan">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">analytics</span>
+                        Run ATS Scan</a>
+</div>
+</div>
+
+<div class="hidden flex flex-col gap-8" data-ats-results-view>
+<div class="flex items-start justify-between">
+<div>
+<span class="text-[10px] font-label font-bold uppercase tracking-widest text-secondary mb-2 block">Summary Report</span>
+<h2 class="font-headline text-4xl font-extrabold text-on-surface">ATS Score Report</h2>
+</div>
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-container-highest" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364" stroke-dashoffset="80" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-3xl font-headline font-extrabold text-on-surface" data-ats-score>0%</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase" data-ats-rating>Ready</span>
+</div>
+</div>
+</div>
+
+<div class="grid grid-cols-4 gap-4">
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-tertiary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Formatting</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="formatting">0/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Keywords</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="keywords">0/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-secondary shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Structure</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="structure">0/100</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg border-b-4 border-primary-container shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Readability</p>
+<p class="text-2xl font-headline font-extrabold text-on-surface" data-ats-category="readability">0/100</p>
+</div>
+</div>
+
+<div class="flex flex-col gap-4">
+<h3 class="font-headline text-xl font-bold text-on-surface">What to Fix</h3>
+<div class="flex flex-col gap-3" data-ats-issues></div>
+</div>
+
+<a href="editor-content.html" class="w-full py-5 rounded-full bg-secondary text-on-secondary font-headline font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:bg-secondary/90 transition-all no-underline" data-action="open-ats-suggestions">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                        Generate Suggestions</a>
+</div>
+</section>
+</div>
+</main>
+<script src="page-modules.js"></script>
+<script src="pages-profile.js"></script>
+<script src="pages-editor.js"></script>
+<script src="pages-analysis.js"></script>
+<script src="pages-public-content.js"></script>
+<script src="app.js"></script>
+</body></html>
+
+

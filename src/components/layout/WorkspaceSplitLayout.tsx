@@ -12,7 +12,7 @@ interface WorkspaceSplitLayoutProps {
 }
 
 const variantClasses: Record<Variant, string> = {
-  editor: "xl:grid-cols-[minmax(420px,45%)_1fr]",
+  editor: "xl:grid-cols-2",
   analysis: "xl:grid-cols-[minmax(360px,40%)_1fr]",
   sidebar: "xl:grid-cols-[380px_1fr]"
 };
@@ -25,9 +25,9 @@ export function WorkspaceSplitLayout({
   variant = "analysis"
 }: WorkspaceSplitLayoutProps) {
   return (
-    <div className={cx("grid h-full w-full grid-cols-1 gap-6", variantClasses[variant])}>
-      <div className={cx("workspace-scroll min-h-[320px] overflow-auto", leftClassName)}>{left}</div>
-      <div className={cx("workspace-scroll min-h-[320px] overflow-auto", rightClassName)}>{right}</div>
+    <div className={cx("grid h-full min-h-0 w-full grid-cols-1 gap-6", variantClasses[variant])}>
+      <div className={cx("min-h-[320px] min-w-0 overflow-hidden", leftClassName)}>{left}</div>
+      <div className={cx("min-h-[320px] min-w-0 overflow-hidden", rightClassName)}>{right}</div>
     </div>
   );
 }

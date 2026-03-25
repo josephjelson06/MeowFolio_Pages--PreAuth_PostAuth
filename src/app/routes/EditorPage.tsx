@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ResumePreview } from "../../components/editor/ResumePreview";
 import { type EditorTabId } from "../../components/editor/EditorTabs";
@@ -13,10 +13,8 @@ function normalizeEditorTab(value: string | null): EditorTabId {
 }
 
 export function EditorPage() {
-  const { clearResume, loadSampleResume, renderOptions, resume, setRenderOptions, setResume } = useWorkspace();
+  const { clearResume, renderOptions, resume, setRenderOptions, setResume } = useWorkspace();
   const [searchParams, setSearchParams] = useSearchParams();
-  const previewResume = useDeferredValue(resume);
-  const previewRenderOptions = useDeferredValue(renderOptions);
   const activeTab = normalizeEditorTab(searchParams.get("tab"));
   const requestedTemplate = searchParams.get("template");
 
@@ -47,7 +45,7 @@ export function EditorPage() {
   }
 
   return (
-    <AppLayout contentClassName="overflow-hidden px-6 py-6">
+    <AppLayout contentClassName="min-h-0 overflow-hidden px-6 py-6">
       <WorkspaceSplitLayout
         left={
           <EditorSidebar
@@ -56,7 +54,6 @@ export function EditorPage() {
             renderOptions={renderOptions}
             onResumeChange={setResume}
             onRenderOptionsChange={setRenderOptions}
-            onLoadSample={loadSampleResume}
             onClearResume={clearResume}
             onTabChange={(tab) => updateSearch({ tab })}
             onTemplateChange={(templateId) => {
@@ -71,7 +68,7 @@ export function EditorPage() {
             }}
           />
         }
-        right={<ResumePreview resume={previewResume} renderOptions={previewRenderOptions} />}
+        right={<ResumePreview resume={resume} renderOptions={renderOptions} />}
         variant="editor"
       />
     </AppLayout>

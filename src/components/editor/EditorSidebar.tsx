@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
+import { useRef, useState, type ChangeEvent, type DragEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { getTemplateDefinition, templateCatalog } from "../../data/templates";
 import type {
@@ -25,7 +25,6 @@ import { type EditorTabId, EditorTabs } from "./EditorTabs";
 interface EditorSidebarProps {
   activeTab: EditorTabId;
   onClearResume: () => void;
-  onLoadSample: () => void;
   onResumeChange: (resume: ResumeData) => void;
   onRenderOptionsChange: (options: RenderOptions) => void;
   onTabChange: (tab: EditorTabId) => void;
@@ -61,6 +60,10 @@ const sectionLabels: Record<ResumeSectionKey, string> = {
   leadership: "Leadership",
   extracurricular: "Extracurricular"
 };
+
+function isResumeSectionId(value: string): value is ResumeSectionKey {
+  return value in sectionLabels;
+}
 
 function FieldLabel({ children }: { children: string }) {
   return (
@@ -140,6 +143,108 @@ function DetailCard({
   );
 }
 
+function WorkspaceSurface({
+  children,
+  description,
+  title
+}: {
+  children: ReactNode;
+  description?: string;
+  title: string;
+}) {
+  return (
+    <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.75rem] border border-outline-variant/20 bg-surface-container-lowest">
+      <div className="shrink-0 border-b border-outline-variant/15 px-5 py-4">
+        <p className="font-headline text-lg font-bold text-on-surface">{title}</p>
+        {description ? <p className="mt-1 text-sm leading-6 text-on-surface-variant">{description}</p> : null}
+      </div>
+      <div className="min-h-0 flex-1 p-4">{children}</div>
+    </section>
+  );
+}
+
+interface AccordionWorkspaceItem {
+  content: ReactNode;
+  icon: string;
+  id: string;
+  title: string;
+}
+
+function AccordionWorkspace({
+  activeId,
+  items,
+  onChange,
+  onReorder
+}: {
+  activeId: string | null;
+  items: AccordionWorkspaceItem[];
+  onChange: (id: string | null) => void;
+  onReorder?: (from: ResumeSectionKey, to: ResumeSectionKey) => void;
+}) {
+  const [draggedSectionId, setDraggedSectionId] = useState<ResumeSectionKey | null>(null);
+
+  return (
+    <div className="workspace-scroll h-full overflow-y-auto pr-2">
+      <div className="space-y-3">
+        {items.map((item) => {
+          const active = item.id === activeId;
+          const reorderable = Boolean(onReorder && isResumeSectionId(item.id));
+
+          function handleDragStart(event: DragEvent<HTMLElement>) {
+            if (!reorderable || !isResumeSectionId(item.id)) {
+              return;
+            }
+
+            event.dataTransfer.effectAllowed = "move";
+            event.dataTransfer.setData("text/plain", item.id);
+            setDraggedSectionId(item.id);
+          }
+
+          function handleDragEnd() {
+            setDraggedSectionId(null);
+          }
+
+          function handleDragOver(event: DragEvent<HTMLElement>) {
+            if (!reorderable || !draggedSectionId || !isResumeSectionId(item.id) || draggedSectionId === item.id) {
+              return;
+            }
+
+            event.preventDefault();
+          }
+
+          function handleDrop(event: DragEvent<HTMLElement>) {
+            if (!onReorder || !reorderable || !draggedSectionId || !isResumeSectionId(item.id) || draggedSectionId === item.id) {
+              return;
+            }
+
+            event.preventDefault();
+            onReorder(draggedSectionId, item.id);
+            setDraggedSectionId(null);
+          }
+
+          return (
+            <AccordionSection
+              key={item.id}
+              active={active}
+              dragActive={Boolean(reorderable && draggedSectionId === item.id)}
+              draggable={reorderable}
+              icon={item.icon}
+              onDragEnd={reorderable ? handleDragEnd : undefined}
+              onDragOver={reorderable ? handleDragOver : undefined}
+              onDragStart={reorderable ? handleDragStart : undefined}
+              onDrop={reorderable ? handleDrop : undefined}
+              title={item.title}
+              onToggle={() => onChange(active ? null : item.id)}
+            >
+              {item.content}
+            </AccordionSection>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function parseInputValue(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
   return event.target.value;
 }
@@ -147,7 +252,6 @@ function parseInputValue(event: ChangeEvent<HTMLInputElement | HTMLTextAreaEleme
 export function EditorSidebar({
   activeTab,
   onClearResume,
-  onLoadSample,
   onResumeChange,
   onRenderOptionsChange,
   onTabChange,
@@ -162,6 +266,8 @@ export function EditorSidebar({
   }
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [activeContentSection, setActiveContentSection] = useState<string | null>("personal");
+  const [activeDesignSection, setActiveDesignSection] = useState<string | null>("render");
   const [importText, setImportText] = useState("");
   const [importStatus, setImportStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [importMessage, setImportMessage] = useState<string | null>(null);
@@ -173,6 +279,27 @@ export function EditorSidebar({
     onRenderOptionsChange({
       ...renderOptions,
       ...patch
+    });
+  }
+
+  function reorderResumeSections(from: ResumeSectionKey, to: ResumeSectionKey) {
+    if (from === to) {
+      return;
+    }
+
+    const fromIndex = renderOptions.sectionOrder.indexOf(from);
+    const toIndex = renderOptions.sectionOrder.indexOf(to);
+
+    if (fromIndex === -1 || toIndex === -1) {
+      return;
+    }
+
+    const nextSectionOrder = [...renderOptions.sectionOrder];
+    const [moved] = nextSectionOrder.splice(fromIndex, 1);
+    nextSectionOrder.splice(toIndex, 0, moved);
+
+    updateRenderOptions({
+      sectionOrder: nextSectionOrder
     });
   }
 
@@ -421,157 +548,13 @@ export function EditorSidebar({
     }
   }
 
-  return (
-    <Panel className="h-full p-8">
-      <div className="mb-8">
-        <EditorTabs activeTab={activeTab} onTabChange={onTabChange} />
-      </div>
-      <SectionHeading
-        eyebrow="Workspace"
-        title={activeTab === "templates" ? "Choose A Template" : activeTab === "design" ? "Tune Output Settings" : "Edit Resume Content"}
-        description={
-          activeTab === "templates"
-            ? "Pick the TeX template that should drive the live canvas, source preview, and compiled PDF output."
-            : activeTab === "design"
-              ? "Adjust the real output settings that flow into ATS checks and the compiled PDF."
-              : "This workspace edits the canonical resume schema directly, persists locally, and updates the preview immediately."
-        }
-      />
-
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <Chip tone="lavender">Schema v{resume.meta.version}</Chip>
-        <Chip tone="soft">Source: {resume.meta.source}</Chip>
-        <Chip tone="mint">{selectedTemplate.label}</Chip>
-        <div className="ml-auto flex flex-wrap gap-3">
-          <Link
-            to="/ats"
-            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
-          >
-            Open ATS
-          </Link>
-          <Link
-            to="/jd"
-            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
-          >
-            Open JD
-          </Link>
-          <IconButton icon="restart_alt" label="Load sample" onClick={onLoadSample} />
-          <IconButton icon="ink_eraser" label="Clear all" onClick={onClearResume} tone="danger" />
-        </div>
-      </div>
-
-      <div className="mt-8 space-y-4">
-        {activeTab === "templates" ? (
-          <>
-            <div className="rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-lowest p-5">
-              <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Current Choice</p>
-              <h3 className="mt-2 font-headline text-2xl font-extrabold text-on-surface">{selectedTemplate.label}</h3>
-              <p className="mt-3 text-sm leading-6 text-on-surface-variant">{selectedTemplate.description}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Chip tone={selectedTemplate.badgeTone}>{selectedTemplate.badge}</Chip>
-                <Chip tone="soft">{selectedTemplate.bestFor}</Chip>
-              </div>
-            </div>
-
-            <div className="grid gap-5 xl:grid-cols-3">
-              {templateCatalog.map((template) => (
-                <TemplateCard
-                  key={template.id}
-                  template={template}
-                  selected={template.id === renderOptions.templateId}
-                  actionLabel="Apply Template"
-                  onSelect={onTemplateChange}
-                />
-              ))}
-            </div>
-          </>
-        ) : null}
-
-        {activeTab === "content" ? (
-          <>
-        <AccordionSection icon="upload_file" title="Import Resume Text">
-          <label className="space-y-2">
-            <FieldLabel>Paste resume text</FieldLabel>
-            <textarea
-              className={`${textareaClassName} min-h-[220px]`}
-              value={importText}
-              placeholder="Paste a resume here with headings like Summary, Experience, Education, Projects, and Skills. The parser will map what it can into the canonical schema, and you can clean up the rest in the editor."
-              onChange={(event) => {
-                setImportText(parseInputValue(event));
-                if (importStatus !== "idle" || importWarnings.length > 0 || importSections.length > 0 || importSourceLabel) {
-                  resetImportFeedback();
-                }
-              }}
-            />
-          </label>
-          <p className="mt-3 text-sm leading-6 text-on-surface-variant">
-            This first import path is deterministic and local. It works best when the pasted text has clear section headings and bullet lists.
-          </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".txt,.md,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            className="hidden"
-            onChange={handleImportFile}
-          />
-          <div className="mt-4 flex flex-wrap gap-3">
-            <IconButton icon="upload" label="Import into editor" onClick={handleImportResume} />
-            <IconButton
-              icon="attach_file"
-              label={importStatus === "loading" ? "Processing file..." : "Choose file"}
-              onClick={() => fileInputRef.current?.click()}
-            />
-            <IconButton
-              icon="close"
-              label="Clear pasted text"
-              onClick={() => {
-                setImportText("");
-                resetImportFeedback();
-              }}
-              tone="danger"
-            />
-          </div>
-          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-            Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB.
-          </p>
-          {importMessage ? (
-            <div
-              className={`mt-5 rounded-[1.25rem] border px-4 py-4 ${
-                importStatus === "error"
-                  ? "border-error-container bg-error-container/40 text-on-surface"
-                  : "border-outline-variant/20 bg-surface-container-highest text-on-surface"
-              }`}
-            >
-              <p className="text-sm font-semibold">{importMessage}</p>
-              {importSourceLabel ? (
-                <div className="mt-3">
-                  <Chip tone="lavender">{importSourceLabel}</Chip>
-                </div>
-              ) : null}
-              {importSections.length > 0 ? (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {importSections.map((section) => (
-                    <Chip key={section} tone="mint">
-                      {sectionLabels[section]}
-                    </Chip>
-                  ))}
-                </div>
-              ) : null}
-              {importWarnings.length > 0 ? (
-                <div className="mt-4 space-y-2 text-sm leading-6 text-on-surface-variant">
-                  {importWarnings.map((warning) => (
-                    <p key={warning}>{warning}</p>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-        </AccordionSection>
-          </>
-        ) : null}
-
-        {activeTab === "design" ? (
-        <AccordionSection icon="dashboard" title="Render Settings">
+  const designSections: AccordionWorkspaceItem[] = [
+    {
+      id: "render",
+      icon: "dashboard",
+      title: "Render Settings",
+      content: (
+        <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <label className="space-y-2">
               <FieldLabel>Template</FieldLabel>
@@ -643,401 +626,459 @@ export function EditorSidebar({
               />
             </label>
           </div>
-        </AccordionSection>
-        ) : null}
 
-        {activeTab === "design" ? (
-          <div className="rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-lowest p-5">
-            <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Design Notes</p>
-            <h3 className="mt-2 font-headline text-xl font-bold text-on-surface">What changes here</h3>
-            <div className="mt-4 space-y-3 text-sm leading-6 text-on-surface-variant">
-              <p>The selected template affects the visual canvas, generated TeX source, and compiled PDF.</p>
-              <p>Margins, bullet caps, section order, and font size also feed directly into ATS render checks.</p>
-              <p>Use this mode to shape output quality without changing the underlying resume content.</p>
+          <div className="rounded-[1.25rem] bg-surface-container-low p-5">
+            <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Output behavior</p>
+            <div className="mt-3 space-y-2 text-sm leading-6 text-on-surface-variant">
+              <p>The rendered PDF on the right stays stable until you press compile.</p>
+              <p>These settings affect the next PDF render instead of changing the panel live while you type.</p>
             </div>
           </div>
-        ) : null}
+        </div>
+      )
+    }
+  ];
 
-        {activeTab === "content" ? (
-          <>
-        <AccordionSection icon="person" title="Personal Details">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <label className="space-y-2 md:col-span-2">
-              <FieldLabel>Full Name</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.name ?? ""}
-                onChange={(event) => updateHeader("name", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2 md:col-span-2">
-              <FieldLabel>Role</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.title ?? ""}
-                onChange={(event) => updateHeader("title", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>Email</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.email ?? ""}
-                onChange={(event) => updateHeader("email", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>Phone</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.phone ?? ""}
-                onChange={(event) => updateHeader("phone", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2 md:col-span-2">
-              <FieldLabel>Location</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.location ?? ""}
-                onChange={(event) => updateHeader("location", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>LinkedIn</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.linkedin ?? ""}
-                onChange={(event) => updateHeader("linkedin", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>GitHub</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.github ?? ""}
-                onChange={(event) => updateHeader("github", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>Website</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.website ?? ""}
-                onChange={(event) => updateHeader("website", parseInputValue(event))}
-              />
-            </label>
-            <label className="space-y-2">
-              <FieldLabel>Portfolio</FieldLabel>
-              <input
-                className={fieldClassName}
-                value={resume.header.portfolio ?? ""}
-                onChange={(event) => updateHeader("portfolio", parseInputValue(event))}
-              />
-            </label>
-          </div>
-        </AccordionSection>
-
-        <AccordionSection icon="auto_awesome" title="Professional Summary">
+  const contentSections: AccordionWorkspaceItem[] = [
+    {
+      id: "import",
+      icon: "upload_file",
+      title: "Import Resume Text",
+      content: (
+        <>
           <label className="space-y-2">
-            <FieldLabel>Summary</FieldLabel>
+            <FieldLabel>Paste resume text</FieldLabel>
             <textarea
-              className={textareaClassName}
-              value={resume.summary ?? ""}
-              onChange={(event) => updateSummary(parseInputValue(event))}
+              className={`${textareaClassName} min-h-[220px]`}
+              value={importText}
+              placeholder="Paste a resume here with headings like Summary, Experience, Education, Projects, and Skills."
+              onChange={(event) => {
+                setImportText(parseInputValue(event));
+                if (importStatus !== "idle" || importWarnings.length > 0 || importSections.length > 0 || importSourceLabel) {
+                  resetImportFeedback();
+                }
+              }}
             />
           </label>
-        </AccordionSection>
-
-        <AccordionSection icon="bolt" title="Skills">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.md,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            className="hidden"
+            onChange={handleImportFile}
+          />
+          <div className="mt-4 flex flex-wrap gap-3">
+            <IconButton icon="upload" label="Import into editor" onClick={handleImportResume} />
+            <IconButton
+              icon="attach_file"
+              label={importStatus === "loading" ? "Processing file..." : "Choose file"}
+              onClick={() => fileInputRef.current?.click()}
+            />
+            <IconButton
+              icon="close"
+              label="Clear pasted text"
+              onClick={() => {
+                setImportText("");
+                resetImportFeedback();
+              }}
+              tone="danger"
+            />
+          </div>
+          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
+            Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB.
+          </p>
+          {importMessage ? (
+            <div
+              className={`mt-5 rounded-[1.25rem] border px-4 py-4 ${
+                importStatus === "error"
+                  ? "border-error-container bg-error-container/40 text-on-surface"
+                  : "border-outline-variant/20 bg-surface-container-highest text-on-surface"
+              }`}
+            >
+              <p className="text-sm font-semibold">{importMessage}</p>
+              {importSourceLabel ? (
+                <div className="mt-3">
+                  <Chip tone="lavender">{importSourceLabel}</Chip>
+                </div>
+              ) : null}
+              {importSections.length > 0 ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {importSections.map((section) => (
+                    <Chip key={section} tone="mint">
+                      {sectionLabels[section]}
+                    </Chip>
+                  ))}
+                </div>
+              ) : null}
+              {importWarnings.length > 0 ? (
+                <div className="mt-4 space-y-2 text-sm leading-6 text-on-surface-variant">
+                  {importWarnings.map((warning) => (
+                    <p key={warning}>{warning}</p>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </>
+      )
+    },
+    {
+      id: "personal",
+      icon: "person",
+      title: "Personal Details",
+      content: (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <label className="space-y-2 md:col-span-2">
+            <FieldLabel>Full Name</FieldLabel>
+            <input className={fieldClassName} value={resume.header.name ?? ""} onChange={(event) => updateHeader("name", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2 md:col-span-2">
+            <FieldLabel>Role</FieldLabel>
+            <input className={fieldClassName} value={resume.header.title ?? ""} onChange={(event) => updateHeader("title", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2">
+            <FieldLabel>Email</FieldLabel>
+            <input className={fieldClassName} value={resume.header.email ?? ""} onChange={(event) => updateHeader("email", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2">
+            <FieldLabel>Phone</FieldLabel>
+            <input className={fieldClassName} value={resume.header.phone ?? ""} onChange={(event) => updateHeader("phone", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2 md:col-span-2">
+            <FieldLabel>Location</FieldLabel>
+            <input className={fieldClassName} value={resume.header.location ?? ""} onChange={(event) => updateHeader("location", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2">
+            <FieldLabel>LinkedIn</FieldLabel>
+            <input className={fieldClassName} value={resume.header.linkedin ?? ""} onChange={(event) => updateHeader("linkedin", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2">
+            <FieldLabel>GitHub</FieldLabel>
+            <input className={fieldClassName} value={resume.header.github ?? ""} onChange={(event) => updateHeader("github", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2">
+            <FieldLabel>Website</FieldLabel>
+            <input className={fieldClassName} value={resume.header.website ?? ""} onChange={(event) => updateHeader("website", parseInputValue(event))} />
+          </label>
+          <label className="space-y-2">
+            <FieldLabel>Portfolio</FieldLabel>
+            <input className={fieldClassName} value={resume.header.portfolio ?? ""} onChange={(event) => updateHeader("portfolio", parseInputValue(event))} />
+          </label>
+        </div>
+      )
+    },
+    {
+      id: "summary",
+      icon: "auto_awesome",
+      title: "Professional Summary",
+      content: (
+        <label className="space-y-2">
+          <FieldLabel>Summary</FieldLabel>
+          <textarea className={textareaClassName} value={resume.summary ?? ""} onChange={(event) => updateSummary(parseInputValue(event))} />
+        </label>
+      )
+    },
+    {
+      id: "skills",
+      icon: "bolt",
+      title: "Skills",
+      content: (
+        <>
           <label className="space-y-2">
             <FieldLabel>Skills</FieldLabel>
-            <textarea
-              className={textareaClassName}
-              value={skillsToText(resume.skills)}
-              onChange={(event) => updateSkills(parseInputValue(event))}
-            />
+            <textarea className={textareaClassName} value={skillsToText(resume.skills)} onChange={(event) => updateSkills(parseInputValue(event))} />
           </label>
           <p className="mt-3 text-sm text-on-surface-variant">
             Use one skill per line, or grouped lines like <span className="font-semibold text-on-surface">Languages: Python, Go</span>.
           </p>
-        </AccordionSection>
+        </>
+      )
+    },
+    {
+      id: "experience",
+      icon: "work",
+      title: "Experience",
+      content: (
+        <div className="space-y-4">
+          {resume.experience.map((item, index) => (
+            <DetailCard key={item.id ?? `experience-${index}`} title={item.role?.trim() || `Experience ${index + 1}`} onRemove={() => removeExperience(index)}>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <label className="space-y-2">
+                  <FieldLabel>Role</FieldLabel>
+                  <input className={fieldClassName} value={item.role ?? ""} onChange={(event) => updateExperience(index, { role: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Company</FieldLabel>
+                  <input className={fieldClassName} value={item.company ?? ""} onChange={(event) => updateExperience(index, { company: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Location</FieldLabel>
+                  <input className={fieldClassName} value={item.location ?? ""} onChange={(event) => updateExperience(index, { location: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Start Date</FieldLabel>
+                  <input className={fieldClassName} value={item.startDate ?? ""} onChange={(event) => updateExperience(index, { startDate: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>End Date</FieldLabel>
+                  <input className={fieldClassName} value={item.endDate ?? ""} onChange={(event) => updateExperience(index, { endDate: parseInputValue(event) })} />
+                </label>
+                <label className="inline-flex items-center gap-3 rounded-2xl bg-surface-container-highest px-4 py-3 md:col-span-2">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(item.current)}
+                    onChange={(event) =>
+                      updateExperience(index, {
+                        current: event.target.checked,
+                        endDate: event.target.checked ? "" : item.endDate ?? ""
+                      })
+                    }
+                  />
+                  <span className="text-sm font-semibold text-on-surface">Current role</span>
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Description</FieldLabel>
+                  <textarea className={textareaClassName} value={item.description ?? ""} onChange={(event) => updateExperience(index, { description: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Bullets</FieldLabel>
+                  <textarea className={textareaClassName} value={item.bullets.join("\n")} onChange={(event) => updateExperience(index, { bullets: splitLineItems(parseInputValue(event)) })} />
+                </label>
+              </div>
+            </DetailCard>
+          ))}
+          <AddRowButton label="Add experience" onClick={addExperience} />
+        </div>
+      )
+    },
+    {
+      id: "education",
+      icon: "school",
+      title: "Education",
+      content: (
+        <div className="space-y-4">
+          {resume.education.map((item, index) => (
+            <DetailCard key={`${item.institution}-${index}`} title={item.institution?.trim() || `Education ${index + 1}`} onRemove={() => removeEducation(index)}>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <label className="space-y-2">
+                  <FieldLabel>Degree</FieldLabel>
+                  <input className={fieldClassName} value={item.degree ?? ""} onChange={(event) => updateEducation(index, { degree: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Field</FieldLabel>
+                  <input className={fieldClassName} value={item.field ?? ""} onChange={(event) => updateEducation(index, { field: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Institution</FieldLabel>
+                  <input className={fieldClassName} value={item.institution ?? ""} onChange={(event) => updateEducation(index, { institution: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Location</FieldLabel>
+                  <input className={fieldClassName} value={item.location ?? ""} onChange={(event) => updateEducation(index, { location: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Start Year</FieldLabel>
+                  <input className={fieldClassName} value={item.startYear ?? ""} onChange={(event) => updateEducation(index, { startYear: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>End Year</FieldLabel>
+                  <input className={fieldClassName} value={item.endYear ?? ""} onChange={(event) => updateEducation(index, { endYear: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>GPA</FieldLabel>
+                  <input className={fieldClassName} value={item.gpa ?? ""} onChange={(event) => updateEducation(index, { gpa: parseInputValue(event) })} />
+                </label>
+              </div>
+            </DetailCard>
+          ))}
+          <AddRowButton label="Add education" onClick={addEducation} />
+        </div>
+      )
+    },
+    {
+      id: "projects",
+      icon: "deployed_code",
+      title: "Projects",
+      content: (
+        <div className="space-y-4">
+          {resume.projects.map((item, index) => (
+            <DetailCard key={`${item.title}-${index}`} title={item.title?.trim() || `Project ${index + 1}`} onRemove={() => removeProject(index)}>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Title</FieldLabel>
+                  <input className={fieldClassName} value={item.title ?? ""} onChange={(event) => updateProject(index, { title: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Link</FieldLabel>
+                  <input className={fieldClassName} value={item.link ?? ""} onChange={(event) => updateProject(index, { link: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Start Date</FieldLabel>
+                  <input className={fieldClassName} value={item.startDate ?? ""} onChange={(event) => updateProject(index, { startDate: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>End Date</FieldLabel>
+                  <input className={fieldClassName} value={item.endDate ?? ""} onChange={(event) => updateProject(index, { endDate: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Description</FieldLabel>
+                  <textarea className={textareaClassName} value={item.description ?? ""} onChange={(event) => updateProject(index, { description: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Technologies</FieldLabel>
+                  <textarea className={textareaClassName} value={item.technologies.join("\n")} onChange={(event) => updateProject(index, { technologies: splitDelimitedItems(parseInputValue(event)) })} />
+                </label>
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Bullets</FieldLabel>
+                  <textarea className={textareaClassName} value={item.bullets.join("\n")} onChange={(event) => updateProject(index, { bullets: splitLineItems(parseInputValue(event)) })} />
+                </label>
+              </div>
+            </DetailCard>
+          ))}
+          <AddRowButton label="Add project" onClick={addProject} />
+        </div>
+      )
+    },
+    ...(Object.keys(compactSectionLabels) as Array<keyof typeof compactSectionLabels>).map((section) => ({
+      id: section,
+      icon: "format_list_bulleted",
+      title: compactSectionLabels[section],
+      content: (
+        <div className="space-y-4">
+          {resume[section].map((item, index) => (
+            <DetailCard
+              key={`${section}-${index}`}
+              title={item.description?.trim() || `${compactSectionLabels[section]} ${index + 1}`}
+              onRemove={() => removeCompactSectionItem(section, index)}
+            >
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Description</FieldLabel>
+                  <textarea
+                    className={textareaClassName}
+                    value={item.description ?? ""}
+                    onChange={(event) => updateCompactSection(section, index, { description: parseInputValue(event) })}
+                  />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Date</FieldLabel>
+                  <input className={fieldClassName} value={item.date ?? ""} onChange={(event) => updateCompactSection(section, index, { date: parseInputValue(event) })} />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Link</FieldLabel>
+                  <input className={fieldClassName} value={item.link ?? ""} onChange={(event) => updateCompactSection(section, index, { link: parseInputValue(event) })} />
+                </label>
+              </div>
+            </DetailCard>
+          ))}
+          <AddRowButton label={`Add ${compactSectionLabels[section].toLowerCase()} item`} onClick={() => addCompactSectionItem(section)} />
+        </div>
+      )
+    }))
+  ];
 
-        <AccordionSection icon="work" title="Experience">
-          <div className="space-y-4">
-            {resume.experience.map((item, index) => (
-              <DetailCard
-                key={item.id ?? `experience-${index}`}
-                title={item.role?.trim() || `Experience ${index + 1}`}
-                onRemove={() => removeExperience(index)}
-              >
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <label className="space-y-2">
-                    <FieldLabel>Role</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.role ?? ""}
-                      onChange={(event) => updateExperience(index, { role: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>Company</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.company ?? ""}
-                      onChange={(event) => updateExperience(index, { company: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Location</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.location ?? ""}
-                      onChange={(event) => updateExperience(index, { location: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>Start Date</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.startDate ?? ""}
-                      onChange={(event) => updateExperience(index, { startDate: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>End Date</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.endDate ?? ""}
-                      onChange={(event) => updateExperience(index, { endDate: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="inline-flex items-center gap-3 rounded-2xl bg-surface-container-highest px-4 py-3 md:col-span-2">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(item.current)}
-                      onChange={(event) =>
-                        updateExperience(index, {
-                          current: event.target.checked,
-                          endDate: event.target.checked ? "" : item.endDate ?? ""
-                        })
-                      }
-                    />
-                    <span className="text-sm font-semibold text-on-surface">Current role</span>
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Description</FieldLabel>
-                    <textarea
-                      className={textareaClassName}
-                      value={item.description ?? ""}
-                      onChange={(event) => updateExperience(index, { description: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Bullets</FieldLabel>
-                    <textarea
-                      className={textareaClassName}
-                      value={item.bullets.join("\n")}
-                      onChange={(event) => updateExperience(index, { bullets: splitLineItems(parseInputValue(event)) })}
-                    />
-                  </label>
+  const orderedContentSections: AccordionWorkspaceItem[] = [
+    ...contentSections.filter((item) => item.id === "import" || item.id === "personal"),
+    ...renderOptions.sectionOrder
+      .map((section) => contentSections.find((item) => item.id === section))
+      .filter((item): item is AccordionWorkspaceItem => Boolean(item))
+  ];
+
+  return (
+    <Panel className="flex h-full min-h-0 flex-col p-8">
+      <div className="mb-8">
+        <EditorTabs activeTab={activeTab} onTabChange={onTabChange} />
+      </div>
+      <SectionHeading
+        eyebrow="Workspace"
+        title={activeTab === "templates" ? "Choose A Template" : activeTab === "design" ? "Tune Output Settings" : "Edit Resume Content"}
+        description={
+          activeTab === "templates"
+            ? "Pick the TeX template that should drive the compiled PDF preview and export output."
+            : activeTab === "design"
+              ? "Adjust the real output settings that flow into ATS checks and the compiled PDF."
+              : "This workspace edits the canonical resume schema directly, persists locally, and lets you drag resume sections into the order you want."
+        }
+      />
+
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <Chip tone="lavender">Schema v{resume.meta.version}</Chip>
+        <Chip tone="soft">Source: {resume.meta.source}</Chip>
+        <Chip tone="mint">{selectedTemplate.label}</Chip>
+        <div className="ml-auto flex flex-wrap gap-3">
+          <Link
+            to="/ats"
+            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
+          >
+            Open ATS
+          </Link>
+          <Link
+            to="/jd"
+            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
+          >
+            Open JD
+          </Link>
+          <IconButton icon="ink_eraser" label="Clear all" onClick={onClearResume} tone="danger" />
+        </div>
+      </div>
+
+      <div className="mt-8 flex-1 min-h-0">
+        {activeTab === "templates" ? (
+          <WorkspaceSurface
+            title="Template Library"
+            description="Use this bounded panel to compare layouts and switch the active template without affecting the rest of the editor shell."
+          >
+            <div className="workspace-scroll h-full overflow-y-auto pr-2">
+              <div className="rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-high p-5">
+                <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Current Choice</p>
+                <h3 className="mt-2 font-headline text-2xl font-extrabold text-on-surface">{selectedTemplate.label}</h3>
+                <p className="mt-3 text-sm leading-6 text-on-surface-variant">{selectedTemplate.description}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Chip tone={selectedTemplate.badgeTone}>{selectedTemplate.badge}</Chip>
+                  <Chip tone="soft">{selectedTemplate.bestFor}</Chip>
                 </div>
-              </DetailCard>
-            ))}
-            <AddRowButton label="Add experience" onClick={addExperience} />
-          </div>
-        </AccordionSection>
+              </div>
 
-        <AccordionSection icon="school" title="Education">
-          <div className="space-y-4">
-            {resume.education.map((item, index) => (
-              <DetailCard
-                key={`${item.institution}-${index}`}
-                title={item.institution?.trim() || `Education ${index + 1}`}
-                onRemove={() => removeEducation(index)}
-              >
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <label className="space-y-2">
-                    <FieldLabel>Degree</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.degree ?? ""}
-                      onChange={(event) => updateEducation(index, { degree: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>Field</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.field ?? ""}
-                      onChange={(event) => updateEducation(index, { field: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Institution</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.institution ?? ""}
-                      onChange={(event) => updateEducation(index, { institution: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Location</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.location ?? ""}
-                      onChange={(event) => updateEducation(index, { location: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>Start Year</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.startYear ?? ""}
-                      onChange={(event) => updateEducation(index, { startYear: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>End Year</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.endYear ?? ""}
-                      onChange={(event) => updateEducation(index, { endYear: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>GPA</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.gpa ?? ""}
-                      onChange={(event) => updateEducation(index, { gpa: parseInputValue(event) })}
-                    />
-                  </label>
-                </div>
-              </DetailCard>
-            ))}
-            <AddRowButton label="Add education" onClick={addEducation} />
-          </div>
-        </AccordionSection>
-
-        <AccordionSection icon="deployed_code" title="Projects">
-          <div className="space-y-4">
-            {resume.projects.map((item, index) => (
-              <DetailCard
-                key={`${item.title}-${index}`}
-                title={item.title?.trim() || `Project ${index + 1}`}
-                onRemove={() => removeProject(index)}
-              >
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Title</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.title ?? ""}
-                      onChange={(event) => updateProject(index, { title: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Link</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.link ?? ""}
-                      onChange={(event) => updateProject(index, { link: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>Start Date</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.startDate ?? ""}
-                      onChange={(event) => updateProject(index, { startDate: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2">
-                    <FieldLabel>End Date</FieldLabel>
-                    <input
-                      className={fieldClassName}
-                      value={item.endDate ?? ""}
-                      onChange={(event) => updateProject(index, { endDate: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Description</FieldLabel>
-                    <textarea
-                      className={textareaClassName}
-                      value={item.description ?? ""}
-                      onChange={(event) => updateProject(index, { description: parseInputValue(event) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Technologies</FieldLabel>
-                    <textarea
-                      className={textareaClassName}
-                      value={item.technologies.join("\n")}
-                      onChange={(event) => updateProject(index, { technologies: splitDelimitedItems(parseInputValue(event)) })}
-                    />
-                  </label>
-                  <label className="space-y-2 md:col-span-2">
-                    <FieldLabel>Bullets</FieldLabel>
-                    <textarea
-                      className={textareaClassName}
-                      value={item.bullets.join("\n")}
-                      onChange={(event) => updateProject(index, { bullets: splitLineItems(parseInputValue(event)) })}
-                    />
-                  </label>
-                </div>
-              </DetailCard>
-            ))}
-            <AddRowButton label="Add project" onClick={addProject} />
-          </div>
-        </AccordionSection>
-
-        {(Object.keys(compactSectionLabels) as Array<keyof typeof compactSectionLabels>).map((section) => (
-          <AccordionSection key={section} icon="format_list_bulleted" title={compactSectionLabels[section]}>
-            <div className="space-y-4">
-              {resume[section].map((item, index) => (
-                <DetailCard
-                  key={`${section}-${index}`}
-                  title={item.description?.trim() || `${compactSectionLabels[section]} ${index + 1}`}
-                  onRemove={() => removeCompactSectionItem(section, index)}
-                >
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <label className="space-y-2 md:col-span-2">
-                      <FieldLabel>Description</FieldLabel>
-                      <textarea
-                        className={textareaClassName}
-                        value={item.description ?? ""}
-                        onChange={(event) =>
-                          updateCompactSection(section, index, { description: parseInputValue(event) })
-                        }
-                      />
-                    </label>
-                    <label className="space-y-2">
-                      <FieldLabel>Date</FieldLabel>
-                      <input
-                        className={fieldClassName}
-                        value={item.date ?? ""}
-                        onChange={(event) => updateCompactSection(section, index, { date: parseInputValue(event) })}
-                      />
-                    </label>
-                    <label className="space-y-2">
-                      <FieldLabel>Link</FieldLabel>
-                      <input
-                        className={fieldClassName}
-                        value={item.link ?? ""}
-                        onChange={(event) => updateCompactSection(section, index, { link: parseInputValue(event) })}
-                      />
-                    </label>
-                  </div>
-                </DetailCard>
-              ))}
-              <AddRowButton
-                label={`Add ${compactSectionLabels[section].toLowerCase()} item`}
-                onClick={() => addCompactSectionItem(section)}
-              />
+              <div className="mt-4 grid gap-5 xl:grid-cols-3">
+                {templateCatalog.map((template) => (
+                  <TemplateCard
+                    key={template.id}
+                    template={template}
+                    selected={template.id === renderOptions.templateId}
+                    actionLabel="Apply Template"
+                    onSelect={onTemplateChange}
+                  />
+                ))}
+              </div>
             </div>
-          </AccordionSection>
-        ))}
-          </>
+          </WorkspaceSurface>
+        ) : null}
+
+        {activeTab === "design" ? (
+          <WorkspaceSurface
+            title="Render Controls"
+            description="This panel owns the output settings that affect the next compile, without taking over the whole left column."
+          >
+            <AccordionWorkspace
+              items={designSections}
+              activeId={activeDesignSection}
+              onChange={setActiveDesignSection}
+            />
+          </WorkspaceSurface>
+        ) : null}
+
+        {activeTab === "content" ? (
+          <WorkspaceSurface
+            title="Section Workspace"
+            description="This is the dedicated section editor block. Expand a section, fill in details, and drag resume sections to change their order."
+          >
+            <AccordionWorkspace
+              items={orderedContentSections}
+              activeId={activeContentSection}
+              onChange={setActiveContentSection}
+              onReorder={reorderResumeSections}
+            />
+          </WorkspaceSurface>
         ) : null}
       </div>
     </Panel>

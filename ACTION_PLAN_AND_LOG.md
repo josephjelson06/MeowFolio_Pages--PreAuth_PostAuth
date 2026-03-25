@@ -452,6 +452,22 @@
   `src/app/routes/AboutPage.tsx`
   `src/app/routes/LearnPage.tsx`
 
+### 32. The editor workspace was simplified to a true form-plus-PDF layout
+
+- The editor split layout now gives left and right panes equal width in the editor variant:
+  `src/components/layout/WorkspaceSplitLayout.tsx`
+- The editor and app shell were adjusted so both panes can actually shrink and scroll correctly:
+  `src/components/layout/AppLayout.tsx`
+  `src/app/routes/EditorPage.tsx`
+- The left editor pane now uses an internal scroll region instead of overflowing the page:
+  `src/components/editor/EditorSidebar.tsx`
+- The old dropdown-style accordion behavior was removed in favor of static always-open section blocks:
+  `src/components/editor/AccordionSection.tsx`
+- The right editor pane was reduced to PDF-only output. Live canvas mode, TeX mode, and the larger preview dashboard were removed:
+  `src/components/editor/ResumePreview.tsx`
+- The default workspace snapshot was reset to blank content instead of seeded mock resume data, and the storage version was bumped so old sample-filled local state is cleared:
+  `src/app/workspace/storage.ts`
+
 ## Rules to follow
 
 ### Product and build priority rules
@@ -543,3 +559,16 @@
   It is drifting the product before the parsing and analysis flows are tied cleanly to the canonical schema.
 - The current local product loop is now complete.
 - The next meaningful work is optional expansion work, not missing foundation work.
+
+## Latest editor UX pass
+
+- The editor split layout was tightened so left and right panes stay balanced in width.
+- The left editor pane now uses a single-active accordion workspace:
+  only one section is expanded at a time,
+  all collapsed headers remain visible,
+  and the active section scrolls internally instead of pushing the full page.
+- The editor shell was adjusted to keep the workspace fixed to the available viewport area instead of allowing the form stack to overflow the page.
+- The right pane is now PDF-only for the editor workflow.
+- The PDF preview no longer auto-refreshes while typing.
+  It updates only after an explicit compile/render action.
+- The default workspace remains blank rather than seeded with mock resume content.

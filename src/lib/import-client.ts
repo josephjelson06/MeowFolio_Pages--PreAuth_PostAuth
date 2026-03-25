@@ -32,3 +32,13 @@ export async function requestImportedResumeFile(file: File) {
 
   return (await response.json()) as ImportResumeFileResponse;
 }
+
+export async function requestExtractedTextFile(file: File) {
+  const response = await requestImportedResumeFile(file);
+
+  return {
+    extractedText: response.extractedText,
+    fileName: response.fileName,
+    mimeType: response.mimeType
+  };
+}

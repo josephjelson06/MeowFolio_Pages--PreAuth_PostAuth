@@ -1,11 +1,9 @@
-import { sampleJobDescription } from "../../data/analysis";
-import { createMockResumeData } from "../../data/editor";
 import { isRenderTemplateId } from "../../data/templates";
 import { createInitialRenderOptions } from "../../lib/tex";
 import { createEmptyResumeData, DEFAULT_RESUME_SECTION_ORDER, type RenderOptions, type ResumeData, type ResumeSectionKey } from "../../types/resume";
 
 const WORKSPACE_STORAGE_KEY = "meowfolio.workspace.v1";
-const WORKSPACE_STORAGE_VERSION = 1;
+const WORKSPACE_STORAGE_VERSION = 2;
 
 interface WorkspaceSnapshot {
   jobDescription: string;
@@ -101,7 +99,7 @@ function normalizeResumeData(value: unknown): ResumeData {
   const fallback = createEmptyResumeData("scratch");
 
   if (!isRecord(value)) {
-    return createMockResumeData();
+    return fallback;
   }
 
   const header = isRecord(value.header) ? value.header : {};
@@ -180,9 +178,9 @@ function normalizeResumeData(value: unknown): ResumeData {
 
 export function createDefaultWorkspaceSnapshot(): WorkspaceSnapshot {
   return {
-    jobDescription: sampleJobDescription,
+    jobDescription: "",
     renderOptions: createInitialRenderOptions(),
-    resume: createMockResumeData()
+    resume: createEmptyResumeData("scratch")
   };
 }
 
@@ -206,7 +204,7 @@ export function loadWorkspaceSnapshot(): WorkspaceSnapshot {
     }
 
     return {
-      jobDescription: toStringValue(parsed.jobDescription) || sampleJobDescription,
+      jobDescription: toStringValue(parsed.jobDescription),
       renderOptions: normalizeRenderOptions(parsed.renderOptions),
       resume: normalizeResumeData(parsed.resume)
     };

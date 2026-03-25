@@ -21,7 +21,7 @@ export function AppLayout({ children, contentClassName }: AppLayoutProps) {
         mode="app"
         primaryAction={{ label: "Create New", to: "/editor" }}
       />
-      <main className={cx("mx-auto flex w-full max-w-[1600px] flex-1", contentClassName)}>{children}</main>
+      <main className={cx("mx-auto flex min-h-0 w-full max-w-[1600px] flex-1", contentClassName)}>{children}</main>
     </div>
   );
 }

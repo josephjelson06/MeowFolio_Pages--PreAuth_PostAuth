@@ -1,0 +1,7 @@
+- No Free Demos here (signup to use basically)
+
+- Require Understanding the UI/UX Flow
+- Fix the Editor and check it's flow -> editor|templates|customize
+
+Enough UI/UX work
+- Now focus on calls, cost and templatesz

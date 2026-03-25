@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MeowFolio | My Profile</title>
+<link rel="stylesheet" href="shared.css"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="tailwind-config.js"></script>
+<style>
+.input-focus-transition { transition: background-color 0.2s ease-in-out; }
+        .input-focus-transition:focus { background-color: #ffdbd0; outline: none; }
+    </style>
+<meta name="view-transition" content="same-origin" /></head>
+<body class="text-on-background min-h-screen" data-page="profile" data-shell="app">
+<!-- TopNavBar -->
+<nav class="sticky top-0 z-50 bg-surface-container-highest/80 backdrop-blur-lg px-6 py-4 flex items-center justify-between border-b border-outline-variant/20">
+<div class="flex items-center gap-8">
+<span class="font-headline text-2xl font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+                MeowFolio
+            </span>
+<div class="hidden md:flex items-center gap-6">
+<a class="font-label text-sm font-semibold text-on-surface hover:text-primary transition-colors" href="index.html">Dashboard</a>
+<a class="font-label text-sm font-semibold text-on-surface hover:text-primary transition-colors" href="resumes.html">Resumes</a>
+<a class="font-label text-sm font-semibold text-on-surface hover:text-primary transition-colors" href="jd-analyzer.html">JD Analyzer</a>
+<a class="font-label text-sm font-semibold text-on-surface hover:text-primary transition-colors" href="ats-scorer.html">ATS Scorer</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-surface-container-low pr-2 pl-1 py-1 rounded-full cursor-pointer hover:bg-surface-variant transition-colors">
+<img alt="User profile avatar" class="w-8 h-8 rounded-full border-2 border-primary-container" data-alt="Portrait of a smiling young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0MoXz7pKSugUJqVLE-hPWLmhcQtN09SKtfn9Z6_XNoglticVsVlCxcqOqyi9AfwGlaCthIvC76rWOZeTzCCTY0cpurepUEE1uWiHBAKn3HpsVyYGO71zR4ZZ4P83aJAszBGx3Sj9EeuRENvhFeaIazIs9QlMKW70glP8tqeBA2Mm42jR57iqmjBGDUmbPByoBcwy5hZqMVySYlYO8_mp0SZD8mW1ro03byCFnASNVyXaNt-rlZgG4nA5X0FsBZ86V_n378humNQna"/>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+</div>
+</nav>
+<main class="max-w-4xl mx-auto px-4 py-12">
+<div class="bg-surface-container-lowest tactile-shadow rounded-lg p-8 md:p-12 relative overflow-hidden">
+<!-- Decorative Accent -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 rounded-bl-full -mr-8 -mt-8"></div>
+<!-- 1. Header Section -->
+<section class="flex flex-col md:flex-row items-center gap-8 mb-12">
+<div class="relative group cursor-pointer" onclick="document.getElementById('avatarUpload').click()">
+<div class="w-32 h-32 md:w-40 md:h-40 bg-secondary-fixed rounded-full flex items-center justify-center border-4 border-surface-container-high overflow-hidden shadow-inner relative">
+<span id="avatarInitials" class="font-headline text-4xl md:text-5xl font-extrabold text-on-secondary-fixed" data-profile-initials>AT</span>
+<img id="avatarPreview" class="w-full h-full object-cover absolute inset-0 hidden" alt="Profile Avatar" />
+</div>
+<div class="absolute bottom-1 right-1 bg-primary p-2 rounded-full border-4 border-surface-container-lowest group-hover:scale-110 transition-transform shadow-md">
+<span class="material-symbols-outlined text-on-primary text-xl" data-icon="edit">edit</span>
+</div>
+<input type="file" id="avatarUpload" class="hidden" accept="image/png, image/jpeg, image/webp" />
+</div>
+<div class="text-center md:text-left">
+<p class="font-label text-xs uppercase tracking-widest text-primary font-bold mb-1">PRO ACCOUNT</p>
+<h1 class="font-headline text-4xl font-extrabold text-on-surface mb-2" data-profile-header-name>Alexander Thompson</h1>
+<div class="flex items-center justify-center md:justify-start gap-2 text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
+<span>Member since August 2023</span>
+</div>
+</div>
+</section>
+<!-- 2. Personal Information -->
+<section class="mb-12">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="person">person</span>
+<h2 class="font-headline text-xl font-bold">Personal Information</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label text-sm font-bold text-on-surface-variant ml-2">Full Name</label>
+<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="text" value="Alexander Thompson" name="fullName"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-sm font-bold text-on-surface-variant ml-2">Email</label>
+<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="email" value="alex@dreamscape.io" name="email"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="font-label text-sm font-bold text-on-surface-variant ml-2">Phone Number</label>
+<input class="w-full bg-surface-container-highest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition" type="tel" value="+1 (555) 000-0000" name="phone"/>
+</div>
+</div>
+</section>
+<!-- 3. Academic Details (BTech Audience Priority) -->
+<section class="mb-12 p-8 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-tertiary" data-icon="school">school</span>
+<h2 class="font-headline text-xl font-bold">Academic Details</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2 md:col-span-2">
+<label class="font-label text-sm font-bold text-on-surface-variant ml-2">College/University</label>
+<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="National Institute of Technology" name="college"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-sm font-bold text-on-surface-variant ml-2">Degree</label>
+<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="B.Tech" name="degree"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-sm font-bold text-on-surface-variant ml-2">Branch</label>
+<input class="w-full bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" type="text" value="Computer Science &amp; Engineering" name="branch"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-sm font-bold text-on-surface-variant ml-2">Current Year</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-lowest px-6 py-4 rounded-md border-none font-body text-on-surface input-focus-transition shadow-sm" name="year">
+<option>1st Year</option>
+<option>2nd Year</option>
+<option>3rd Year</option>
+<option selected="">4th Year</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Account Settings -->
+<section class="mb-12">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+<h2 class="font-headline text-xl font-bold">Account Settings</h2>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-lg group cursor-pointer hover:bg-surface-variant transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="lock">lock</span>
+<span class="font-body font-semibold">Change Password</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="font-body font-semibold">Notification Preferences</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-12 h-7 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- 5. Mochii's Tip -->
+<section class="mt-8">
+<div class="bg-secondary-container rounded-lg p-6 flex gap-4 items-start border-l-8 border-secondary">
+<div class="bg-surface-container-lowest p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="pets">pets</span>
+</div>
+<div>
+<p class="font-headline font-bold text-on-secondary-container mb-1">Mochii's Tip</p>
+<p class="font-body text-on-secondary-container/80 text-sm leading-relaxed">
+                            "Keeping your profile updated helps me find the best keywords for your JD Match."
+                        </p>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="mt-12 flex justify-end gap-4">
+<button class="px-8 py-3 rounded-full font-label font-bold text-on-surface-variant hover:bg-surface-variant transition-colors" data-action="reset-profile" type="button">Cancel</button>
+<button class="px-10 py-3 bg-primary rounded-full font-label font-bold text-on-primary tactile-shadow hover:scale-[1.02] active:scale-[0.98] transition-all" data-action="save-profile" type="button">Save Changes</button>
+</div>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary rounded-full flex items-center justify-center text-on-primary tactile-shadow hover:scale-110 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+</button>
+<script src="page-modules.js"></script>
+<script src="pages-profile.js"></script>
+<script src="pages-editor.js"></script>
+<script src="pages-analysis.js"></script>
+<script src="pages-public-content.js"></script>
+<script src="app.js"></script>
+</body></html>
+
+
