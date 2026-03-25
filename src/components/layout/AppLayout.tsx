@@ -13,6 +13,7 @@ export function AppLayout({ children, contentClassName }: AppLayoutProps) {
       <TopNav
         links={[
           { label: "Dashboard", to: "/dashboard" },
+          { label: "Resumes", to: "/resumes" },
           { label: "Editor", to: "/editor" },
           { label: "JD Analyzer", to: "/jd" },
           { label: "ATS Scorer", to: "/ats" }

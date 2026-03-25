@@ -38,21 +38,21 @@ export const activeResumes = [
 export const quickActions = [
   {
     title: "Open Editor",
-    subtitle: "Tune the layout and resume content",
+    subtitle: "Edit content, templates, and TeX output settings",
     icon: "edit_note",
     to: "/editor",
     tone: "primary"
   },
   {
     title: "Review ATS Score",
-    subtitle: "See the split-screen report layout",
+    subtitle: "Inspect content and render-readiness checks",
     icon: "analytics",
     to: "/ats",
     tone: "tertiary"
   },
   {
     title: "Review JD Match",
-    subtitle: "Inspect keyword fit and report cards",
+    subtitle: "Compare the live resume against the active JD",
     icon: "query_stats",
     to: "/jd",
     tone: "secondary"

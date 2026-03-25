@@ -2,10 +2,29 @@ import { areSkillsGrouped, type ResumeData, type ResumeSkills, type SkillCategor
 
 export function getResumeContactLines(resume: ResumeData) {
   const { header } = resume;
+  const items = [
+    header.location,
+    header.email,
+    header.phone,
+    header.linkedin,
+    header.github,
+    header.portfolio,
+    header.website
+  ]
+    .filter((item): item is string => Boolean(item && item.trim()))
+    .map((item) => item.trim());
+  const seen = new Set<string>();
 
-  return [header.location, header.email, header.phone, header.website].filter(
-    (item): item is string => Boolean(item && item.trim())
-  );
+  return items.filter((item) => {
+    const key = item.toLowerCase();
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
 }
 
 export function formatDateRange(startDate?: string | null, endDate?: string | null, current?: boolean) {

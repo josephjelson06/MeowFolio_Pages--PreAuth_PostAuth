@@ -1,13 +1,12 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type ReactNode
 } from "react";
-import { sampleJobDescription } from "../../data/analysis";
-import { createMockResumeData } from "../../data/editor";
-import { createInitialRenderOptions } from "../../lib/tex";
 import { createEmptyResumeData, type RenderOptions, type ResumeData } from "../../types/resume";
+import { createDefaultWorkspaceSnapshot, loadWorkspaceSnapshot, saveWorkspaceSnapshot } from "./storage";
 
 interface WorkspaceContextValue {
   clearResume: () => void;
@@ -33,30 +32,62 @@ function stampResume(next: ResumeData) {
 }
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const [resume, setResumeState] = useState<ResumeData>(() => createMockResumeData());
-  const [renderOptions, setRenderOptions] = useState<RenderOptions>(() => createInitialRenderOptions());
-  const [jobDescription, setJobDescription] = useState(sampleJobDescription);
+  const [workspace, setWorkspace] = useState(() => loadWorkspaceSnapshot());
+
+  useEffect(() => {
+    saveWorkspaceSnapshot(workspace);
+  }, [workspace]);
 
   function setResume(value: ResumeData) {
-    setResumeState(stampResume(value));
+    setWorkspace((current) => ({
+      ...current,
+      resume: stampResume(value)
+    }));
+  }
+
+  function setRenderOptions(value: RenderOptions) {
+    setWorkspace((current) => ({
+      ...current,
+      renderOptions: {
+        ...value,
+        sectionOrder: [...value.sectionOrder]
+      }
+    }));
+  }
+
+  function setJobDescription(value: string) {
+    setWorkspace((current) => ({
+      ...current,
+      jobDescription: value
+    }));
   }
 
   function loadSampleResume() {
-    setResumeState(createMockResumeData());
+    setWorkspace((current) => {
+      const fallback = createDefaultWorkspaceSnapshot();
+
+      return {
+        ...current,
+        resume: fallback.resume
+      };
+    });
   }
 
   function clearResume() {
-    setResumeState(createEmptyResumeData("scratch"));
+    setWorkspace((current) => ({
+      ...current,
+      resume: createEmptyResumeData("scratch")
+    }));
   }
 
   return (
     <WorkspaceContext.Provider
       value={{
         clearResume,
-        jobDescription,
+        jobDescription: workspace.jobDescription,
         loadSampleResume,
-        renderOptions,
-        resume,
+        renderOptions: workspace.renderOptions,
+        resume: workspace.resume,
         setJobDescription,
         setRenderOptions,
         setResume

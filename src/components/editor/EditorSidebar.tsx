@@ -1,4 +1,6 @@
 import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { getTemplateDefinition, templateCatalog } from "../../data/templates";
 import type {
   CompactItem,
   EducationItem,
@@ -16,14 +18,18 @@ import { renderOptionsToText, textToSectionOrder, TEX_TEMPLATE_OPTIONS } from ".
 import { Chip } from "../ui/Chip";
 import { Panel } from "../ui/Panel";
 import { SectionHeading } from "../ui/SectionHeading";
+import { TemplateCard } from "../ui/TemplateCard";
 import { AccordionSection } from "./AccordionSection";
-import { EditorTabs } from "./EditorTabs";
+import { type EditorTabId, EditorTabs } from "./EditorTabs";
 
 interface EditorSidebarProps {
+  activeTab: EditorTabId;
   onClearResume: () => void;
   onLoadSample: () => void;
   onResumeChange: (resume: ResumeData) => void;
   onRenderOptionsChange: (options: RenderOptions) => void;
+  onTabChange: (tab: EditorTabId) => void;
+  onTemplateChange: (templateId: RenderOptions["templateId"]) => void;
   renderOptions: RenderOptions;
   resume: ResumeData;
 }
@@ -139,13 +145,18 @@ function parseInputValue(event: ChangeEvent<HTMLInputElement | HTMLTextAreaEleme
 }
 
 export function EditorSidebar({
+  activeTab,
   onClearResume,
   onLoadSample,
   onResumeChange,
   onRenderOptionsChange,
+  onTabChange,
+  onTemplateChange,
   renderOptions,
   resume
 }: EditorSidebarProps) {
+  const selectedTemplate = getTemplateDefinition(renderOptions.templateId);
+
   function commit(next: ResumeData) {
     onResumeChange(next);
   }
@@ -413,25 +424,71 @@ export function EditorSidebar({
   return (
     <Panel className="h-full p-8">
       <div className="mb-8">
-        <EditorTabs />
+        <EditorTabs activeTab={activeTab} onTabChange={onTabChange} />
       </div>
       <SectionHeading
         eyebrow="Workspace"
-        title="Edit Details"
-        description="This editor is now wired to the canonical resume schema. Changes stay local to this session and update the preview immediately."
+        title={activeTab === "templates" ? "Choose A Template" : activeTab === "design" ? "Tune Output Settings" : "Edit Resume Content"}
+        description={
+          activeTab === "templates"
+            ? "Pick the TeX template that should drive the live canvas, source preview, and compiled PDF output."
+            : activeTab === "design"
+              ? "Adjust the real output settings that flow into ATS checks and the compiled PDF."
+              : "This workspace edits the canonical resume schema directly, persists locally, and updates the preview immediately."
+        }
       />
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Chip tone="lavender">Schema v{resume.meta.version}</Chip>
         <Chip tone="soft">Source: {resume.meta.source}</Chip>
-        <Chip tone="mint">Updated locally</Chip>
+        <Chip tone="mint">{selectedTemplate.label}</Chip>
         <div className="ml-auto flex flex-wrap gap-3">
+          <Link
+            to="/ats"
+            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
+          >
+            Open ATS
+          </Link>
+          <Link
+            to="/jd"
+            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
+          >
+            Open JD
+          </Link>
           <IconButton icon="restart_alt" label="Load sample" onClick={onLoadSample} />
           <IconButton icon="ink_eraser" label="Clear all" onClick={onClearResume} tone="danger" />
         </div>
       </div>
 
       <div className="mt-8 space-y-4">
+        {activeTab === "templates" ? (
+          <>
+            <div className="rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-lowest p-5">
+              <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Current Choice</p>
+              <h3 className="mt-2 font-headline text-2xl font-extrabold text-on-surface">{selectedTemplate.label}</h3>
+              <p className="mt-3 text-sm leading-6 text-on-surface-variant">{selectedTemplate.description}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Chip tone={selectedTemplate.badgeTone}>{selectedTemplate.badge}</Chip>
+                <Chip tone="soft">{selectedTemplate.bestFor}</Chip>
+              </div>
+            </div>
+
+            <div className="grid gap-5 xl:grid-cols-3">
+              {templateCatalog.map((template) => (
+                <TemplateCard
+                  key={template.id}
+                  template={template}
+                  selected={template.id === renderOptions.templateId}
+                  actionLabel="Apply Template"
+                  onSelect={onTemplateChange}
+                />
+              ))}
+            </div>
+          </>
+        ) : null}
+
+        {activeTab === "content" ? (
+          <>
         <AccordionSection icon="upload_file" title="Import Resume Text">
           <label className="space-y-2">
             <FieldLabel>Paste resume text</FieldLabel>
@@ -510,7 +567,10 @@ export function EditorSidebar({
             </div>
           ) : null}
         </AccordionSection>
+          </>
+        ) : null}
 
+        {activeTab === "design" ? (
         <AccordionSection icon="dashboard" title="Render Settings">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <label className="space-y-2">
@@ -518,7 +578,9 @@ export function EditorSidebar({
               <select
                 className={fieldClassName}
                 value={renderOptions.templateId}
-                onChange={(event) => updateRenderOptions({ templateId: event.target.value })}
+                onChange={(event) =>
+                  onTemplateChange((event.target.value || renderOptions.templateId) as RenderOptions["templateId"])
+                }
               >
                 {TEX_TEMPLATE_OPTIONS.map((option) => (
                   <option key={option.id} value={option.id}>
@@ -582,7 +644,22 @@ export function EditorSidebar({
             </label>
           </div>
         </AccordionSection>
+        ) : null}
 
+        {activeTab === "design" ? (
+          <div className="rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-lowest p-5">
+            <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Design Notes</p>
+            <h3 className="mt-2 font-headline text-xl font-bold text-on-surface">What changes here</h3>
+            <div className="mt-4 space-y-3 text-sm leading-6 text-on-surface-variant">
+              <p>The selected template affects the visual canvas, generated TeX source, and compiled PDF.</p>
+              <p>Margins, bullet caps, section order, and font size also feed directly into ATS render checks.</p>
+              <p>Use this mode to shape output quality without changing the underlying resume content.</p>
+            </div>
+          </div>
+        ) : null}
+
+        {activeTab === "content" ? (
+          <>
         <AccordionSection icon="person" title="Personal Details">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <label className="space-y-2 md:col-span-2">
@@ -960,6 +1037,8 @@ export function EditorSidebar({
             </div>
           </AccordionSection>
         ))}
+          </>
+        ) : null}
       </div>
     </Panel>
   );

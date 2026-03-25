@@ -1,4 +1,5 @@
 export type ResumeSource = "scratch" | "upload" | "ai" | "import";
+export type RenderTemplateId = "modern" | "compact" | "editorial";
 
 export type ResumeSectionKey =
   | "summary"
@@ -90,7 +91,7 @@ export interface ResumeData {
 }
 
 export interface RenderOptions {
-  templateId: string;
+  templateId: RenderTemplateId;
   fontSize: number;
   maxBulletsPerEntry: number;
   margin: string;

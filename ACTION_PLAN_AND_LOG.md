@@ -15,15 +15,27 @@
 - Phase 1 schema foundation:
   complete
 - Phase 2 live editor wiring:
-  complete for local state-driven editing
+  complete for shared state-driven editing
 - Phase 3 TeX draft and compile path:
-  locally operational
+  complete for local TeX source generation and PDF compilation
 - Phase 4 parsing/import:
-  in progress with local pasted-text and file import into `ResumeData`
+  complete for pasted text and uploaded `.txt`, `.md`, `.pdf`, and `.docx` import into `ResumeData`
 - Phase 5 ATS/JD analysis:
-  in progress with deterministic scoring, render checks, and evidence breakdown
+  complete for deterministic scoring, render checks, evidence breakdown, and shared workspace usage
 - Shared workspace state:
-  complete for in-memory editor, ATS, and JD flow
+  complete for editor, ATS, and JD flow
+- Workspace persistence:
+  complete for local browser restore across refresh
+- Editor export feedback:
+  complete for render/readiness checks inside the editor
+- Template system:
+  complete for shared template selection across landing, dashboard, editor, live preview, TeX source, and compiled PDF
+- Dashboard integration:
+  complete for live workspace-driven metrics and actions
+- Missing product pages:
+  complete for first-pass React versions of `about`, `learn`, and `resumes`
+- Local product loop:
+  complete for landing -> about/learn -> dashboard -> resumes -> editor -> compile -> ATS -> JD
 
 ## What has been done so far
 
@@ -279,6 +291,167 @@
   clearer missing/partial suggestions grounded in where evidence is or is not present
 - `npm run build` passes after this analysis-quality pass.
 
+### 22. Shared workspace persistence added
+
+- A versioned workspace storage layer was added in:
+  `src/app/workspace/storage.ts`
+- The shared workspace provider now restores and saves:
+  resume data
+  render options
+  job description text
+- Persistence is currently local-browser only and uses a safe versioned snapshot key.
+- Invalid or outdated stored snapshots now fall back cleanly to the default workspace state.
+- This means:
+  `editor`, `ats`, and `jd` state now survives page refresh instead of resetting.
+- A local storage smoke test was run with mocked browser storage to verify:
+  save path
+  restore path
+  fallback-safe snapshot handling
+
+### 23. Editor now surfaces export readiness directly
+
+- The editor preview now reuses the ATS/render analysis layer while editing:
+  `src/components/editor/ResumePreview.tsx`
+- Export/readiness signals now appear directly beside the compile controls instead of only on the separate ATS page.
+- The editor now shows:
+  render checks
+  section health signals
+  shared analysis-based export readiness
+- This tightens the loop between:
+  editing
+  TeX/PDF output
+  ATS-style render concerns
+- `npm run build` passes after this editor feedback pass.
+
+### 24. Shared template system completed
+
+- Template selection is now a first-class product concept instead of a placeholder field.
+- Shared template metadata was added in:
+  `src/data/templates.ts`
+- A reusable template presentation card was added in:
+  `src/components/ui/TemplateCard.tsx`
+- The canonical render type now uses explicit template IDs:
+  `modern`
+  `compact`
+  `editorial`
+- Template selection now appears consistently across:
+  landing page template gallery
+  dashboard summary cards
+  editor template mode
+  live resume preview
+  generated TeX source
+  compiled PDF output
+
+### 25. Editor workflow completed around real modes
+
+- The editor tabs are now real workflow modes instead of decorative placeholders:
+  `content`
+  `templates`
+  `design`
+- Query-param driven editor state was added so the editor can deep-link directly into:
+  template selection
+  a chosen template
+- `EditorSidebar` now separates:
+  content editing
+  template selection
+  render/design controls
+- This makes the editor feel like a complete product surface instead of a single long accordion.
+
+### 26. Resume preview upgraded into a finished output workspace
+
+- `ResumePreview` was rebuilt to support:
+  template-aware live canvas
+  PDF mode
+  TeX source mode
+  direct navigation to ATS and JD review
+- The visual preview now respects:
+  selected template
+  section order
+  bullet limits
+  grouped or flat skills
+- The right panel is no longer a fixed mock layout.
+  It is now driven by the same schema and render settings as the compiled output.
+
+### 27. Landing and dashboard were connected to the real product state
+
+- `LandingPage` copy was updated to reflect the real product state instead of the earlier UI-only phase.
+- The landing template gallery now deep-links into the editor template mode.
+- `DashboardPage` now reflects the live shared workspace instead of static placeholder metrics.
+- Dashboard metrics now use the current:
+  ATS score
+  JD score
+  selected template
+  filled section count
+  last updated resume state
+
+### 28. Final verification completed for the local product build
+
+- `npm run build` passes after the final product pass.
+- TeX compilation was verified successfully for all current templates:
+  `modern`
+  `compact`
+  `editorial`
+- This confirms that the current local product is not only visually wired, but also operational from:
+  schema
+  editor
+  template selection
+  TeX generation
+  PDF compilation
+  ATS analysis
+  JD analysis
+
+### 29. Product site expansion pages were added to React routing
+
+- The missing first-pass product pages were added as real React routes:
+  `src/app/routes/AboutPage.tsx`
+  `src/app/routes/LearnPage.tsx`
+  `src/app/routes/ResumesPage.tsx`
+- Routing was expanded in:
+  `src/app/router.tsx`
+- Public and app navigation were updated so these pages are reachable from the current product shell:
+  `src/components/layout/PublicLayout.tsx`
+  `src/components/layout/AppLayout.tsx`
+- This moves the product closer to the intended page set instead of leaving these surfaces stranded in legacy HTML only.
+
+### 30. Auth, legal, and error pages were added to the React product shell
+
+- The remaining public-support pages were added as React routes:
+  `src/app/routes/LoginPage.tsx`
+  `src/app/routes/SignupPage.tsx`
+  `src/app/routes/PrivacyPage.tsx`
+  `src/app/routes/TermsPage.tsx`
+  `src/app/routes/NotFoundPage.tsx`
+- Routing was expanded in:
+  `src/app/router.tsx`
+- The shared public shell was updated so these pages are discoverable from the live product surface:
+  `src/components/layout/PublicLayout.tsx`
+  `src/app/routes/LandingPage.tsx`
+- The catch-all redirect was replaced with a proper 404 experience so unknown routes no longer silently bounce back to landing.
+
+### 31. The public static surface was reset to chapters, choose-path, templates, and error flows
+
+- The active public static scope now focuses on:
+  landing
+  about
+  learn
+  chapter pages `1-7`
+  choose-path
+  templates
+  error
+  not-found
+- Auth and legal pages were removed from the active `src/` route surface.
+- New static route files were added:
+  `src/app/routes/ChapterPage.tsx`
+  `src/app/routes/ChoosePathPage.tsx`
+  `src/app/routes/TemplatesPage.tsx`
+  `src/app/routes/ErrorPage.tsx`
+- Routing and public-shell navigation were retuned in:
+  `src/app/router.tsx`
+  `src/components/layout/PublicLayout.tsx`
+  `src/app/routes/LandingPage.tsx`
+  `src/app/routes/AboutPage.tsx`
+  `src/app/routes/LearnPage.tsx`
+
 ## Rules to follow
 
 ### Product and build priority rules
@@ -338,67 +511,35 @@
 - Keep the reuse boundary explicit before applying any borrowed idea.
 - When in doubt, prefer preserving this project's own direction over importing outside patterns.
 
-## Next phase of action
+## Remaining optional work
 
-### Phase 1. Finalize the local canonical resume schema
+### 1. Backend and deployment hardening
 
-- Create the local schema contract for this repo.
-- Define:
-  `ResumeData`
-  section item types
-  `ResumeSectionKey`
-  `RenderOptions`
-- Decide which parts of the external schema are kept exactly and which parts are trimmed.
-- Lock down normalization expectations early.
+- Move from local-only workflow to deployed render service hosting.
+- Decide the cheapest safe production path for the TeX compiler service.
+- Add production error handling, rate limiting, and operational logging.
 
-### Phase 2. Map the editor UI to the schema
+### 2. Deeper import and matching quality
 
-- Turn the editor into a real schema-driven page.
-- The left side should edit structured resume data.
-- The right side should become the future preview/output side for compiled TeX/PDF.
-- Keep it state-driven before persistence is introduced.
+- Improve messy PDF and `.docx` extraction further.
+- Add optional AI-assisted parsing only if it improves the canonical schema output without weakening reliability.
+- Improve JD and ATS matching beyond deterministic keyword overlap when needed.
 
-### Phase 3. Build the TeX rendering contract
+### 3. Accounts and saved resumes
 
-- Create one controlled TeX template first.
-- Build the serializer from structured resume data into template input.
-- Define the minimal render settings needed at the start:
-  template
-  page limit
-  margin
-  optional font size
-- Keep this minimal at first.
+- Add authentication only after the current local-first product loop is stable enough.
+- Support multiple named resumes and account-backed persistence later.
 
-### Phase 4. Introduce parsing flow
-
-- Add resume text/file intake later.
-- Parse into the canonical resume schema.
-- Normalize and validate before rendering.
-- Groq is currently intended for parsing.
-
-### Phase 5. JD and ATS flows
-
-- Add JD parsing and matching after the resume schema and TeX flow are stable.
-- Add ATS analysis after the same canonical resume contract is in place.
-- Both should consume the same structured resume data rather than inventing separate data shapes.
-
-### Phase 6. Persistence and accounts
-
-- Only after the core flow works:
-  consider accounts, multiple resumes, and saved state.
-
-### Phase 7. Later-stage style unification and deployment
+### 4. Later-stage style unification
 
 - Revisit the deferred `globals.css` comparison later.
 - Tighten color consistency across current and future pages through the active token system.
-- Evaluate the cheapest safe TeX deployment path when the functional loop is real.
+- Continue visual polish without replacing the active design-system foundation.
 
 ## Notes to keep in mind
 
 - The external repo context has been absorbed, but not adopted wholesale.
 - The main immediate risk is no longer TeX installation.
   It is drifting the product before the parsing and analysis flows are tied cleanly to the canonical schema.
-- The next meaningful implementation step should focus on:
-  parsing/import
-  TeX template hardening
-  JD/ATS flows on top of the same schema
+- The current local product loop is now complete.
+- The next meaningful work is optional expansion work, not missing foundation work.
