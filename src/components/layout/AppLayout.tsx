@@ -5,11 +5,12 @@ import { TopNav } from "./TopNav";
 interface AppLayoutProps {
   children: ReactNode;
   contentClassName?: string;
+  viewportBound?: boolean;
 }
 
-export function AppLayout({ children, contentClassName }: AppLayoutProps) {
+export function AppLayout({ children, contentClassName, viewportBound = false }: AppLayoutProps) {
   return (
-    <div className="dotted-bg-soft flex min-h-screen flex-col">
+    <div className={cx("dotted-bg-soft flex flex-col", viewportBound ? "h-dvh overflow-hidden" : "min-h-screen")}>
       <TopNav
         links={[
           { label: "Dashboard", to: "/dashboard" },
@@ -21,7 +22,15 @@ export function AppLayout({ children, contentClassName }: AppLayoutProps) {
         mode="app"
         primaryAction={{ label: "Create New", to: "/editor" }}
       />
-      <main className={cx("mx-auto flex min-h-0 w-full max-w-[1600px] flex-1", contentClassName)}>{children}</main>
+      <main
+        className={cx(
+          "mx-auto flex min-h-0 w-full max-w-[1600px] flex-1",
+          viewportBound && "overflow-hidden",
+          contentClassName
+        )}
+      >
+        {children}
+      </main>
     </div>
   );
 }

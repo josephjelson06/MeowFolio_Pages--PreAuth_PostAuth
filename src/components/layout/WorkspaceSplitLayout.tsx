@@ -25,9 +25,9 @@ export function WorkspaceSplitLayout({
   variant = "analysis"
 }: WorkspaceSplitLayoutProps) {
   return (
-    <div className={cx("grid h-full min-h-0 w-full grid-cols-1 gap-6", variantClasses[variant])}>
-      <div className={cx("min-h-[320px] min-w-0 overflow-hidden", leftClassName)}>{left}</div>
-      <div className={cx("min-h-[320px] min-w-0 overflow-hidden", rightClassName)}>{right}</div>
+    <div className={cx("grid h-full min-h-0 w-full grid-cols-1 grid-rows-[minmax(0,1fr)] gap-6", variantClasses[variant])}>
+      <div className={cx("h-full min-h-0 min-w-0 overflow-hidden", leftClassName)}>{left}</div>
+      <div className={cx("h-full min-h-0 min-w-0 overflow-hidden", rightClassName)}>{right}</div>
     </div>
   );
 }

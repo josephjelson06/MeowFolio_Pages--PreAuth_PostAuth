@@ -45,7 +45,7 @@ export function EditorPage() {
   }
 
   return (
-    <AppLayout contentClassName="min-h-0 overflow-hidden px-6 py-6">
+    <AppLayout contentClassName="min-h-0 px-6 py-6">
       <WorkspaceSplitLayout
         left={
           <EditorSidebar

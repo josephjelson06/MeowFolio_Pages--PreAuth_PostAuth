@@ -12,6 +12,7 @@
   html,
   body,
   #root {
+    height: 100%;
     min-height: 100%;
   }
 
@@ -97,8 +98,9 @@
   }
 
   .workspace-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: #dcc1b8 transparent;
+    scrollbar-gutter: stable both-edges;
+    scrollbar-width: auto;
+    scrollbar-color: #c9937f rgba(220, 193, 184, 0.2);
   }
 
   .hide-scrollbar {
@@ -111,13 +113,19 @@
   }
 
   .workspace-scroll::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
+  }
+
+  .workspace-scroll::-webkit-scrollbar-track {
+    background: rgba(220, 193, 184, 0.22);
+    border-radius: 999px;
   }
 
   .workspace-scroll::-webkit-scrollbar-thumb {
-    background: #dcc1b8;
+    background: #c9937f;
     border-radius: 999px;
+    border: 2px solid rgba(255, 248, 244, 0.8);
   }
 
   .material-symbols-outlined {

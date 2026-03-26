@@ -15,6 +15,7 @@ import type { ResumeImportResult } from "../../types/import";
 import { requestImportedResumeFile } from "../../lib/import-client";
 import { importResumeFromText } from "../../lib/resume-import";
 import { skillsToText, splitDelimitedItems, splitLineItems, textToSkills } from "../../lib/resume";
+import { cx } from "../../lib/cx";
 import { Chip } from "../ui/Chip";
 import { Panel } from "../ui/Panel";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -144,21 +145,33 @@ function DetailCard({
 }
 
 function WorkspaceSurface({
+  bodyClassName,
   children,
   description,
+  footer,
+  headerAside,
   title
 }: {
+  bodyClassName?: string;
   children: ReactNode;
   description?: string;
+  footer?: ReactNode;
+  headerAside?: ReactNode;
   title: string;
 }) {
   return (
-    <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.75rem] border border-outline-variant/20 bg-surface-container-lowest">
-      <div className="shrink-0 border-b border-outline-variant/15 px-5 py-4">
-        <p className="font-headline text-lg font-bold text-on-surface">{title}</p>
-        {description ? <p className="mt-1 text-sm leading-6 text-on-surface-variant">{description}</p> : null}
+    <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.75rem] border border-outline-variant/20 bg-surface-container-lowest shadow-ambient">
+      <div className="shrink-0 border-b border-outline-variant/15 px-4 py-3">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="font-headline text-base font-bold text-on-surface">{title}</p>
+            {description ? <p className="mt-1 text-xs leading-5 text-on-surface-variant">{description}</p> : null}
+          </div>
+          {headerAside ? <div className="shrink-0">{headerAside}</div> : null}
+        </div>
       </div>
-      <div className="min-h-0 flex-1 p-4">{children}</div>
+      <div className={cx("min-h-0 flex-1 overflow-hidden p-3", bodyClassName)}>{children}</div>
+      {footer ? <div className="shrink-0 border-t border-outline-variant/15 bg-surface-container px-4 py-3">{footer}</div> : null}
     </section>
   );
 }
@@ -240,15 +253,15 @@ function AccordionWorkspace({
   items: AccordionWorkspaceItem[];
   onChange: (id: string | null) => void;
   onReorder?: (from: ResumeSectionKey, to: ResumeSectionKey) => void;
-}) {
-  const [draggedSectionId, setDraggedSectionId] = useState<ResumeSectionKey | null>(null);
+  }) {
+    const [draggedSectionId, setDraggedSectionId] = useState<ResumeSectionKey | null>(null);
 
-  return (
-    <div className="workspace-scroll h-full overflow-y-auto pr-2">
-      <div className="space-y-3">
-        {items.map((item) => {
-          const active = item.id === activeId;
-          const reorderable = Boolean(onReorder && isResumeSectionId(item.id));
+    return (
+      <div className="workspace-scroll h-[42rem] max-h-full overflow-y-scroll pr-2">
+        <div className="space-y-3">
+          {items.map((item) => {
+            const active = item.id === activeId;
+            const reorderable = Boolean(onReorder && isResumeSectionId(item.id));
 
           function handleDragStart(event: DragEvent<HTMLElement>) {
             if (!reorderable || !isResumeSectionId(item.id)) {
@@ -968,102 +981,97 @@ export function EditorSidebar({
   ];
 
   return (
-    <Panel className="flex h-full min-h-0 flex-col p-8">
-      <div className="mb-8">
+    <Panel className="flex h-full min-h-0 flex-col p-6">
+      <div className="shrink-0 space-y-4">
         <EditorTabs activeTab={activeTab} onTabChange={onTabChange} />
-      </div>
-      <SectionHeading
-        eyebrow="Workspace"
-        title={activeTab === "templates" ? "Choose A Template" : activeTab === "design" ? "Tune Output Settings" : "Edit Resume Content"}
-        description={
-          activeTab === "templates"
-            ? "Pick the TeX template that should drive the compiled PDF preview and export output."
-            : activeTab === "design"
-              ? "Adjust the real output settings that flow into ATS checks and the compiled PDF."
-              : "This workspace edits the canonical resume schema directly, persists locally, and lets you drag resume sections into the order you want."
-        }
-      />
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <Chip tone="lavender">Schema v{resume.meta.version}</Chip>
-        <Chip tone="soft">Source: {resume.meta.source}</Chip>
-        <Chip tone="mint">{selectedTemplate.label}</Chip>
-        <div className="ml-auto flex flex-wrap gap-3">
-          <Link
-            to="/ats"
-            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
-          >
-            Open ATS
-          </Link>
-          <Link
-            to="/jd"
-            className="inline-flex h-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest px-4 text-sm font-bold text-on-surface transition hover:-translate-y-px"
-          >
-            Open JD
-          </Link>
-          <IconButton icon="ink_eraser" label="Clear all" onClick={onClearResume} tone="danger" />
+        <SectionHeading
+          eyebrow="Workspace"
+          title={activeTab === "templates" ? "Choose A Template" : activeTab === "design" ? "Customize Output" : "Edit Resume Content"}
+          description={
+            activeTab === "templates"
+              ? "Pick a template quickly and keep the PDF preview on the right."
+              : activeTab === "design"
+                ? "Adjust only the controls that change the rendered PDF."
+                : "Edit sections inside one bounded workspace and drag them into order."
+          }
+        />
+
+        <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-lowest px-3 py-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <Chip tone="lavender">Schema v{resume.meta.version}</Chip>
+            <Chip tone="soft">Source: {resume.meta.source}</Chip>
+            <Chip tone="mint">{selectedTemplate.label}</Chip>
+            <div className="ml-auto flex flex-wrap gap-2">
+              <Link
+                to="/ats"
+                className="inline-flex h-9 items-center justify-center rounded-full border border-outline-variant/20 bg-white px-3 text-xs font-bold uppercase tracking-[0.12em] text-on-surface transition hover:-translate-y-px"
+              >
+                ATS
+              </Link>
+              <Link
+                to="/jd"
+                className="inline-flex h-9 items-center justify-center rounded-full border border-outline-variant/20 bg-white px-3 text-xs font-bold uppercase tracking-[0.12em] text-on-surface transition hover:-translate-y-px"
+              >
+                JD
+              </Link>
+              <IconButton icon="ink_eraser" label="Clear" onClick={onClearResume} tone="danger" />
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="mt-8 flex-1 min-h-0">
+      <div className="mt-4 flex-1 min-h-0">
         {activeTab === "templates" ? (
           <WorkspaceSurface
             title="Template Library"
-            description="Compare layouts in this bounded panel, filter by resume style, and confirm the template you want to keep active."
+            description="Compact picker for the PDF layout."
+            headerAside={<Chip tone="soft">{filteredTemplates.length} templates</Chip>}
           >
-            <div className="workspace-scroll h-full overflow-y-auto pr-2">
-              <div className="rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-high p-5">
-                <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Current Choice</p>
-                <h3 className="mt-2 font-headline text-2xl font-extrabold text-on-surface">{selectedTemplate.label}</h3>
-                <p className="mt-3 text-sm leading-6 text-on-surface-variant">{selectedTemplate.description}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Chip tone={selectedTemplate.badgeTone}>{selectedTemplate.badge}</Chip>
-                  <Chip tone="soft">{selectedTemplate.bestFor}</Chip>
+            <div className="flex h-full min-h-0 flex-col">
+              <div className="shrink-0 space-y-3 pb-3">
+                <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high px-4 py-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="font-label text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Current</p>
+                      <p className="mt-1 font-headline text-lg font-bold text-on-surface">{selectedTemplate.label}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Chip tone={selectedTemplate.badgeTone}>{selectedTemplate.badge}</Chip>
+                      <Chip tone="soft">{selectedTemplate.density}</Chip>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                  <SegmentedButton active={templateFilter === "all"} onClick={() => setTemplateFilter("all")}>
+                    All
+                  </SegmentedButton>
+                  <SegmentedButton active={templateFilter === "balanced"} onClick={() => setTemplateFilter("balanced")}>
+                    Balanced
+                  </SegmentedButton>
+                  <SegmentedButton active={templateFilter === "tight"} onClick={() => setTemplateFilter("tight")}>
+                    One-page
+                  </SegmentedButton>
+                  <SegmentedButton active={templateFilter === "airy"} onClick={() => setTemplateFilter("airy")}>
+                    Story-led
+                  </SegmentedButton>
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-2">
-                <SegmentedButton active={templateFilter === "all"} onClick={() => setTemplateFilter("all")}>
-                  All
-                </SegmentedButton>
-                <SegmentedButton active={templateFilter === "balanced"} onClick={() => setTemplateFilter("balanced")}>
-                  Balanced
-                </SegmentedButton>
-                <SegmentedButton active={templateFilter === "tight"} onClick={() => setTemplateFilter("tight")}>
-                  One-page
-                </SegmentedButton>
-                <SegmentedButton active={templateFilter === "airy"} onClick={() => setTemplateFilter("airy")}>
-                  Story-led
-                </SegmentedButton>
-              </div>
-
-              <div className="mt-4 grid gap-5 md:grid-cols-2">
-                {filteredTemplates.map((template) => (
-                  <TemplateCard
-                    key={template.id}
-                    template={template}
-                    selected={template.id === renderOptions.templateId}
-                    actionLabel="Apply Template"
-                    onSelect={onTemplateChange}
-                  />
-                ))}
-              </div>
-
-              <div className="mt-8 flex gap-4">
-                <button
-                  type="button"
-                  onClick={() => onTabChange("content")}
-                  className="flex-1 rounded-xl border-2 border-outline-variant/20 bg-surface-container-highest py-3.5 text-sm font-bold text-on-surface transition-colors hover:bg-surface-container"
-                >
-                  Back to Content
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onTabChange("design")}
-                  className="flex-1 rounded-xl bg-secondary py-3.5 text-sm font-bold text-on-secondary shadow-tactile-sm transition-transform hover:-translate-y-px"
-                >
-                  Confirm Template
-                </button>
+              <div className="workspace-scroll min-h-0 flex-1 overflow-y-scroll pr-1">
+                <div className="grid gap-3 xl:grid-cols-2">
+                  {filteredTemplates.map((template) => (
+                    <TemplateCard
+                      key={template.id}
+                      compact
+                      template={template}
+                      selected={template.id === renderOptions.templateId}
+                      actionLabel="Use"
+                      onSelect={onTemplateChange}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </WorkspaceSurface>
@@ -1071,104 +1079,93 @@ export function EditorSidebar({
 
         {activeTab === "design" ? (
           <WorkspaceSurface
-            title="Render Controls"
-            description="Fine-tune typography and spacing here, then compile on the right when you want to refresh the PDF preview."
+            title="Customize Output"
+            description="Keep this compact. Reordering still happens in Content."
+            headerAside={<Chip tone="mint">{selectedTemplate.label}</Chip>}
+            footer={
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() =>
+                    onRenderOptionsChange({
+                      ...DEFAULT_RENDER_OPTIONS,
+                      templateId: renderOptions.templateId
+                    })
+                  }
+                  className="flex-1 rounded-xl border-2 border-outline-variant/20 bg-surface-container-highest py-3 text-sm font-bold text-on-surface transition-colors hover:bg-surface-container"
+                >
+                  Reset
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onTabChange("content")}
+                  className="flex-1 rounded-xl bg-secondary py-3 text-sm font-bold text-on-secondary shadow-tactile-sm transition-transform hover:-translate-y-px"
+                >
+                  Done
+                </button>
+              </div>
+            }
           >
-            <div className="workspace-scroll h-full overflow-y-auto pr-2">
-              <div className="space-y-8">
-                <div className="space-y-3">
-                  <FieldLabel>Page Limit</FieldLabel>
-                  <div className="grid grid-cols-2 gap-3 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
-                    <SegmentedButton active={renderOptions.pageLimit === 1} onClick={() => updateRenderOptions({ pageLimit: 1 })}>
-                      1 Page
-                    </SegmentedButton>
-                    <SegmentedButton active={renderOptions.pageLimit === 2} onClick={() => updateRenderOptions({ pageLimit: 2 })}>
-                      2 Pages
-                    </SegmentedButton>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <FieldLabel>Font Size</FieldLabel>
-                  <div className="grid grid-cols-3 gap-3 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
-                    <SegmentedButton active={renderOptions.fontSize <= 10} onClick={() => updateRenderOptions({ fontSize: 10 })}>
-                      Small
-                    </SegmentedButton>
-                    <SegmentedButton active={renderOptions.fontSize === 11} onClick={() => updateRenderOptions({ fontSize: 11 })}>
-                      Medium
-                    </SegmentedButton>
-                    <SegmentedButton active={renderOptions.fontSize >= 12} onClick={() => updateRenderOptions({ fontSize: 12 })}>
-                      Large
-                    </SegmentedButton>
-                  </div>
-                </div>
-
-                <div className="rounded-[1.75rem] border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-tactile-sm">
-                  <div className="space-y-8">
-                    <RangeRow
-                      label="Margins"
-                      min={0.7}
-                      max={1.5}
-                      step={0.1}
-                      value={marginValue}
-                      valueLabel={`${marginValue.toFixed(1)}cm`}
-                      onChange={(value) => updateRenderOptions({ margin: `${value.toFixed(1)}cm` })}
-                    />
-                    <RangeRow
-                      label="Bullet Density"
-                      min={2}
-                      max={6}
-                      value={renderOptions.maxBulletsPerEntry}
-                      valueLabel={`${renderOptions.maxBulletsPerEntry} bullets`}
-                      onChange={(value) => updateRenderOptions({ maxBulletsPerEntry: value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <FieldLabel>Section Order</FieldLabel>
-                  <div className="rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-high p-5">
-                    <div className="flex flex-wrap gap-2">
-                      {renderOptions.sectionOrder.map((section) => (
-                        <Chip key={section} tone="soft">
-                          {sectionLabels[section]}
-                        </Chip>
-                      ))}
+            <div className="flex h-full min-h-0 flex-col">
+              <div className="workspace-scroll min-h-0 flex-1 overflow-y-scroll pr-1">
+                <div className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
+                      <FieldLabel>Page Limit</FieldLabel>
+                      <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
+                        <SegmentedButton active={renderOptions.pageLimit === 1} onClick={() => updateRenderOptions({ pageLimit: 1 })}>
+                          1 Page
+                        </SegmentedButton>
+                        <SegmentedButton active={renderOptions.pageLimit === 2} onClick={() => updateRenderOptions({ pageLimit: 2 })}>
+                          2 Pages
+                        </SegmentedButton>
+                      </div>
                     </div>
-                    <p className="mt-4 text-sm leading-6 text-on-surface-variant">
-                      Reorder sections from the Content tab by dragging the accordion headers.
+
+                    <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
+                      <FieldLabel>Font Size</FieldLabel>
+                      <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
+                        <SegmentedButton active={renderOptions.fontSize <= 10} onClick={() => updateRenderOptions({ fontSize: 10 })}>
+                          Small
+                        </SegmentedButton>
+                        <SegmentedButton active={renderOptions.fontSize === 11} onClick={() => updateRenderOptions({ fontSize: 11 })}>
+                          Medium
+                        </SegmentedButton>
+                        <SegmentedButton active={renderOptions.fontSize >= 12} onClick={() => updateRenderOptions({ fontSize: 12 })}>
+                          Large
+                        </SegmentedButton>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
+                    <div className="space-y-6">
+                      <RangeRow
+                        label="Margins"
+                        min={0.7}
+                        max={1.5}
+                        step={0.1}
+                        value={marginValue}
+                        valueLabel={`${marginValue.toFixed(1)}cm`}
+                        onChange={(value) => updateRenderOptions({ margin: `${value.toFixed(1)}cm` })}
+                      />
+                      <RangeRow
+                        label="Bullet Density"
+                        min={2}
+                        max={6}
+                        value={renderOptions.maxBulletsPerEntry}
+                        valueLabel={`${renderOptions.maxBulletsPerEntry} bullets`}
+                        onChange={(value) => updateRenderOptions({ maxBulletsPerEntry: value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
+                    <p className="font-label text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Workflow Note</p>
+                    <p className="mt-2 text-sm leading-6 text-on-surface-variant">
+                      Drag section headers from the Content tab to reorder the resume. The PDF on the right only updates when you compile.
                     </p>
                   </div>
-                </div>
-
-                <div className="rounded-[1.5rem] bg-surface-container-high p-5">
-                  <p className="font-label text-xs font-bold uppercase tracking-[0.18em] text-primary">Output behavior</p>
-                  <div className="mt-3 space-y-2 text-sm leading-6 text-on-surface-variant">
-                    <p>The PDF on the right stays visually stable until you press compile.</p>
-                    <p>These settings affect the next render instead of reflowing the preview live while you edit.</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onRenderOptionsChange({
-                        ...DEFAULT_RENDER_OPTIONS,
-                        templateId: renderOptions.templateId
-                      })
-                    }
-                    className="flex-1 rounded-xl border-2 border-outline-variant/20 bg-surface-container-highest py-4 font-bold text-on-surface transition-colors hover:bg-surface-container"
-                  >
-                    Reset Defaults
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onTabChange("content")}
-                    className="flex-1 rounded-xl bg-secondary py-4 font-bold text-on-secondary shadow-tactile-sm transition-transform hover:-translate-y-px"
-                  >
-                    Apply Changes
-                  </button>
                 </div>
               </div>
             </div>
@@ -1177,15 +1174,25 @@ export function EditorSidebar({
 
         {activeTab === "content" ? (
           <WorkspaceSurface
+            bodyClassName="overflow-hidden"
             title="Section Workspace"
-            description="This is the dedicated section editor block. Expand a section, fill in details, and drag resume sections to change their order."
+            description="Scroll the full section list here. Open sections can still scroll internally when they get long."
+            headerAside={<Chip tone="soft">{Math.max(orderedContentSections.length - 2, 0)} sections</Chip>}
           >
-            <AccordionWorkspace
-              items={orderedContentSections}
-              activeId={activeContentSection}
-              onChange={setActiveContentSection}
-              onReorder={reorderResumeSections}
-            />
+            <div className="flex h-full min-h-0 flex-col">
+              <div className="mb-3 flex shrink-0 flex-wrap gap-2">
+                <Chip tone="soft">Drag to reorder</Chip>
+                <Chip tone="soft">One section open at a time</Chip>
+              </div>
+              <div className="min-h-0 flex-1">
+                <AccordionWorkspace
+                  items={orderedContentSections}
+                  activeId={activeContentSection}
+                  onChange={setActiveContentSection}
+                  onReorder={reorderResumeSections}
+                />
+              </div>
+            </div>
           </WorkspaceSurface>
         ) : null}
       </div>
