@@ -3,7 +3,10 @@ import {
   DEFAULT_RENDER_OPTIONS,
   DEFAULT_RESUME_SECTION_ORDER,
   areSkillsGrouped,
+  isCustomResumeSectionId,
   type CompactItem,
+  type CustomSection,
+  type OrderedResumeSectionId,
   type RenderOptions,
   type ResumeData,
   type ResumeSectionKey
@@ -121,6 +124,18 @@ function sectionBlock(title: string, content: string) {
   }
 
   return [`\\resumeSection{${escapeTex(title)}}`, content].join("\n");
+}
+
+function getBuiltInSectionTitle(section: ResumeSectionKey, options: RenderOptions, fallback: string) {
+  return options.sectionTitles[section]?.trim() || fallback;
+}
+
+function findCustomSection(sectionId: string, resume: ResumeData) {
+  return resume.customSections.find((section) => section.id === sectionId) ?? null;
+}
+
+function renderCustomSection(section: CustomSection) {
+  return sectionBlock(section.title.trim() || "Custom Section", renderCompactItems(section.items));
 }
 
 function renderCompactItems(items: CompactItem[]) {
@@ -395,23 +410,31 @@ function renderClassicCompactList(items: CompactItem[]) {
 function renderClassicSection(section: ResumeSectionKey, resume: ResumeData, options: RenderOptions) {
   switch (section) {
     case "summary":
-      return resume.summary?.trim() ? `\\textbf{Impact:} ${escapeTex(resume.summary.trim())}` : "";
+      return resume.summary?.trim()
+        ? sectionBlock(getBuiltInSectionTitle(section, options, "Summary"), escapeTex(resume.summary.trim()))
+        : "";
     case "skills":
-      return sectionBlock("Skills", renderClassicSkillsTable(resume));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Skills"), renderClassicSkillsTable(resume));
     case "education":
-      return sectionBlock("Education", renderClassicEducation(resume));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Education"), renderClassicEducation(resume));
     case "experience":
-      return sectionBlock("Experience", renderClassicExperience(resume, options));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Experience"), renderClassicExperience(resume, options));
     case "projects":
-      return sectionBlock("Projects", renderClassicProjects(resume, options));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Projects"), renderClassicProjects(resume, options));
     case "certifications":
-      return sectionBlock("Certifications", renderClassicCompactList(resume.certifications));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Certifications"), renderClassicCompactList(resume.certifications));
     case "awards":
-      return sectionBlock("Awards \\& Honors", renderClassicCompactList(resume.awards));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Awards \\& Honors"), renderClassicCompactList(resume.awards));
     case "leadership":
-      return sectionBlock("Leadership | Roles \\& Responsibilities", renderClassicCompactList(resume.leadership));
+      return sectionBlock(
+        getBuiltInSectionTitle(section, options, "Leadership | Roles \\& Responsibilities"),
+        renderClassicCompactList(resume.leadership)
+      );
     case "extracurricular":
-      return sectionBlock("Extracurricular Activities", renderClassicCompactList(resume.extracurricular));
+      return sectionBlock(
+        getBuiltInSectionTitle(section, options, "Extracurricular Activities"),
+        renderClassicCompactList(resume.extracurricular)
+      );
     default:
       return "";
   }
@@ -425,26 +448,38 @@ function renderSection(
 ) {
   switch (section) {
     case "summary":
-      return sectionBlock("Summary", resume.summary?.trim() ? escapeTex(resume.summary.trim()) : "");
+      return sectionBlock(
+        getBuiltInSectionTitle(section, options, "Summary"),
+        resume.summary?.trim() ? escapeTex(resume.summary.trim()) : ""
+      );
     case "skills":
-      return sectionBlock("Skills", renderSkills(resume));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Skills"), renderSkills(resume));
     case "education":
-      return sectionBlock("Education", renderEducation(resume));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Education"), renderEducation(resume));
     case "experience":
-      return sectionBlock("Experience", renderExperience(resume, options, config));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Experience"), renderExperience(resume, options, config));
     case "projects":
-      return sectionBlock("Projects", renderProjects(resume, options, config));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Projects"), renderProjects(resume, options, config));
     case "certifications":
-      return sectionBlock("Certifications", renderCompactItems(resume.certifications));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Certifications"), renderCompactItems(resume.certifications));
     case "awards":
-      return sectionBlock("Awards", renderCompactItems(resume.awards));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Awards"), renderCompactItems(resume.awards));
     case "leadership":
-      return sectionBlock("Leadership", renderCompactItems(resume.leadership));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Leadership"), renderCompactItems(resume.leadership));
     case "extracurricular":
-      return sectionBlock("Extracurricular", renderCompactItems(resume.extracurricular));
+      return sectionBlock(getBuiltInSectionTitle(section, options, "Extracurricular"), renderCompactItems(resume.extracurricular));
     default:
       return "";
   }
+}
+
+function renderOrderedSection(sectionId: OrderedResumeSectionId, resume: ResumeData, options: RenderOptions, config?: TemplateRenderConfig) {
+  if (isCustomResumeSectionId(sectionId)) {
+    const customSection = findCustomSection(sectionId, resume);
+    return customSection ? renderCustomSection(customSection) : "";
+  }
+
+  return config ? renderSection(sectionId, resume, options, config) : renderClassicSection(sectionId, resume, options);
 }
 
 function renderHeaderBlock(resume: ResumeData, config: TemplateRenderConfig) {
@@ -512,7 +547,7 @@ function buildClassicPreamble(options: RenderOptions) {
   ].join("\n");
 }
 
-export function renderOptionsToText(order: ResumeSectionKey[]) {
+export function renderOptionsToText(order: OrderedResumeSectionId[]) {
   return order.join("\n");
 }
 
@@ -526,7 +561,8 @@ export function textToSectionOrder(value: string) {
 export function createInitialRenderOptions(): RenderOptions {
   return {
     ...DEFAULT_RENDER_OPTIONS,
-    sectionOrder: [...DEFAULT_RENDER_OPTIONS.sectionOrder]
+    sectionOrder: [...DEFAULT_RENDER_OPTIONS.sectionOrder],
+    sectionTitles: { ...DEFAULT_RENDER_OPTIONS.sectionTitles }
   };
 }
 
@@ -535,7 +571,7 @@ export function renderResumeToTex(resume: ResumeData, options: RenderOptions) {
 
   if (template.id === "classic") {
     const orderedSections = options.sectionOrder
-      .map((section) => renderClassicSection(section, resume, options))
+      .map((section) => renderOrderedSection(section, resume, options))
       .filter(Boolean)
       .join("\n\n");
 
@@ -554,7 +590,7 @@ export function renderResumeToTex(resume: ResumeData, options: RenderOptions) {
 
   const config = getTemplateRenderConfig(template.id);
   const orderedSections = options.sectionOrder
-    .map((section) => renderSection(section, resume, options, config))
+    .map((section) => renderOrderedSection(section, resume, options, config))
     .filter(Boolean)
     .join("\n\n");
 

@@ -82,7 +82,8 @@ const sampleResumeData: ResumeData = {
   certifications: [],
   awards: [],
   leadership: [],
-  extracurricular: []
+  extracurricular: [],
+  customSections: []
 };
 
 function cloneSkills(skills: ResumeSkills): ResumeSkills {
@@ -119,7 +120,11 @@ export function createMockResumeData(): ResumeData {
     certifications: sampleResumeData.certifications.map((item) => ({ ...item })),
     awards: sampleResumeData.awards.map((item) => ({ ...item })),
     leadership: sampleResumeData.leadership.map((item) => ({ ...item })),
-    extracurricular: sampleResumeData.extracurricular.map((item) => ({ ...item }))
+    extracurricular: sampleResumeData.extracurricular.map((item) => ({ ...item })),
+    customSections: sampleResumeData.customSections.map((section) => ({
+      ...section,
+      items: section.items.map((item) => ({ ...item }))
+    }))
   };
 }
 

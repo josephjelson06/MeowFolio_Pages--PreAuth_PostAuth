@@ -1,34 +1,32 @@
 import { useRef, useState, type ChangeEvent, type DragEvent, type ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { getTemplateDefinition, templateCatalog } from "../../data/templates";
+import { templateCatalog } from "../../data/templates";
 import { DEFAULT_RENDER_OPTIONS } from "../../types/resume";
 import type {
   CompactItem,
+  CustomResumeSectionId,
   EducationItem,
   ExperienceItem,
+  OrderedResumeSectionId,
   ProjectItem,
   RenderOptions,
   ResumeData,
   ResumeSectionKey
 } from "../../types/resume";
+import { isCustomResumeSectionId } from "../../types/resume";
 import type { ResumeImportResult } from "../../types/import";
 import { requestImportedResumeFile } from "../../lib/import-client";
 import { importResumeFromText } from "../../lib/resume-import";
 import { skillsToText, splitDelimitedItems, splitLineItems, textToSkills } from "../../lib/resume";
 import { cx } from "../../lib/cx";
 import { Chip } from "../ui/Chip";
-import { Panel } from "../ui/Panel";
-import { SectionHeading } from "../ui/SectionHeading";
 import { TemplateCard } from "../ui/TemplateCard";
 import { AccordionSection } from "./AccordionSection";
-import { type EditorTabId, EditorTabs } from "./EditorTabs";
+import { type EditorTabId } from "./EditorTabs";
 
 interface EditorSidebarProps {
   activeTab: EditorTabId;
-  onClearResume: () => void;
   onResumeChange: (resume: ResumeData) => void;
   onRenderOptionsChange: (options: RenderOptions) => void;
-  onTabChange: (tab: EditorTabId) => void;
   onTemplateChange: (templateId: RenderOptions["templateId"]) => void;
   renderOptions: RenderOptions;
   resume: ResumeData;
@@ -75,11 +73,13 @@ function FieldLabel({ children }: { children: string }) {
 }
 
 function IconButton({
+  disabled = false,
   icon,
   label,
   onClick,
   tone = "surface"
 }: {
+  disabled?: boolean;
   icon: string;
   label: string;
   onClick: () => void;
@@ -93,8 +93,9 @@ function IconButton({
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={onClick}
-      className={`inline-flex h-10 items-center justify-center rounded-full border px-4 text-sm font-bold transition hover:-translate-y-px ${toneClassName}`}
+      className={`inline-flex h-10 items-center justify-center rounded-full border px-4 text-sm font-bold transition hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 ${toneClassName}`}
     >
       <span className="inline-flex items-center gap-2">
         <span className="material-symbols-outlined text-lg">{icon}</span>
@@ -237,9 +238,13 @@ function RangeRow({
 }
 
 interface AccordionWorkspaceItem {
+  canDelete?: boolean;
+  canRename?: boolean;
   content: ReactNode;
   icon: string;
   id: string;
+  onDelete?: () => void;
+  onRename?: () => void;
   title: string;
 }
 
@@ -252,19 +257,19 @@ function AccordionWorkspace({
   activeId: string | null;
   items: AccordionWorkspaceItem[];
   onChange: (id: string | null) => void;
-  onReorder?: (from: ResumeSectionKey, to: ResumeSectionKey) => void;
+  onReorder?: (from: OrderedResumeSectionId, to: OrderedResumeSectionId) => void;
   }) {
-    const [draggedSectionId, setDraggedSectionId] = useState<ResumeSectionKey | null>(null);
+    const [draggedSectionId, setDraggedSectionId] = useState<OrderedResumeSectionId | null>(null);
 
     return (
       <div className="workspace-scroll h-[42rem] max-h-full overflow-y-scroll pr-2">
         <div className="space-y-3">
           {items.map((item) => {
             const active = item.id === activeId;
-            const reorderable = Boolean(onReorder && isResumeSectionId(item.id));
+            const reorderable = Boolean(onReorder && (isResumeSectionId(item.id) || isCustomResumeSectionId(item.id)));
 
           function handleDragStart(event: DragEvent<HTMLElement>) {
-            if (!reorderable || !isResumeSectionId(item.id)) {
+            if (!reorderable || (!isResumeSectionId(item.id) && !isCustomResumeSectionId(item.id))) {
               return;
             }
 
@@ -278,7 +283,12 @@ function AccordionWorkspace({
           }
 
           function handleDragOver(event: DragEvent<HTMLElement>) {
-            if (!reorderable || !draggedSectionId || !isResumeSectionId(item.id) || draggedSectionId === item.id) {
+            if (
+              !reorderable ||
+              !draggedSectionId ||
+              (!isResumeSectionId(item.id) && !isCustomResumeSectionId(item.id)) ||
+              draggedSectionId === item.id
+            ) {
               return;
             }
 
@@ -286,7 +296,13 @@ function AccordionWorkspace({
           }
 
           function handleDrop(event: DragEvent<HTMLElement>) {
-            if (!onReorder || !reorderable || !draggedSectionId || !isResumeSectionId(item.id) || draggedSectionId === item.id) {
+            if (
+              !onReorder ||
+              !reorderable ||
+              !draggedSectionId ||
+              (!isResumeSectionId(item.id) && !isCustomResumeSectionId(item.id)) ||
+              draggedSectionId === item.id
+            ) {
               return;
             }
 
@@ -306,6 +322,8 @@ function AccordionWorkspace({
               onDragOver={reorderable ? handleDragOver : undefined}
               onDragStart={reorderable ? handleDragStart : undefined}
               onDrop={reorderable ? handleDrop : undefined}
+              onDelete={item.canDelete ? item.onDelete : undefined}
+              onRename={item.canRename ? item.onRename : undefined}
               title={item.title}
               onToggle={() => onChange(active ? null : item.id)}
             >
@@ -324,16 +342,12 @@ function parseInputValue(event: ChangeEvent<HTMLInputElement | HTMLTextAreaEleme
 
 export function EditorSidebar({
   activeTab,
-  onClearResume,
   onResumeChange,
   onRenderOptionsChange,
-  onTabChange,
   onTemplateChange,
   renderOptions,
   resume
 }: EditorSidebarProps) {
-  const selectedTemplate = getTemplateDefinition(renderOptions.templateId);
-
   function commit(next: ResumeData) {
     onResumeChange(next);
   }
@@ -355,7 +369,150 @@ export function EditorSidebar({
     });
   }
 
-  function reorderResumeSections(from: ResumeSectionKey, to: ResumeSectionKey) {
+  function getSectionTitle(section: ResumeSectionKey) {
+    return renderOptions.sectionTitles[section]?.trim() || sectionLabels[section];
+  }
+
+  function renameBuiltInSection(section: ResumeSectionKey) {
+    const nextTitle = window.prompt("Rename section", getSectionTitle(section));
+
+    if (nextTitle === null) {
+      return;
+    }
+
+    const trimmedTitle = nextTitle.trim();
+    const nextSectionTitles = { ...renderOptions.sectionTitles };
+
+    if (!trimmedTitle || trimmedTitle === sectionLabels[section]) {
+      delete nextSectionTitles[section];
+    } else {
+      nextSectionTitles[section] = trimmedTitle;
+    }
+
+    updateRenderOptions({
+      sectionTitles: nextSectionTitles
+    });
+  }
+
+  function renameCustomSection(sectionId: CustomResumeSectionId) {
+    const section = resume.customSections.find((item) => item.id === sectionId);
+
+    if (!section) {
+      return;
+    }
+
+    const nextTitle = window.prompt("Rename section", section.title);
+
+    if (nextTitle === null) {
+      return;
+    }
+
+    const trimmedTitle = nextTitle.trim();
+
+    if (!trimmedTitle) {
+      return;
+    }
+
+    commit({
+      ...resume,
+      customSections: resume.customSections.map((item) =>
+        item.id === sectionId
+          ? {
+              ...item,
+              title: trimmedTitle
+            }
+          : item
+      )
+    });
+  }
+
+  function deleteSection(sectionId: OrderedResumeSectionId) {
+    const label = isCustomResumeSectionId(sectionId)
+      ? resume.customSections.find((section) => section.id === sectionId)?.title || "this section"
+      : getSectionTitle(sectionId);
+
+    if (!window.confirm(`Delete ${label}?`)) {
+      return;
+    }
+
+    const nextSectionOrder = renderOptions.sectionOrder.filter((section) => section !== sectionId);
+    const nextSectionTitles = { ...renderOptions.sectionTitles };
+
+    if (!isCustomResumeSectionId(sectionId)) {
+      delete nextSectionTitles[sectionId];
+    }
+
+    updateRenderOptions({
+      sectionOrder: nextSectionOrder,
+      sectionTitles: nextSectionTitles
+    });
+
+    if (isCustomResumeSectionId(sectionId)) {
+      commit({
+        ...resume,
+        customSections: resume.customSections.filter((section) => section.id !== sectionId)
+      });
+    }
+
+    if (activeContentSection === sectionId) {
+      setActiveContentSection(null);
+    }
+  }
+
+  function addSection() {
+    const hiddenBuiltInSections = DEFAULT_RENDER_OPTIONS.sectionOrder.filter(
+      (section): section is ResumeSectionKey =>
+        isResumeSectionId(section) && !renderOptions.sectionOrder.includes(section)
+    );
+    const hiddenHint =
+      hiddenBuiltInSections.length > 0
+        ? `You can also restore: ${hiddenBuiltInSections.map((section) => sectionLabels[section]).join(", ")}.`
+        : "Type a name to create a custom section.";
+    const input = window.prompt(`Create section. ${hiddenHint}`, "");
+
+    if (input === null) {
+      return;
+    }
+
+    const trimmedInput = input.trim();
+
+    if (!trimmedInput) {
+      return;
+    }
+
+    const builtInMatch = hiddenBuiltInSections.find(
+      (section) => sectionLabels[section].toLowerCase() === trimmedInput.toLowerCase()
+    );
+
+    if (builtInMatch) {
+      updateRenderOptions({
+        sectionOrder: [...renderOptions.sectionOrder, builtInMatch]
+      });
+      setActiveContentSection(builtInMatch);
+      return;
+    }
+
+    const sectionId = `custom:${Date.now()}` as CustomResumeSectionId;
+
+    commit({
+      ...resume,
+      customSections: [
+        ...resume.customSections,
+        {
+          id: sectionId,
+          items: [],
+          title: trimmedInput
+        }
+      ]
+    });
+
+    updateRenderOptions({
+      sectionOrder: [...renderOptions.sectionOrder, sectionId]
+    });
+    setActiveContentSection(sectionId);
+  }
+
+  function reorderResumeSections(from: OrderedResumeSectionId, to: OrderedResumeSectionId) {
     if (from === to) {
       return;
     }
@@ -518,6 +675,48 @@ export function EditorSidebar({
     });
   }
 
+  function updateCustomSectionItem(sectionId: CustomResumeSectionId, index: number, patch: Partial<CompactItem>) {
+    commit({
+      ...resume,
+      customSections: resume.customSections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              items: section.items.map((item, itemIndex) => (itemIndex === index ? { ...item, ...patch } : item))
+            }
+          : section
+      )
+    });
+  }
+
+  function addCustomSectionItem(sectionId: CustomResumeSectionId) {
+    commit({
+      ...resume,
+      customSections: resume.customSections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              items: [...section.items, { description: "", date: "", link: "" }]
+            }
+          : section
+      )
+    });
+  }
+
+  function removeCustomSectionItem(sectionId: CustomResumeSectionId, index: number) {
+    commit({
+      ...resume,
+      customSections: resume.customSections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              items: section.items.filter((_, itemIndex) => itemIndex !== index)
+            }
+          : section
+      )
+    });
+  }
+
   function resetImportFeedback() {
     setImportStatus("idle");
     setImportMessage(null);
@@ -636,88 +835,88 @@ export function EditorSidebar({
   const marginValue = Number.parseFloat(renderOptions.margin) || 1;
 
   const contentSections: AccordionWorkspaceItem[] = [
-    {
-      id: "import",
-      icon: "upload_file",
-      title: "Import Resume",
-      content: (
-        <>
-          <label className="space-y-2">
-            <FieldLabel>Paste resume text for AI parsing</FieldLabel>
-            <textarea
-              className={`${textareaClassName} min-h-[220px]`}
-              value={importText}
-              placeholder="Paste a resume here. The AI parser will map it into header, summary, skills, experience, education, projects, and the compact sections."
-              onChange={(event) => {
-                setImportText(parseInputValue(event));
-                if (importStatus !== "idle" || importWarnings.length > 0 || importSections.length > 0 || importSourceLabel) {
-                  resetImportFeedback();
-                }
-              }}
-            />
-          </label>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".txt,.md,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            className="hidden"
-            onChange={handleImportFile}
-          />
-          <div className="mt-4 flex flex-wrap gap-3">
-            <IconButton icon="upload" label="Import into editor" onClick={handleImportResume} />
-            <IconButton
-              icon="attach_file"
-              label={importStatus === "loading" ? "Processing file..." : "Choose file"}
-              onClick={() => fileInputRef.current?.click()}
-            />
-            <IconButton
-              icon="close"
-              label="Clear pasted text"
-              onClick={() => {
-                setImportText("");
-                resetImportFeedback();
-              }}
-              tone="danger"
-            />
-          </div>
-          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-            Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB. Parsing is AI-first.
-          </p>
-          {importMessage ? (
-            <div
-              className={`mt-5 rounded-[1.25rem] border px-4 py-4 ${
-                importStatus === "error"
-                  ? "border-error-container bg-error-container/40 text-on-surface"
-                  : "border-outline-variant/20 bg-surface-container-highest text-on-surface"
-              }`}
-            >
-              <p className="text-sm font-semibold">{importMessage}</p>
-              {importSourceLabel ? (
-                <div className="mt-3">
-                  <Chip tone="lavender">{importSourceLabel}</Chip>
-                </div>
-              ) : null}
-              {importSections.length > 0 ? (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {importSections.map((section) => (
-                    <Chip key={section} tone="mint">
-                      {sectionLabels[section]}
-                    </Chip>
-                  ))}
-                </div>
-              ) : null}
-              {importWarnings.length > 0 ? (
-                <div className="mt-4 space-y-2 text-sm leading-6 text-on-surface-variant">
-                  {importWarnings.map((warning) => (
-                    <p key={warning}>{warning}</p>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-        </>
-      )
-    },
+    // {
+    //   id: "import",
+    //   icon: "upload_file",
+    //   title: "Import Resume",
+    //   content: (
+    //     <>
+    //       <label className="space-y-2">
+    //         <FieldLabel>Paste resume text for AI parsing</FieldLabel>
+    //         <textarea
+    //           className={`${textareaClassName} min-h-[220px]`}
+    //           value={importText}
+    //           placeholder="Paste a resume here. The AI parser will map it into header, summary, skills, experience, education, projects, and the compact sections."
+    //           onChange={(event) => {
+    //             setImportText(parseInputValue(event));
+    //             if (importStatus !== "idle" || importWarnings.length > 0 || importSections.length > 0 || importSourceLabel) {
+    //               resetImportFeedback();
+    //             }
+    //           }}
+    //         />
+    //       </label>
+    //       <input
+    //         ref={fileInputRef}
+    //         type="file"
+    //         accept=".txt,.md,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    //         className="hidden"
+    //         onChange={handleImportFile}
+    //       />
+    //       <div className="mt-4 flex flex-wrap gap-3">
+    //         <IconButton icon="upload" label="Import into editor" onClick={handleImportResume} />
+    //         <IconButton
+    //           icon="attach_file"
+    //           label={importStatus === "loading" ? "Processing file..." : "Choose file"}
+    //           onClick={() => fileInputRef.current?.click()}
+    //         />
+    //         <IconButton
+    //           icon="close"
+    //           label="Clear pasted text"
+    //           onClick={() => {
+    //             setImportText("");
+    //             resetImportFeedback();
+    //           }}
+    //           tone="danger"
+    //         />
+    //       </div>
+    //       <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
+    //         Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB. Parsing is AI-first.
+    //       </p>
+    //       {importMessage ? (
+    //         <div
+    //           className={`mt-5 rounded-[1.25rem] border px-4 py-4 ${
+    //             importStatus === "error"
+    //               ? "border-error-container bg-error-container/40 text-on-surface"
+    //               : "border-outline-variant/20 bg-surface-container-highest text-on-surface"
+    //           }`}
+    //         >
+    //           <p className="text-sm font-semibold">{importMessage}</p>
+    //           {importSourceLabel ? (
+    //             <div className="mt-3">
+    //               <Chip tone="lavender">{importSourceLabel}</Chip>
+    //             </div>
+    //           ) : null}
+    //           {importSections.length > 0 ? (
+    //             <div className="mt-3 flex flex-wrap gap-2">
+    //               {importSections.map((section) => (
+    //                 <Chip key={section} tone="mint">
+    //                   {sectionLabels[section]}
+    //                 </Chip>
+    //               ))}
+    //             </div>
+    //           ) : null}
+    //           {importWarnings.length > 0 ? (
+    //             <div className="mt-4 space-y-2 text-sm leading-6 text-on-surface-variant">
+    //               {importWarnings.map((warning) => (
+    //                 <p key={warning}>{warning}</p>
+    //               ))}
+    //             </div>
+    //           ) : null}
+    //         </div>
+    //       ) : null}
+    //     </>
+    //   )
+    // },
     {
       id: "personal",
       icon: "person",
@@ -766,7 +965,11 @@ export function EditorSidebar({
     {
       id: "summary",
       icon: "auto_awesome",
-      title: "Professional Summary",
+      title: getSectionTitle("summary"),
+      canDelete: true,
+      canRename: true,
+      onDelete: () => deleteSection("summary"),
+      onRename: () => renameBuiltInSection("summary"),
       content: (
         <label className="space-y-2">
           <FieldLabel>Summary</FieldLabel>
@@ -777,7 +980,11 @@ export function EditorSidebar({
     {
       id: "skills",
       icon: "bolt",
-      title: "Skills",
+      title: getSectionTitle("skills"),
+      canDelete: true,
+      canRename: true,
+      onDelete: () => deleteSection("skills"),
+      onRename: () => renameBuiltInSection("skills"),
       content: (
         <>
           <label className="space-y-2">
@@ -793,7 +1000,11 @@ export function EditorSidebar({
     {
       id: "experience",
       icon: "work",
-      title: "Experience",
+      title: getSectionTitle("experience"),
+      canDelete: true,
+      canRename: true,
+      onDelete: () => deleteSection("experience"),
+      onRename: () => renameBuiltInSection("experience"),
       content: (
         <div className="space-y-4">
           {resume.experience.map((item, index) => (
@@ -850,7 +1061,11 @@ export function EditorSidebar({
     {
       id: "education",
       icon: "school",
-      title: "Education",
+      title: getSectionTitle("education"),
+      canDelete: true,
+      canRename: true,
+      onDelete: () => deleteSection("education"),
+      onRename: () => renameBuiltInSection("education"),
       content: (
         <div className="space-y-4">
           {resume.education.map((item, index) => (
@@ -894,7 +1109,11 @@ export function EditorSidebar({
     {
       id: "projects",
       icon: "deployed_code",
-      title: "Projects",
+      title: getSectionTitle("projects"),
+      canDelete: true,
+      canRename: true,
+      onDelete: () => deleteSection("projects"),
+      onRename: () => renameBuiltInSection("projects"),
       content: (
         <div className="space-y-4">
           {resume.projects.map((item, index) => (
@@ -938,7 +1157,11 @@ export function EditorSidebar({
     ...(Object.keys(compactSectionLabels) as Array<keyof typeof compactSectionLabels>).map((section) => ({
       id: section,
       icon: "format_list_bulleted",
-      title: compactSectionLabels[section],
+      title: getSectionTitle(section),
+      canDelete: true,
+      canRename: true,
+      onDelete: () => deleteSection(section),
+      onRename: () => renameBuiltInSection(section),
       content: (
         <div className="space-y-4">
           {resume[section].map((item, index) => (
@@ -970,6 +1193,54 @@ export function EditorSidebar({
           <AddRowButton label={`Add ${compactSectionLabels[section].toLowerCase()} item`} onClick={() => addCompactSectionItem(section)} />
         </div>
       )
+    })),
+    ...resume.customSections.map((section) => ({
+      id: section.id,
+      icon: "note_stack",
+      title: section.title,
+      canDelete: true,
+      canRename: true,
+      onDelete: () => deleteSection(section.id),
+      onRename: () => renameCustomSection(section.id),
+      content: (
+        <div className="space-y-4">
+          {section.items.map((item, index) => (
+            <DetailCard
+              key={`${section.id}-${index}`}
+              title={item.description?.trim() || `${section.title} ${index + 1}`}
+              onRemove={() => removeCustomSectionItem(section.id, index)}
+            >
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <label className="space-y-2 md:col-span-2">
+                  <FieldLabel>Description</FieldLabel>
+                  <textarea
+                    className={textareaClassName}
+                    value={item.description ?? ""}
+                    onChange={(event) => updateCustomSectionItem(section.id, index, { description: parseInputValue(event) })}
+                  />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Date</FieldLabel>
+                  <input
+                    className={fieldClassName}
+                    value={item.date ?? ""}
+                    onChange={(event) => updateCustomSectionItem(section.id, index, { date: parseInputValue(event) })}
+                  />
+                </label>
+                <label className="space-y-2">
+                  <FieldLabel>Link</FieldLabel>
+                  <input
+                    className={fieldClassName}
+                    value={item.link ?? ""}
+                    onChange={(event) => updateCustomSectionItem(section.id, index, { link: parseInputValue(event) })}
+                  />
+                </label>
+              </div>
+            </DetailCard>
+          ))}
+          <AddRowButton label={`Add ${section.title.toLowerCase()} item`} onClick={() => addCustomSectionItem(section.id)} />
+        </div>
+      )
     }))
   ];
 
@@ -980,222 +1251,145 @@ export function EditorSidebar({
       .filter((item): item is AccordionWorkspaceItem => Boolean(item))
   ];
 
-  return (
-    <Panel className="flex h-full min-h-0 flex-col p-6">
-      <div className="shrink-0 space-y-4">
-        <EditorTabs activeTab={activeTab} onTabChange={onTabChange} />
+  if (activeTab === "templates") {
+    return (
+      <WorkspaceSurface title="Template Library" description="Pick a layout.">
+        <div className="flex h-full min-h-0 flex-col">
+          <div className="shrink-0 space-y-3 pb-3">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              <SegmentedButton active={templateFilter === "all"} onClick={() => setTemplateFilter("all")}>
+                All
+              </SegmentedButton>
+              <SegmentedButton active={templateFilter === "balanced"} onClick={() => setTemplateFilter("balanced")}>
+                Balanced
+              </SegmentedButton>
+              <SegmentedButton active={templateFilter === "tight"} onClick={() => setTemplateFilter("tight")}>
+                One-page
+              </SegmentedButton>
+              <SegmentedButton active={templateFilter === "airy"} onClick={() => setTemplateFilter("airy")}>
+                Story-led
+              </SegmentedButton>
+            </div>
+          </div>
 
-        <SectionHeading
-          eyebrow="Workspace"
-          title={activeTab === "templates" ? "Choose A Template" : activeTab === "design" ? "Customize Output" : "Edit Resume Content"}
-          description={
-            activeTab === "templates"
-              ? "Pick a template quickly and keep the PDF preview on the right."
-              : activeTab === "design"
-                ? "Adjust only the controls that change the rendered PDF."
-                : "Edit sections inside one bounded workspace and drag them into order."
-          }
-        />
-
-        <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-lowest px-3 py-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Chip tone="lavender">Schema v{resume.meta.version}</Chip>
-            <Chip tone="soft">Source: {resume.meta.source}</Chip>
-            <Chip tone="mint">{selectedTemplate.label}</Chip>
-            <div className="ml-auto flex flex-wrap gap-2">
-              <Link
-                to="/ats"
-                className="inline-flex h-9 items-center justify-center rounded-full border border-outline-variant/20 bg-white px-3 text-xs font-bold uppercase tracking-[0.12em] text-on-surface transition hover:-translate-y-px"
-              >
-                ATS
-              </Link>
-              <Link
-                to="/jd"
-                className="inline-flex h-9 items-center justify-center rounded-full border border-outline-variant/20 bg-white px-3 text-xs font-bold uppercase tracking-[0.12em] text-on-surface transition hover:-translate-y-px"
-              >
-                JD
-              </Link>
-              <IconButton icon="ink_eraser" label="Clear" onClick={onClearResume} tone="danger" />
+          <div className="workspace-scroll h-[30rem] max-h-full overflow-y-scroll pr-1">
+            <div className="grid gap-3 xl:grid-cols-2">
+              {filteredTemplates.map((template) => (
+                <TemplateCard
+                  key={template.id}
+                  compact
+                  template={template}
+                  selected={template.id === renderOptions.templateId}
+                  actionLabel="Use"
+                  onSelect={onTemplateChange}
+                />
+              ))}
             </div>
           </div>
         </div>
+      </WorkspaceSurface>
+    );
+  }
+
+  if (activeTab === "design") {
+    return (
+      <WorkspaceSurface
+        title="Customize Output"
+        description="Tweak the PDF."
+        footer={
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                onRenderOptionsChange({
+                  ...DEFAULT_RENDER_OPTIONS,
+                  templateId: renderOptions.templateId
+                })
+              }
+              className="flex-1 rounded-xl border-2 border-outline-variant/20 bg-surface-container-highest py-3 text-sm font-bold text-on-surface transition-colors hover:bg-surface-container"
+            >
+              Reset
+            </button>
+          </div>
+        }
+      >
+        <div className="flex h-full min-h-0 flex-col">
+          <div className="workspace-scroll min-h-0 flex-1 overflow-y-scroll pr-1">
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
+                  <FieldLabel>Page Limit</FieldLabel>
+                  <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
+                    <SegmentedButton active={renderOptions.pageLimit === 1} onClick={() => updateRenderOptions({ pageLimit: 1 })}>
+                      1 Page
+                    </SegmentedButton>
+                    <SegmentedButton active={renderOptions.pageLimit === 2} onClick={() => updateRenderOptions({ pageLimit: 2 })}>
+                      2 Pages
+                    </SegmentedButton>
+                  </div>
+                </div>
+
+                <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
+                  <FieldLabel>Font Size</FieldLabel>
+                  <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
+                    <SegmentedButton active={renderOptions.fontSize <= 10} onClick={() => updateRenderOptions({ fontSize: 10 })}>
+                      Small
+                    </SegmentedButton>
+                    <SegmentedButton active={renderOptions.fontSize === 11} onClick={() => updateRenderOptions({ fontSize: 11 })}>
+                      Medium
+                    </SegmentedButton>
+                    <SegmentedButton active={renderOptions.fontSize >= 12} onClick={() => updateRenderOptions({ fontSize: 12 })}>
+                      Large
+                    </SegmentedButton>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
+                <div className="space-y-6">
+                  <RangeRow
+                    label="Margins"
+                    min={0.7}
+                    max={1.5}
+                    step={0.1}
+                    value={marginValue}
+                    valueLabel={`${marginValue.toFixed(1)}cm`}
+                    onChange={(value) => updateRenderOptions({ margin: `${value.toFixed(1)}cm` })}
+                  />
+                  <RangeRow
+                    label="Bullet Density"
+                    min={2}
+                    max={6}
+                    value={renderOptions.maxBulletsPerEntry}
+                    valueLabel={`${renderOptions.maxBulletsPerEntry} bullets`}
+                    onChange={(value) => updateRenderOptions({ maxBulletsPerEntry: value })}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </WorkspaceSurface>
+    );
+  }
+
+  return (
+    <WorkspaceSurface
+      bodyClassName="overflow-hidden"
+      title="Section Workspace"
+      description="Scroll for more sections."
+      headerAside={<AddRowButton label="Add section" onClick={addSection} />}
+    >
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="min-h-0 flex-1">
+          <AccordionWorkspace
+            items={orderedContentSections}
+            activeId={activeContentSection}
+            onChange={setActiveContentSection}
+            onReorder={reorderResumeSections}
+          />
+        </div>
       </div>
-
-      <div className="mt-4 flex-1 min-h-0">
-        {activeTab === "templates" ? (
-          <WorkspaceSurface
-            title="Template Library"
-            description="Compact picker for the PDF layout."
-            headerAside={<Chip tone="soft">{filteredTemplates.length} templates</Chip>}
-          >
-            <div className="flex h-full min-h-0 flex-col">
-              <div className="shrink-0 space-y-3 pb-3">
-                <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high px-4 py-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p className="font-label text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Current</p>
-                      <p className="mt-1 font-headline text-lg font-bold text-on-surface">{selectedTemplate.label}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Chip tone={selectedTemplate.badgeTone}>{selectedTemplate.badge}</Chip>
-                      <Chip tone="soft">{selectedTemplate.density}</Chip>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  <SegmentedButton active={templateFilter === "all"} onClick={() => setTemplateFilter("all")}>
-                    All
-                  </SegmentedButton>
-                  <SegmentedButton active={templateFilter === "balanced"} onClick={() => setTemplateFilter("balanced")}>
-                    Balanced
-                  </SegmentedButton>
-                  <SegmentedButton active={templateFilter === "tight"} onClick={() => setTemplateFilter("tight")}>
-                    One-page
-                  </SegmentedButton>
-                  <SegmentedButton active={templateFilter === "airy"} onClick={() => setTemplateFilter("airy")}>
-                    Story-led
-                  </SegmentedButton>
-                </div>
-              </div>
-
-              <div className="workspace-scroll min-h-0 flex-1 overflow-y-scroll pr-1">
-                <div className="grid gap-3 xl:grid-cols-2">
-                  {filteredTemplates.map((template) => (
-                    <TemplateCard
-                      key={template.id}
-                      compact
-                      template={template}
-                      selected={template.id === renderOptions.templateId}
-                      actionLabel="Use"
-                      onSelect={onTemplateChange}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </WorkspaceSurface>
-        ) : null}
-
-        {activeTab === "design" ? (
-          <WorkspaceSurface
-            title="Customize Output"
-            description="Keep this compact. Reordering still happens in Content."
-            headerAside={<Chip tone="mint">{selectedTemplate.label}</Chip>}
-            footer={
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() =>
-                    onRenderOptionsChange({
-                      ...DEFAULT_RENDER_OPTIONS,
-                      templateId: renderOptions.templateId
-                    })
-                  }
-                  className="flex-1 rounded-xl border-2 border-outline-variant/20 bg-surface-container-highest py-3 text-sm font-bold text-on-surface transition-colors hover:bg-surface-container"
-                >
-                  Reset
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onTabChange("content")}
-                  className="flex-1 rounded-xl bg-secondary py-3 text-sm font-bold text-on-secondary shadow-tactile-sm transition-transform hover:-translate-y-px"
-                >
-                  Done
-                </button>
-              </div>
-            }
-          >
-            <div className="flex h-full min-h-0 flex-col">
-              <div className="workspace-scroll min-h-0 flex-1 overflow-y-scroll pr-1">
-                <div className="space-y-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
-                      <FieldLabel>Page Limit</FieldLabel>
-                      <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
-                        <SegmentedButton active={renderOptions.pageLimit === 1} onClick={() => updateRenderOptions({ pageLimit: 1 })}>
-                          1 Page
-                        </SegmentedButton>
-                        <SegmentedButton active={renderOptions.pageLimit === 2} onClick={() => updateRenderOptions({ pageLimit: 2 })}>
-                          2 Pages
-                        </SegmentedButton>
-                      </div>
-                    </div>
-
-                    <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
-                      <FieldLabel>Font Size</FieldLabel>
-                      <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-outline-variant/10 bg-surface-container p-1.5">
-                        <SegmentedButton active={renderOptions.fontSize <= 10} onClick={() => updateRenderOptions({ fontSize: 10 })}>
-                          Small
-                        </SegmentedButton>
-                        <SegmentedButton active={renderOptions.fontSize === 11} onClick={() => updateRenderOptions({ fontSize: 11 })}>
-                          Medium
-                        </SegmentedButton>
-                        <SegmentedButton active={renderOptions.fontSize >= 12} onClick={() => updateRenderOptions({ fontSize: 12 })}>
-                          Large
-                        </SegmentedButton>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
-                    <div className="space-y-6">
-                      <RangeRow
-                        label="Margins"
-                        min={0.7}
-                        max={1.5}
-                        step={0.1}
-                        value={marginValue}
-                        valueLabel={`${marginValue.toFixed(1)}cm`}
-                        onChange={(value) => updateRenderOptions({ margin: `${value.toFixed(1)}cm` })}
-                      />
-                      <RangeRow
-                        label="Bullet Density"
-                        min={2}
-                        max={6}
-                        value={renderOptions.maxBulletsPerEntry}
-                        valueLabel={`${renderOptions.maxBulletsPerEntry} bullets`}
-                        onChange={(value) => updateRenderOptions({ maxBulletsPerEntry: value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="rounded-[1.25rem] border border-outline-variant/15 bg-surface-container-high p-4">
-                    <p className="font-label text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Workflow Note</p>
-                    <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-                      Drag section headers from the Content tab to reorder the resume. The PDF on the right only updates when you compile.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </WorkspaceSurface>
-        ) : null}
-
-        {activeTab === "content" ? (
-          <WorkspaceSurface
-            bodyClassName="overflow-hidden"
-            title="Section Workspace"
-            description="Scroll the full section list here. Open sections can still scroll internally when they get long."
-            headerAside={<Chip tone="soft">{Math.max(orderedContentSections.length - 2, 0)} sections</Chip>}
-          >
-            <div className="flex h-full min-h-0 flex-col">
-              <div className="mb-3 flex shrink-0 flex-wrap gap-2">
-                <Chip tone="soft">Drag to reorder</Chip>
-                <Chip tone="soft">One section open at a time</Chip>
-              </div>
-              <div className="min-h-0 flex-1">
-                <AccordionWorkspace
-                  items={orderedContentSections}
-                  activeId={activeContentSection}
-                  onChange={setActiveContentSection}
-                  onReorder={reorderResumeSections}
-                />
-              </div>
-            </div>
-          </WorkspaceSurface>
-        ) : null}
-      </div>
-    </Panel>
+    </WorkspaceSurface>
   );
 }

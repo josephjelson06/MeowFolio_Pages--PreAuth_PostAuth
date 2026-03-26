@@ -12,6 +12,9 @@ export type ResumeSectionKey =
   | "leadership"
   | "extracurricular";
 
+export type CustomResumeSectionId = `custom:${string}`;
+export type OrderedResumeSectionId = ResumeSectionKey | CustomResumeSectionId;
+
 export interface ResumeMeta {
   version: string;
   createdAt: string;
@@ -76,6 +79,12 @@ export interface CompactItem {
   link?: string | null;
 }
 
+export interface CustomSection {
+  id: CustomResumeSectionId;
+  items: CompactItem[];
+  title: string;
+}
+
 export interface ResumeData {
   meta: ResumeMeta;
   header: ResumeHeader;
@@ -88,6 +97,7 @@ export interface ResumeData {
   awards: CompactItem[];
   leadership: CompactItem[];
   extracurricular: CompactItem[];
+  customSections: CustomSection[];
 }
 
 export interface RenderOptions {
@@ -96,7 +106,8 @@ export interface RenderOptions {
   maxBulletsPerEntry: number;
   margin: string;
   pageLimit: 1 | 2;
-  sectionOrder: ResumeSectionKey[];
+  sectionOrder: OrderedResumeSectionId[];
+  sectionTitles: Partial<Record<ResumeSectionKey, string>>;
 }
 
 export const DEFAULT_RESUME_SECTION_ORDER: ResumeSectionKey[] = [
@@ -117,7 +128,8 @@ export const DEFAULT_RENDER_OPTIONS: RenderOptions = {
   maxBulletsPerEntry: 4,
   margin: "1cm",
   pageLimit: 1,
-  sectionOrder: [...DEFAULT_RESUME_SECTION_ORDER]
+  sectionOrder: [...DEFAULT_RESUME_SECTION_ORDER],
+  sectionTitles: {}
 };
 
 export function createEmptyResumeData(source: ResumeSource = "scratch"): ResumeData {
@@ -149,10 +161,15 @@ export function createEmptyResumeData(source: ResumeSource = "scratch"): ResumeD
     certifications: [],
     awards: [],
     leadership: [],
-    extracurricular: []
+    extracurricular: [],
+    customSections: []
   };
 }
 
 export function areSkillsGrouped(skills: ResumeSkills): skills is SkillCategory[] {
   return skills.length > 0 && typeof skills[0] !== "string";
+}
+
+export function isCustomResumeSectionId(value: string): value is CustomResumeSectionId {
+  return value.startsWith("custom:");
 }

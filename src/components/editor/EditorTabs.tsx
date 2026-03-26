@@ -13,7 +13,7 @@ export function EditorTabs({ activeTab, onTabChange }: EditorTabsProps) {
   ];
 
   return (
-    <div className="inline-flex w-fit items-center gap-2 rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-1.5">
+    <div className="mx-auto inline-flex w-fit items-center gap-2 rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-1.5">
       {tabs.map((tab) => (
         <button
           key={tab.id}

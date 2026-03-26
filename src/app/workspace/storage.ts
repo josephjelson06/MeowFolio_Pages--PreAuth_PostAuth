@@ -1,9 +1,18 @@
 import { isRenderTemplateId } from "../../data/templates";
 import { createInitialRenderOptions } from "../../lib/tex";
-import { createEmptyResumeData, DEFAULT_RESUME_SECTION_ORDER, type RenderOptions, type ResumeData, type ResumeSectionKey } from "../../types/resume";
+import {
+  createEmptyResumeData,
+  DEFAULT_RESUME_SECTION_ORDER,
+  isCustomResumeSectionId,
+  type CustomSection,
+  type OrderedResumeSectionId,
+  type RenderOptions,
+  type ResumeData,
+  type ResumeSectionKey
+} from "../../types/resume";
 
 const WORKSPACE_STORAGE_KEY = "meowfolio.workspace.v1";
-const WORKSPACE_STORAGE_VERSION = 2;
+const WORKSPACE_STORAGE_VERSION = 3;
 
 interface WorkspaceSnapshot {
   jobDescription: string;
@@ -34,9 +43,29 @@ function toStringArray(value: unknown) {
 
 function normalizeSectionOrder(value: unknown) {
   const allowed = new Set(DEFAULT_RESUME_SECTION_ORDER);
-  const cleaned = toStringArray(value).filter((item): item is ResumeSectionKey => allowed.has(item as ResumeSectionKey));
+  const cleaned = toStringArray(value).filter(
+    (item): item is OrderedResumeSectionId => allowed.has(item as ResumeSectionKey) || isCustomResumeSectionId(item)
+  );
 
   return cleaned.length > 0 ? cleaned : [...DEFAULT_RESUME_SECTION_ORDER];
+}
+
+function normalizeSectionTitles(value: unknown) {
+  if (!isRecord(value)) {
+    return {};
+  }
+
+  const titles: Partial<Record<ResumeSectionKey, string>> = {};
+
+  DEFAULT_RESUME_SECTION_ORDER.forEach((section) => {
+    const nextTitle = toStringValue(value[section]).trim();
+
+    if (nextTitle) {
+      titles[section] = nextTitle;
+    }
+  });
+
+  return titles;
 }
 
 function normalizeRenderOptions(value: unknown): RenderOptions {
@@ -59,6 +88,7 @@ function normalizeRenderOptions(value: unknown): RenderOptions {
     maxBulletsPerEntry,
     pageLimit,
     sectionOrder: normalizeSectionOrder(value.sectionOrder),
+    sectionTitles: normalizeSectionTitles(value.sectionTitles),
     templateId: isRenderTemplateId(value.templateId) ? value.templateId : fallback.templateId
   };
 }
@@ -95,6 +125,24 @@ function normalizeCompactSection(value: unknown) {
     }));
 }
 
+function normalizeCustomSections(value: unknown): CustomSection[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter((item): item is Record<string, unknown> => isRecord(item))
+    .map((item): CustomSection => {
+      const rawId = toStringValue(item.id);
+
+      return {
+        id: isCustomResumeSectionId(rawId) ? rawId : (`custom:${Date.now()}` as `custom:${string}`),
+        items: normalizeCompactSection(item.items),
+        title: toStringValue(item.title).trim() || "Custom Section"
+      };
+    });
+}
+
 function normalizeResumeData(value: unknown): ResumeData {
   const fallback = createEmptyResumeData("scratch");
 
@@ -108,6 +156,7 @@ function normalizeResumeData(value: unknown): ResumeData {
   return {
     awards: normalizeCompactSection(value.awards),
     certifications: normalizeCompactSection(value.certifications),
+    customSections: normalizeCustomSections(value.customSections),
     education: Array.isArray(value.education)
       ? value.education
           .filter((item): item is Record<string, unknown> => isRecord(item))

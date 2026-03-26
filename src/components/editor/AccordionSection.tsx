@@ -7,10 +7,12 @@ interface AccordionSectionProps {
   dragActive?: boolean;
   draggable?: boolean;
   icon: string;
+  onDelete?: () => void;
   onDragEnd?: DragEventHandler<HTMLElement>;
   onDragOver?: DragEventHandler<HTMLElement>;
   onDragStart?: DragEventHandler<HTMLElement>;
   onDrop?: DragEventHandler<HTMLElement>;
+  onRename?: () => void;
   onToggle: () => void;
   title: string;
 }
@@ -21,10 +23,12 @@ export function AccordionSection({
   dragActive = false,
   draggable = false,
   icon,
+  onDelete,
   onDragEnd,
   onDragOver,
   onDragStart,
   onDrop,
+  onRename,
   onToggle,
   title
 }: AccordionSectionProps) {
@@ -65,6 +69,32 @@ export function AccordionSection({
           <span className="font-headline text-lg font-bold text-on-surface">{title}</span>
         </span>
         <span className="flex items-center gap-2">
+          {onRename ? (
+            <button
+              type="button"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-on-surface-variant transition hover:bg-white/70 hover:text-primary"
+              onClick={(event) => {
+                event.stopPropagation();
+                onRename();
+              }}
+              aria-label={`Rename ${title}`}
+            >
+              <span className="material-symbols-outlined text-lg">edit</span>
+            </button>
+          ) : null}
+          {onDelete ? (
+            <button
+              type="button"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-on-surface-variant transition hover:bg-white/70 hover:text-error"
+              onClick={(event) => {
+                event.stopPropagation();
+                onDelete();
+              }}
+              aria-label={`Delete ${title}`}
+            >
+              <span className="material-symbols-outlined text-lg">delete</span>
+            </button>
+          ) : null}
           {draggable ? (
             <span className="material-symbols-outlined text-lg text-on-surface-variant" aria-hidden="true">
               drag_indicator
@@ -77,7 +107,7 @@ export function AccordionSection({
       </button>
       {active ? (
         <div className="border-t border-outline-variant/15 px-6 pb-6 pt-6">
-          <div className="workspace-scroll max-h-[52vh] overflow-y-auto pr-1">{children}</div>
+          {children}
         </div>
       ) : null}
     </section>

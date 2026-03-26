@@ -50,7 +50,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       ...current,
       renderOptions: {
         ...value,
-        sectionOrder: [...value.sectionOrder]
+        sectionOrder: [...value.sectionOrder],
+        sectionTitles: { ...value.sectionTitles }
       }
     }));
   }
