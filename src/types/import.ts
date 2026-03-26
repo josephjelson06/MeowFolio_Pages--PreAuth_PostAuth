@@ -15,9 +15,18 @@ export interface ResumeImportSummary {
 }
 
 export interface ResumeImportResult {
+  meta: ResumeImportMeta;
   resume: ResumeData;
   summary: ResumeImportSummary;
   warnings: string[];
+}
+
+export interface ImportResumeTextPayload {
+  text: string;
+}
+
+export interface ImportResumeTextResponse {
+  result: ResumeImportResult;
 }
 
 export interface ImportResumeFileResponse {

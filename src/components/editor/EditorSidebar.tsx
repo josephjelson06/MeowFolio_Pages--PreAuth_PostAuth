@@ -14,8 +14,7 @@ import type {
 } from "../../types/resume";
 import { isCustomResumeSectionId } from "../../types/resume";
 import type { ResumeImportResult } from "../../types/import";
-import { requestImportedResumeFile } from "../../lib/import-client";
-import { importResumeFromText } from "../../lib/resume-import";
+import { requestImportedResumeFile, requestImportedResumeText } from "../../lib/import-client";
 import { skillsToText, splitDelimitedItems, splitLineItems, textToSkills } from "../../lib/resume";
 import { cx } from "../../lib/cx";
 import { Chip } from "../ui/Chip";
@@ -738,7 +737,7 @@ export function EditorSidebar({
     }
   }
 
-  function handleImportResume() {
+  async function handleImportResume() {
     if (!importText.trim()) {
       setImportStatus("error");
       setImportMessage("Paste resume text before trying to import it.");
@@ -775,6 +774,12 @@ export function EditorSidebar({
       `Imported ${result.summary.experienceCount} experience, ${result.summary.educationCount} education, ${result.summary.projectCount} projects, and ${result.summary.skillCount} skills.`,
       "Pasted text"
     );
+    } catch (error) {
+      setImportStatus("error");
+      setImportMessage(error instanceof Error ? error.message : "Failed to import pasted resume text.");
+      setImportWarnings([]);
+      setImportSections([]);
+    }
   }
 
   async function handleImportFile(event: ChangeEvent<HTMLInputElement>) {

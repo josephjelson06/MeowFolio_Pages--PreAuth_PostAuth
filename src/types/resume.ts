@@ -1,5 +1,5 @@
 export type ResumeSource = "scratch" | "upload" | "ai" | "import";
-export type RenderTemplateId = "modern" | "compact" | "editorial";
+export type RenderTemplateId = "classic" | "modern" | "compact" | "editorial";
 
 export type ResumeSectionKey =
   | "summary"

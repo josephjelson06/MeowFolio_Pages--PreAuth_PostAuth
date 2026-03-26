@@ -1,4 +1,4 @@
-import type { ImportResumeFileResponse } from "../types/import";
+import type { ImportResumeFileResponse, ImportResumeTextPayload, ImportResumeTextResponse } from "../types/import";
 import type { ApiErrorResponse } from "../types/render";
 
 const API_BASE = "";
@@ -31,6 +31,23 @@ export async function requestImportedResumeFile(file: File) {
   }
 
   return (await response.json()) as ImportResumeFileResponse;
+}
+
+export async function requestImportedResumeText(text: string) {
+  const payload: ImportResumeTextPayload = { text };
+  const response = await fetch(toUrl("/api/import/text"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error(await readApiError(response));
+  }
+
+  return (await response.json()) as ImportResumeTextResponse;
 }
 
 export async function requestExtractedTextFile(file: File) {

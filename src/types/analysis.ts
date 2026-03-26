@@ -30,8 +30,10 @@ export interface AtsSectionSignal {
 }
 
 export interface AtsAnalysisResult {
+  aiSummary: string | null;
   categories: AtsCategoryScore[];
   issues: AnalysisIssue[];
+  modelUsed: string | null;
   rating: string;
   renderChecks: AtsRuleCheck[];
   rules: AtsRuleCheck[];
@@ -53,16 +55,31 @@ export interface JdSuggestion {
   status: Exclude<KeywordMatchStatus, "matched">;
 }
 
+export interface JdRequirementBreakdown {
+  matchedKeywords: string[];
+  section: ResumeSectionKey | null;
+  semanticScore: number;
+  title: string;
+  type: "must" | "preferred";
+  weight: number;
+}
+
 export interface JdAnalysisResult {
+  aiSummary: string | null;
+  embeddingStatus: "disabled" | "ready";
   keywordBreakdown: KeywordBreakdown[];
+  keywordScore: number;
   keywords: string[];
   matched: number;
   matchedKeywords: string[];
   missing: number;
   missingKeywords: string[];
+  modelUsed: string | null;
   partial: number;
   partialKeywords: string[];
+  requirementBreakdown: JdRequirementBreakdown[];
   score: number;
+  semanticScore?: number;
   suggestions: JdSuggestion[];
   summaryCopy: string;
   summaryTitle: string;

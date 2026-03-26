@@ -3,17 +3,13 @@ import express from "express";
 import { compileLatexToPdf, getCompilerHealth, TexCompilationError, TexEngineUnavailableError } from "./lib/compile";
 import multer from "multer";
 import { EmptyImportFileError, extractResumeTextFromFile, UnsupportedImportFileError } from "./lib/import-file";
-import { importResumeFromText } from "../src/lib/resume-import";
 import { renderResumeToTex } from "../src/lib/tex";
 import type { RenderResumePayload } from "../src/types/render";
-import type { AnalyzeAtsPayload, AnalyzeJdPayload, ImportResumeTextPayload } from "../src/types/ai";
+import type { ImportResumeTextPayload } from "../src/types/ai";
 import {
   AiResumeParsingUnavailableError,
-  analyzeResumeAgainstJdWithAi,
-  analyzeResumeForAtsWithAi,
   parseResumeTextWithAi
 } from "./lib/ai-service";
-import { getAiServiceHealth } from "./lib/ai-client";
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 8787);
@@ -34,6 +30,15 @@ function isRenderPayload(value: unknown): value is RenderResumePayload {
 
   const payload = value as Partial<RenderResumePayload>;
   return Boolean(payload.resume && payload.options);
+}
+
+function isImportTextPayload(value: unknown): value is ImportResumeTextPayload {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const payload = value as Partial<ImportResumeTextPayload>;
+  return typeof payload.text === "string";
 }
 
 app.get("/api/health", async (_request, response) => {
@@ -120,7 +125,7 @@ app.post("/api/import/file", upload.single("file"), async (request, response) =>
 
   try {
     const extractedText = await extractResumeTextFromFile(request.file);
-    const result = importResumeFromText(extractedText);
+    const result = await parseResumeTextWithAi(extractedText);
 
     response.json({
       extractedText,

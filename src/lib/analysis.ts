@@ -609,6 +609,7 @@ export function analyzeResumeForAts(resume: ResumeData, renderOptions: RenderOpt
     });
 
   return {
+    aiSummary: null,
     categories: [
       { label: "Formatting", tone: "tertiary", value: formatting },
       { label: "Keywords", tone: "primary", value: keywords },
@@ -616,6 +617,7 @@ export function analyzeResumeForAts(resume: ResumeData, renderOptions: RenderOpt
       { label: "Readability", tone: "surface", value: readability }
     ],
     issues: issues as AtsAnalysisResult["issues"],
+    modelUsed: null,
     rating,
     renderChecks,
     rules: [
@@ -665,15 +667,21 @@ export function analyzeResumeAgainstJobDescription(resume: ResumeData, jobDescri
     const summary = buildJdSummary(0, 0);
 
     return {
+      aiSummary: null,
+      embeddingStatus: "disabled",
       keywordBreakdown: [],
+      keywordScore: 0,
       keywords: [],
       matched: 0,
       matchedKeywords: [],
       missing: 0,
       missingKeywords: [],
+      modelUsed: null,
       partial: 0,
       partialKeywords: [],
+      requirementBreakdown: [],
       score: 0,
+      semanticScore: undefined,
       suggestions: [],
       summaryCopy: summary.summaryCopy,
       summaryTitle: summary.summaryTitle,
@@ -690,15 +698,21 @@ export function analyzeResumeAgainstJobDescription(resume: ResumeData, jobDescri
   const summary = buildJdSummary(score, keywords.length);
 
   return {
+    aiSummary: null,
+    embeddingStatus: "disabled",
     keywordBreakdown: breakdown,
+    keywordScore: score,
     keywords,
     matched: matchedKeywords.length,
     matchedKeywords,
     missing: missingKeywords.length,
     missingKeywords,
+    modelUsed: null,
     partial: partialKeywords.length,
     partialKeywords,
+    requirementBreakdown: [],
     score,
+    semanticScore: undefined,
     suggestions: breakdown
       .filter((item) => item.status !== "matched")
       .slice(0, 5)
