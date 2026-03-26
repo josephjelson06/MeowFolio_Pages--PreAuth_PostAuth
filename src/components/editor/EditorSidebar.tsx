@@ -516,7 +516,7 @@ export function EditorSidebar({
   function applyImportedResume(result: ResumeImportResult, successMessage: string, sourceLabel: string, nextImportText?: string) {
     commit(result.resume);
     setImportStatus("success");
-    setImportMessage(successMessage);
+    setImportMessage(`${successMessage} (AI parse${result.meta.cached ? ", cached" : ""}, ${result.meta.confidence} confidence)`);
     setImportWarnings(result.warnings);
     setImportSections(result.summary.detectedSections);
     setImportSourceLabel(sourceLabel);
@@ -535,14 +535,19 @@ export function EditorSidebar({
       return;
     }
 
-    const result = importResumeFromText(importText);
-    const hasImportedData = Boolean(
-      result.resume.header.name ||
-        result.resume.summary ||
-        result.resume.experience.length ||
-        result.resume.education.length ||
-        result.resume.projects.length
-    );
+    setImportStatus("loading");
+    setImportMessage("Running AI resume parse...");
+
+    try {
+      const response = await requestImportedResumeText(importText);
+      const result = response.result;
+      const hasImportedData = Boolean(
+        result.resume.header.name ||
+          result.resume.summary ||
+          result.resume.experience.length ||
+          result.resume.education.length ||
+          result.resume.projects.length
+      );
 
     if (!hasImportedData) {
       setImportStatus("error");
@@ -568,7 +573,7 @@ export function EditorSidebar({
     }
 
     setImportStatus("loading");
-    setImportMessage(`Reading ${file.name}...`);
+    setImportMessage(`Extracting text from ${file.name} and sending it to the AI parser...`);
     setImportWarnings([]);
     setImportSections([]);
     setImportSourceLabel(file.name);
@@ -621,15 +626,15 @@ export function EditorSidebar({
     {
       id: "import",
       icon: "upload_file",
-      title: "Import Resume Text",
+      title: "Import Resume",
       content: (
         <>
           <label className="space-y-2">
-            <FieldLabel>Paste resume text</FieldLabel>
+            <FieldLabel>Paste resume text for AI parsing</FieldLabel>
             <textarea
               className={`${textareaClassName} min-h-[220px]`}
               value={importText}
-              placeholder="Paste a resume here with headings like Summary, Experience, Education, Projects, and Skills."
+              placeholder="Paste a resume here. The AI parser will map it into header, summary, skills, experience, education, projects, and the compact sections."
               onChange={(event) => {
                 setImportText(parseInputValue(event));
                 if (importStatus !== "idle" || importWarnings.length > 0 || importSections.length > 0 || importSourceLabel) {
@@ -663,7 +668,7 @@ export function EditorSidebar({
             />
           </div>
           <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-            Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB.
+            Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB. Parsing is AI-first.
           </p>
           {importMessage ? (
             <div

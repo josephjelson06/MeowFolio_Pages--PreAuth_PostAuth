@@ -8,7 +8,7 @@ import {
   type ResumeData,
   type ResumeSectionKey
 } from "../types/resume";
-import { formatDateRange, getResumeContactLines, splitLineItems } from "./resume";
+import { flattenSkills, formatDateRange, getResumeContactLines, splitLineItems } from "./resume";
 
 export const TEX_TEMPLATE_OPTIONS = templateCatalog.map((template) => ({
   id: template.id,
@@ -27,8 +27,36 @@ interface TemplateRenderConfig {
   sectionMacro: string;
 }
 
+const UNICODE_TEXT_REPLACEMENTS: Record<string, string> = {
+  "\u00a0": " ",
+  "\u200b": "",
+  "\u2012": "-",
+  "\u2013": "--",
+  "\u2014": "---",
+  "\u2018": "'",
+  "\u2019": "'",
+  "\u201c": '"',
+  "\u201d": '"',
+  "\u2022": "\\textbullet{}",
+  "\u2026": "...",
+  "\u2212": "-"
+};
+
+function normalizeTexText(value: string) {
+  let normalized = value;
+
+  Object.entries(UNICODE_TEXT_REPLACEMENTS).forEach(([source, target]) => {
+    normalized = normalized.split(source).join(target);
+  });
+
+  return normalized
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\x09\x0A\x20-\x7E]/g, "");
+}
+
 function escapeTex(value: string) {
-  return value
+  return normalizeTexText(value)
     .replace(/\\/g, "\\textbackslash{}")
     .replace(/&/g, "\\&")
     .replace(/%/g, "\\%")
@@ -43,6 +71,16 @@ function escapeTex(value: string) {
 
 function getTemplateRenderConfig(templateId: RenderOptions["templateId"]): TemplateRenderConfig {
   switch (templateId) {
+    case "classic":
+      return {
+        accentHex: "2D2D2D",
+        bodySpacing: "0.34em",
+        headerLayout: "center",
+        itemSpacing: "0.18em",
+        nameCommand: "\\LARGE",
+        sectionMacro:
+          "\\newcommand{\\resumeSection}[1]{\\vspace{0.8em}{\\large\\bfseries\\color{ResumeAccent}\\textsc{#1}}\\par\\vspace{0.22em}\\hrule height 0.6pt\\vspace{0.52em}}"
+      };
     case "compact":
       return {
         accentHex: "2F5F98",
@@ -197,6 +235,188 @@ function renderProjects(resume: ResumeData, options: RenderOptions, config: Temp
     .join("\n\n");
 }
 
+function renderClassicHeader(resume: ResumeData) {
+  const leftLines = [resume.header.phone?.trim(), resume.header.email?.trim(), resume.header.location?.trim()]
+    .filter((value): value is string => Boolean(value))
+    .map(escapeTex);
+  const rightLines = [
+    resume.header.linkedin?.trim(),
+    resume.header.github?.trim(),
+    resume.header.website?.trim(),
+    resume.header.portfolio?.trim()
+  ]
+    .filter((value): value is string => Boolean(value))
+    .map(escapeTex);
+  const leftBlock = leftLines.length > 0 ? `${leftLines.join("\\\\\n")}\\\\` : "~\\\\";
+  const rightBlock = rightLines.length > 0 ? `${rightLines.join("\\\\\n")}\\\\` : "~\\\\";
+  const name = escapeTex(resume.header.name?.trim() || "Your Name");
+  const title = escapeTex(resume.header.title?.trim() || "Professional Title");
+
+  return [
+    "\\begin{center}",
+    "  \\begin{minipage}[b]{0.27\\textwidth}",
+    `    \\small ${leftBlock}`,
+    "  \\end{minipage}%",
+    "  \\begin{minipage}[b]{0.46\\textwidth}",
+    "    \\centering",
+    `    {\\LARGE ${name}}\\\\`,
+    `    {\\color{UIBlue}\\large ${title}}`,
+    "  \\end{minipage}%",
+    "  \\begin{minipage}[b]{0.27\\textwidth}",
+    "    \\raggedleft\\small",
+    `    ${rightBlock}`,
+    "  \\end{minipage}",
+    "  \\vspace{-0.15cm}",
+    "  {\\color{UIBlue}\\hrulefill}",
+    "\\end{center}"
+  ].join("\n");
+}
+
+function renderClassicSkillRibbon(resume: ResumeData) {
+  const topSkills = flattenSkills(resume.skills).filter((skill) => skill.trim()).slice(0, 4);
+
+  if (topSkills.length === 0) {
+    return "";
+  }
+
+  return topSkills.map((skill) => `\\begin{minipage}[b]{0.25\\textwidth}\\textbullet\\hspace{0.1cm}${escapeTex(skill)}\\end{minipage}`).join("\n");
+}
+
+function renderClassicSkillsTable(resume: ResumeData) {
+  if (resume.skills.length === 0) {
+    return "";
+  }
+
+  if (!areSkillsGrouped(resume.skills)) {
+    return [
+      "\\begin{tabularx}{\\textwidth}{p{7em} X}",
+      `\\textbf{Skills} & ${escapeTex(resume.skills.join(", "))} \\\\`,
+      "\\end{tabularx}"
+    ].join("\n");
+  }
+
+  return [
+    "\\begin{tabularx}{\\textwidth}{p{7em} X}",
+    ...resume.skills.map((group) => `\\textbf{${escapeTex(group.category)}} & ${escapeTex(group.items.join(", "))} \\\\`),
+    "\\end{tabularx}"
+  ].join("\n");
+}
+
+function renderClassicExperience(resume: ResumeData, options: RenderOptions) {
+  return resume.experience
+    .filter((item) => item.role?.trim() || item.company?.trim())
+    .map((item) => {
+      const hasHeading = Boolean(item.role?.trim() || item.company?.trim());
+      const dateRange = formatDateRange(item.startDate, item.endDate, item.current);
+      const heading = item.company?.trim()
+        ? `\\subsection*{${escapeTex(item.role?.trim() || "")}, {\\normalfont ${escapeTex(item.company.trim())}}${dateRange ? ` \\hfill ${escapeTex(dateRange)}` : ""}}`
+        : `\\subsection*{${escapeTex(item.role?.trim() || "Experience")}${dateRange ? ` \\hfill ${escapeTex(dateRange)}` : ""}}`;
+      const location = item.location?.trim() ? `\\small ${escapeTex(item.location.trim())}\\par` : "";
+      const description = item.description?.trim() ? `\\par \\small ${escapeTex(item.description.trim())}\\par` : "";
+      const bullets = item.bullets
+        .slice(0, options.maxBulletsPerEntry)
+        .filter((bullet) => bullet.trim())
+        .map((bullet) => `\\item ${escapeTex(bullet.trim())}`)
+        .join("\n");
+
+      return [
+        hasHeading ? heading : "",
+        location,
+        description,
+        bullets
+          ? ["\\begin{zitemize}", bullets, "\\end{zitemize}"].join("\n")
+          : ""
+      ]
+        .filter(Boolean)
+        .join("\n");
+    })
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function renderClassicEducation(resume: ResumeData) {
+  return resume.education
+    .filter((item) => item.degree?.trim() || item.institution?.trim())
+    .map((item) => {
+      const degreeParts = [item.degree?.trim(), item.field?.trim()].filter((value): value is string => Boolean(value)).map(escapeTex).join(", ");
+      const institution = escapeTex(item.institution?.trim() || "Institution");
+      const dateRange = [item.startYear?.trim(), item.endYear?.trim()].filter((value): value is string => Boolean(value)).map(escapeTex).join(" --- ");
+      const gpa = item.gpa?.trim() ? `, GPA: ${escapeTex(item.gpa.trim())}` : "";
+
+      return `\\subsection*{${degreeParts || "Education"}, {\\normalfont ${institution}${gpa}}${dateRange ? ` \\hfill ${dateRange}` : ""}}`;
+    })
+    .join("\n");
+}
+
+function renderClassicProjects(resume: ResumeData, options: RenderOptions) {
+  return resume.projects
+    .filter((item) => item.title?.trim())
+    .map((item) => {
+      const title = escapeTex(item.title?.trim() || "Project");
+      const technologies = item.technologies.length > 0 ? `, {\\normalfont ${escapeTex(item.technologies.join(", "))}}` : "";
+      const dateRange = formatDateRange(item.startDate, item.endDate);
+      const description = item.description?.trim();
+      const bullets = item.bullets
+        .slice(0, options.maxBulletsPerEntry)
+        .filter((bullet) => bullet.trim())
+        .map((bullet) => `\\item ${escapeTex(bullet.trim())}`)
+        .join("\n");
+
+      return [
+        `\\subsection*{${title}${technologies}${dateRange ? ` \\hfill ${escapeTex(dateRange)}` : ""}}`,
+        description
+          ? ["\\begin{zitemize}", `\\item ${escapeTex(description)}`, "\\end{zitemize}"].join("\n")
+          : bullets
+            ? ["\\begin{zitemize}", bullets, "\\end{zitemize}"].join("\n")
+            : ""
+      ]
+        .filter(Boolean)
+        .join("\n");
+    })
+    .join("\n\n");
+}
+
+function renderClassicCompactList(items: CompactItem[]) {
+  const rows = items
+    .filter((item) => item.description?.trim())
+    .map((item) => {
+      const description = escapeTex(item.description?.trim() || "");
+      const date = item.date?.trim() ? ` (${escapeTex(item.date.trim())})` : "";
+      return `\\item ${description}${date}`;
+    });
+
+  if (rows.length === 0) {
+    return "";
+  }
+
+  return ["\\begin{itemize}[leftmargin=1.2em,itemsep=0.2em]", ...rows, "\\end{itemize}"].join("\n");
+}
+
+function renderClassicSection(section: ResumeSectionKey, resume: ResumeData, options: RenderOptions) {
+  switch (section) {
+    case "summary":
+      return resume.summary?.trim() ? `\\textbf{Impact:} ${escapeTex(resume.summary.trim())}` : "";
+    case "skills":
+      return sectionBlock("Skills", renderClassicSkillsTable(resume));
+    case "education":
+      return sectionBlock("Education", renderClassicEducation(resume));
+    case "experience":
+      return sectionBlock("Experience", renderClassicExperience(resume, options));
+    case "projects":
+      return sectionBlock("Projects", renderClassicProjects(resume, options));
+    case "certifications":
+      return sectionBlock("Certifications", renderClassicCompactList(resume.certifications));
+    case "awards":
+      return sectionBlock("Awards \\& Honors", renderClassicCompactList(resume.awards));
+    case "leadership":
+      return sectionBlock("Leadership | Roles \\& Responsibilities", renderClassicCompactList(resume.leadership));
+    case "extracurricular":
+      return sectionBlock("Extracurricular Activities", renderClassicCompactList(resume.extracurricular));
+    default:
+      return "";
+  }
+}
+
 function renderSection(
   section: ResumeSectionKey,
   resume: ResumeData,
@@ -268,6 +488,30 @@ function buildPreamble(templateId: RenderOptions["templateId"], options: RenderO
   ].join("\n");
 }
 
+function buildClassicPreamble(options: RenderOptions) {
+  return [
+    `\\documentclass[a4,${options.fontSize}pt]{article}`,
+    "\\usepackage[empty]{fullpage}",
+    "\\usepackage{titlesec}",
+    "\\usepackage{tabularx}",
+    "\\usepackage[hidelinks]{hyperref}",
+    "\\usepackage{enumitem}",
+    "\\usepackage[T1]{fontenc}",
+    "\\usepackage[utf8]{inputenc}",
+    "\\usepackage{xcolor}",
+    `\\usepackage[margin=${options.margin}, top=${options.margin}]{geometry}`,
+    "\\definecolor{UIBlue}{RGB}{32, 64, 151}",
+    "\\pagestyle{empty}",
+    "\\raggedbottom",
+    "\\setlength{\\parindent}{0pt}",
+    "\\setlength{\\parskip}{0.3em}",
+    "\\titleformat{\\section}{\\color{UIBlue}\\scshape\\raggedright\\large}{}{0em}{}[\\vspace{-10pt}\\hrulefill\\vspace{-6pt}]",
+    "\\titleformat{\\subsection}{\\bfseries\\normalsize}{}{0em}{}",
+    "\\newenvironment{zitemize}{\\begin{itemize}[leftmargin=1.2em,itemsep=0.2em,topsep=0.2em]}{\\end{itemize}}",
+    "\\newcommand{\\resumeSection}[1]{\\section{#1}}"
+  ].join("\n");
+}
+
 export function renderOptionsToText(order: ResumeSectionKey[]) {
   return order.join("\n");
 }
@@ -288,6 +532,26 @@ export function createInitialRenderOptions(): RenderOptions {
 
 export function renderResumeToTex(resume: ResumeData, options: RenderOptions) {
   const template = getTemplateDefinition(options.templateId);
+
+  if (template.id === "classic") {
+    const orderedSections = options.sectionOrder
+      .map((section) => renderClassicSection(section, resume, options))
+      .filter(Boolean)
+      .join("\n\n");
+
+    return [
+      `% Template: ${template.id} (${template.label})`,
+      buildClassicPreamble(options),
+      "\\begin{document}",
+      renderClassicHeader(resume),
+      renderClassicSkillRibbon(resume),
+      orderedSections,
+      "\\end{document}"
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
   const config = getTemplateRenderConfig(template.id);
   const orderedSections = options.sectionOrder
     .map((section) => renderSection(section, resume, options, config))

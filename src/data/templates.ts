@@ -14,6 +14,18 @@ export interface TemplateDefinition {
 
 export const templateCatalog: TemplateDefinition[] = [
   {
+    badge: "Classic",
+    badgeTone: "soft",
+    bestFor: "General applications and graceful one-to-two page expansion",
+    density: "balanced",
+    description:
+      "A structured entry-level layout with a centered name block, classic section rhythm, and graceful continuation onto page two when content grows.",
+    headerLayout: "center",
+    id: "classic",
+    label: "Classic",
+    sectionStyle: "rule"
+  },
+  {
     badge: "Balanced",
     badgeTone: "mint",
     bestFor: "General tech roles and all-purpose applications",

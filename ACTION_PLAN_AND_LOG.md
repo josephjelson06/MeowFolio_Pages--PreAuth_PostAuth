@@ -19,7 +19,7 @@
 - Phase 3 TeX draft and compile path:
   complete for local TeX source generation and PDF compilation
 - Phase 4 parsing/import:
-  complete for pasted text and uploaded `.txt`, `.md`, `.pdf`, and `.docx` import into `ResumeData`
+  complete for AI-first parsing of pasted text and uploaded `.txt`, `.md`, `.pdf`, and `.docx` files into `ResumeData`
 - Phase 5 ATS/JD analysis:
   complete for deterministic scoring, render checks, evidence breakdown, and shared workspace usage
 - Shared workspace state:
@@ -538,7 +538,7 @@
 ### 2. Deeper import and matching quality
 
 - Improve messy PDF and `.docx` extraction further.
-- Add optional AI-assisted parsing only if it improves the canonical schema output without weakening reliability.
+- Continue tightening the AI-first resume parser with stronger prompts, repair loops, and schema normalization.
 - Improve JD and ATS matching beyond deterministic keyword overlap when needed.
 
 ### 3. Accounts and saved resumes
@@ -572,3 +572,29 @@
 - The PDF preview no longer auto-refreshes while typing.
   It updates only after an explicit compile/render action.
 - The default workspace remains blank rather than seeded with mock resume content.
+
+## Latest AI import and classic-template pass
+
+- Resume import is now AI-only.
+  The server no longer starts from the deterministic parser when pasted text or uploaded files are imported.
+- The import path now follows a stricter old-project pattern:
+  AI parse attempt ->
+  schema validation ->
+  AI repair attempt if the first JSON is malformed.
+- Old-project prompt ideas were reused for:
+  allowed section mapping,
+  stricter JSON shape guidance,
+  grouped-vs-flat skills handling,
+  compact section shaping,
+  and repair prompts.
+- Import now returns a clear service error if AI is not configured instead of silently falling back to heuristics.
+- The `classic` TeX template was upgraded using the old entry-level template structure:
+  centered header block,
+  stronger blue-accent section rhythm,
+  top skill ribbon,
+  classic section formatting,
+  and better Unicode normalization before TeX escaping.
+- Verification completed:
+  `npm run build` passes,
+  AI parse smoke test passes with `method: ai`,
+  and the generated classic TeX contains the upgraded header and skills-table structure.

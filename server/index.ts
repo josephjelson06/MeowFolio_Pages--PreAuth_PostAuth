@@ -6,6 +6,14 @@ import { EmptyImportFileError, extractResumeTextFromFile, UnsupportedImportFileE
 import { importResumeFromText } from "../src/lib/resume-import";
 import { renderResumeToTex } from "../src/lib/tex";
 import type { RenderResumePayload } from "../src/types/render";
+import type { AnalyzeAtsPayload, AnalyzeJdPayload, ImportResumeTextPayload } from "../src/types/ai";
+import {
+  AiResumeParsingUnavailableError,
+  analyzeResumeAgainstJdWithAi,
+  analyzeResumeForAtsWithAi,
+  parseResumeTextWithAi
+} from "./lib/ai-service";
+import { getAiServiceHealth } from "./lib/ai-client";
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 8787);
@@ -49,6 +57,29 @@ app.post("/api/render/tex", (request, response) => {
     templateId: request.body.options.templateId,
     texSource
   });
+});
+
+app.post("/api/import/text", async (request, response) => {
+  if (!isImportTextPayload(request.body)) {
+    response.status(400).json({ error: "Invalid import payload." });
+    return;
+  }
+
+  try {
+    const result = await parseResumeTextWithAi(request.body.text);
+    response.json({ result });
+  } catch (error) {
+    if (error instanceof AiResumeParsingUnavailableError) {
+      response.status(503).json({
+        error: error.message
+      });
+      return;
+    }
+
+    response.status(500).json({
+      error: error instanceof Error ? error.message : "Unknown text import error."
+    });
+  }
 });
 
 app.post("/api/render/pdf", async (request, response) => {
@@ -100,6 +131,11 @@ app.post("/api/import/file", upload.single("file"), async (request, response) =>
   } catch (error) {
     if (error instanceof UnsupportedImportFileError || error instanceof EmptyImportFileError) {
       response.status(400).json({ error: error.message });
+      return;
+    }
+
+    if (error instanceof AiResumeParsingUnavailableError) {
+      response.status(503).json({ error: error.message });
       return;
     }
 

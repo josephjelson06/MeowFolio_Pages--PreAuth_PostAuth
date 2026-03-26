@@ -599,6 +599,11 @@ export function importResumeFromText(value: string): ResumeImportResult {
   }
 
   return {
+    meta: {
+      cached: false,
+      confidence: hasImportedContent(resume) && detectedSections.length >= 3 ? "medium" : "low",
+      method: "ai"
+    },
     resume,
     summary: {
       detectedSections,
