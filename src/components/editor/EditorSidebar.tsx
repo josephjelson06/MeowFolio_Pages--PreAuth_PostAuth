@@ -351,6 +351,7 @@ export function EditorSidebar({
     onResumeChange(next);
   }
 
+  const customSections = Array.isArray(resume.customSections) ? resume.customSections : [];
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [activeContentSection, setActiveContentSection] = useState<string | null>("personal");
   const [importText, setImportText] = useState("");
@@ -394,7 +395,7 @@ export function EditorSidebar({
   }
 
   function renameCustomSection(sectionId: CustomResumeSectionId) {
-    const section = resume.customSections.find((item) => item.id === sectionId);
+    const section = customSections.find((item) => item.id === sectionId);
 
     if (!section) {
       return;
@@ -414,7 +415,7 @@ export function EditorSidebar({
 
     commit({
       ...resume,
-      customSections: resume.customSections.map((item) =>
+      customSections: customSections.map((item) =>
         item.id === sectionId
           ? {
               ...item,
@@ -427,7 +428,7 @@ export function EditorSidebar({
 
   function deleteSection(sectionId: OrderedResumeSectionId) {
     const label = isCustomResumeSectionId(sectionId)
-      ? resume.customSections.find((section) => section.id === sectionId)?.title || "this section"
+      ? customSections.find((section) => section.id === sectionId)?.title || "this section"
       : getSectionTitle(sectionId);
 
     if (!window.confirm(`Delete ${label}?`)) {
@@ -449,7 +450,7 @@ export function EditorSidebar({
     if (isCustomResumeSectionId(sectionId)) {
       commit({
         ...resume,
-        customSections: resume.customSections.filter((section) => section.id !== sectionId)
+        customSections: customSections.filter((section) => section.id !== sectionId)
       });
     }
 
@@ -496,7 +497,7 @@ export function EditorSidebar({
     commit({
       ...resume,
       customSections: [
-        ...resume.customSections,
+        ...customSections,
         {
           id: sectionId,
           items: [],
@@ -677,7 +678,7 @@ export function EditorSidebar({
   function updateCustomSectionItem(sectionId: CustomResumeSectionId, index: number, patch: Partial<CompactItem>) {
     commit({
       ...resume,
-      customSections: resume.customSections.map((section) =>
+      customSections: customSections.map((section) =>
         section.id === sectionId
           ? {
               ...section,
@@ -691,7 +692,7 @@ export function EditorSidebar({
   function addCustomSectionItem(sectionId: CustomResumeSectionId) {
     commit({
       ...resume,
-      customSections: resume.customSections.map((section) =>
+      customSections: customSections.map((section) =>
         section.id === sectionId
           ? {
               ...section,
@@ -705,7 +706,7 @@ export function EditorSidebar({
   function removeCustomSectionItem(sectionId: CustomResumeSectionId, index: number) {
     commit({
       ...resume,
-      customSections: resume.customSections.map((section) =>
+      customSections: customSections.map((section) =>
         section.id === sectionId
           ? {
               ...section,
@@ -1169,7 +1170,7 @@ export function EditorSidebar({
       onRename: () => renameBuiltInSection(section),
       content: (
         <div className="space-y-4">
-          {resume[section].map((item, index) => (
+          {(resume[section] ?? []).map((item, index) => (
             <DetailCard
               key={`${section}-${index}`}
               title={item.description?.trim() || `${compactSectionLabels[section]} ${index + 1}`}
@@ -1199,7 +1200,7 @@ export function EditorSidebar({
         </div>
       )
     })),
-    ...resume.customSections.map((section) => ({
+    ...customSections.map((section) => ({
       id: section.id,
       icon: "note_stack",
       title: section.title,

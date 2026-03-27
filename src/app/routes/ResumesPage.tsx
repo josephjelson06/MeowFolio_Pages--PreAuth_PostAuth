@@ -82,7 +82,7 @@ export function ResumesPage() {
             ))}
 
             <Link
-              to="/editor"
+              to="/choose-path"
               className="flex min-h-[420px] flex-col items-center justify-center gap-4 rounded-[1.75rem] border-2 border-dashed border-outline-variant bg-surface-container-lowest/50 p-8 text-center no-underline transition-colors hover:bg-surface-container-low"
             >
               <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-outline-variant bg-surface-container">

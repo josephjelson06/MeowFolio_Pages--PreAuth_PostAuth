@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import { loadServerEnv } from "./lib/env";
 import { compileLatexToPdf, getCompilerHealth, TexCompilationError, TexEngineUnavailableError } from "./lib/compile";
 import multer from "multer";
 import { EmptyImportFileError, extractResumeTextFromFile, UnsupportedImportFileError } from "./lib/import-file";
@@ -10,6 +11,8 @@ import {
   AiResumeParsingUnavailableError,
   parseResumeTextWithAi
 } from "./lib/ai-service";
+
+loadServerEnv();
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 8787);

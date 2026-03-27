@@ -20,7 +20,7 @@ export function AppLayout({ children, contentClassName, viewportBound = false }:
           { label: "ATS Scorer", to: "/ats" }
         ]}
         mode="app"
-        primaryAction={{ label: "Create New", to: "/editor" }}
+        primaryAction={{ label: "Create New", to: "/choose-path" }}
       />
       <main
         className={cx(

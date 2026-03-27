@@ -1,8 +1,11 @@
 import OpenAI from "openai";
 import type { z } from "zod";
 import type { AiServiceHealth } from "../../src/types/ai";
+import { loadServerEnv } from "./env";
 
-type TextProviderName = "groq" | "openai";
+loadServerEnv();
+
+type TextProviderName = "groq";
 
 interface TextProviderConfig {
   client: OpenAI;
@@ -17,20 +20,6 @@ interface EmbeddingProviderConfig {
 
 function getConfiguredProvider() {
   return process.env.AI_PROVIDER?.trim().toLowerCase();
-}
-
-function getOpenAiTextProvider(): TextProviderConfig | null {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-
-  if (!apiKey) {
-    return null;
-  }
-
-  return {
-    client: new OpenAI({ apiKey }),
-    model: process.env.OPENAI_MODEL?.trim() || "gpt-4.1-mini",
-    provider: "openai"
-  };
 }
 
 function getGroqTextProvider(): TextProviderConfig | null {
@@ -56,28 +45,15 @@ function getGroqTextProvider(): TextProviderConfig | null {
 function resolveTextProvider(): TextProviderConfig | null {
   const configuredProvider = getConfiguredProvider();
 
-  if (configuredProvider === "groq") {
-    return getGroqTextProvider() ?? getOpenAiTextProvider();
-  }
-
-  if (configuredProvider === "openai") {
-    return getOpenAiTextProvider() ?? getGroqTextProvider();
-  }
-
-  return getOpenAiTextProvider() ?? getGroqTextProvider();
-}
-
-function resolveEmbeddingProvider(): EmbeddingProviderConfig | null {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-
-  if (!apiKey) {
+  if (configuredProvider && configuredProvider !== "groq") {
     return null;
   }
 
-  return {
-    client: new OpenAI({ apiKey }),
-    model: process.env.OPENAI_EMBEDDING_MODEL?.trim() || "text-embedding-3-small"
-  };
+  return getGroqTextProvider();
+}
+
+function resolveEmbeddingProvider(): EmbeddingProviderConfig | null {
+  return null;
 }
 
 export function extractJsonObject(value: string) {
@@ -109,7 +85,7 @@ export function getAiServiceHealth(): AiServiceHealth {
 
   return {
     configured: Boolean(textProvider),
-    embeddingProvider: embeddingProvider ? "openai" : "none",
+    embeddingProvider: "none",
     provider: textProvider?.provider ?? "none",
     textModel: textProvider?.model ?? null
   };

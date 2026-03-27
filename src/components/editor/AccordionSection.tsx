@@ -48,9 +48,16 @@ export function AccordionSection({
       onDragStart={onDragStart}
       onDrop={onDrop}
     >
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={onToggle}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onToggle();
+          }
+        }}
         className={cx(
           "flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition",
           active ? "bg-primary-fixed/70" : "hover:bg-white/60"
@@ -104,7 +111,7 @@ export function AccordionSection({
             {active ? "expand_less" : "expand_more"}
           </span>
         </span>
-      </button>
+      </div>
       {active ? (
         <div className="border-t border-outline-variant/15 px-6 pb-6 pt-6">
           {children}

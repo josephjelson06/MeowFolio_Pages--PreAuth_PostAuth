@@ -101,7 +101,7 @@ export function DashboardPage() {
                 ))}
 
                 <Link
-                  to="/editor"
+                  to="/choose-path"
                   className="flex min-h-[360px] flex-col items-center justify-center gap-4 rounded-[1.75rem] border-2 border-dashed border-outline-variant bg-surface-container-low/30 p-8 text-center transition-colors hover:bg-surface-container-low"
                 >
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-outline-variant bg-surface-container">
