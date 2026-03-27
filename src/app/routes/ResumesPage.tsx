@@ -67,7 +67,7 @@ export function ResumesPage() {
               <ResumeGalleryCard
                 key={item.id}
                 resume={item.resume}
-                title={item.resume.header.title?.trim() || item.tag}
+                title={item.resume.header.role?.trim() || item.tag}
                 subtitle={
                   item.id === "workspace"
                     ? "Current workspace resume"
@@ -98,7 +98,7 @@ export function ResumesPage() {
                 key={item.id}
                 view="list"
                 resume={item.resume}
-                title={item.resume.header.title?.trim() || item.tag}
+                title={item.resume.header.role?.trim() || item.tag}
                 subtitle={
                   item.id === "workspace"
                     ? "Current workspace resume"

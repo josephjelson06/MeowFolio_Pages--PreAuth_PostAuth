@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { flattenSkills, getResumeContactLines } from "../../lib/resume";
+import { flattenDescriptionLines, flattenSkills, getResumeContactLines, getSummaryText } from "../../lib/resume";
 import type { ResumeData } from "../../types/resume";
 import { Chip } from "../ui/Chip";
 
@@ -17,10 +17,10 @@ interface ResumeGalleryCardProps {
 
 function ResumePreviewCanvas({ resume }: { resume: ResumeData }) {
   const name = resume.header.name?.trim() || "Your Name";
-  const title = resume.header.title?.trim() || "Target Role";
+  const title = resume.header.role?.trim() || "Target Role";
   const contacts = getResumeContactLines(resume).slice(0, 4);
-  const summary = resume.summary?.trim();
-  const bullets = resume.experience.flatMap((item) => item.bullets).slice(0, 3);
+  const summary = getSummaryText(resume);
+  const bullets = resume.experience.flatMap((item) => flattenDescriptionLines(item.description)).slice(0, 3);
   const skills = flattenSkills(resume.skills).slice(0, 4);
 
   return (
@@ -38,7 +38,7 @@ function ResumePreviewCanvas({ resume }: { resume: ResumeData }) {
           <div className="space-y-2">
             <div className="h-2 w-1/4 rounded-full bg-outline-variant/25" />
             <div className="space-y-1.5">
-              {(summary ? summary.split(/\s+/).slice(0, 18) : new Array(12).fill("")).slice(0, 3).map((_, index) => (
+              {(summary ? summary.split(/\s+/).slice(0, 18) : new Array(12).fill("")).slice(0, 3).map((_, index: number) => (
                 <div key={`summary-${index}`} className="h-2 rounded-full bg-outline-variant/15" style={{ width: `${92 - index * 12}%` }} />
               ))}
             </div>
@@ -47,7 +47,7 @@ function ResumePreviewCanvas({ resume }: { resume: ResumeData }) {
           <div className="space-y-2">
             <div className="h-2 w-1/5 rounded-full bg-outline-variant/25" />
             <div className="space-y-1.5">
-              {(bullets.length > 0 ? bullets : new Array(3).fill("")).map((bullet, index) => (
+              {(bullets.length > 0 ? bullets : new Array(3).fill("")).map((bullet, index: number) => (
                 <div key={`${bullet}-${index}`} className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                   <div className="h-2 rounded-full bg-outline-variant/15" style={{ width: `${88 - index * 10}%` }} />

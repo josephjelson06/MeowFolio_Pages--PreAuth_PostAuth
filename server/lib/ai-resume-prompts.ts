@@ -2,237 +2,235 @@ const SCHEMA_OVERVIEW = `
 {
   "header": {
     "name": null,
-    "title": null,
-    "email": null,
+    "role": null,
     "phone": null,
-    "location": null,
-    "linkedin": null,
-    "github": null,
-    "website": null,
-    "portfolio": null
+    "email": null,
+    "address": null,
+    "github": { "url": null, "displayMode": "plain-url", "displayText": null },
+    "linkedin": { "url": null, "displayMode": "plain-url", "displayText": null },
+    "website": { "url": null, "displayMode": "plain-url", "displayText": null }
   },
-  "summary": null,
-  "skills": [],
+  "summary": {
+    "mode": "professional-summary",
+    "content": null
+  },
   "education": [],
+  "skills": {
+    "mode": "csv",
+    "items": [],
+    "groups": []
+  },
   "experience": [],
   "projects": [],
   "certifications": [],
-  "awards": [],
-  "leadership": [],
-  "extracurricular": []
+  "leadership": { "label": "Leaderships", "entries": [] },
+  "achievements": { "label": "Achievements", "entries": [] },
+  "competitions": { "label": "Competitions", "entries": [] },
+  "extracurricular": { "label": "Extra-Curricular", "entries": [] },
+  "publications": { "label": "Publications", "entries": [] },
+  "openSource": { "label": "Open-Source", "entries": [] },
+  "languages": {
+    "mode": "csv",
+    "items": [],
+    "groups": []
+  },
+  "hobbies": {
+    "mode": "csv",
+    "items": [],
+    "groups": []
+  }
 }
 `.trim();
 
-const EXAMPLE_ONE_INPUT = `
-Jane Doe
-Product Designer
-jane@example.com | +1 555-0100 | Austin, TX
-linkedin.com/in/janedoe | github.com/janedoe
+const EXAMPLE_INPUT = `
+Akshata Patil
+Fresher
+Nagpur, Maharashtra | akshata@example.com | +91 98999 99999
+linkedin.com/in/akshata | github.com/akshata
 
-Summary
-Product designer with 5 years of experience designing SaaS workflows.
-
-Skills
-Figma, UX Research, Design Systems
-
-Experience
-Senior Product Designer, Acme Corp, Austin, TX, 2022-01 to Present
-- Led redesign of onboarding flow, improving activation by 18%.
-- Built component library adopted by 3 product squads.
+Career Objective
+Aspiring AI engineer looking for an entry-level role where I can build real machine learning systems.
 
 Education
-B.Des, Industrial Design, RISD, Providence, 2014, 2018
+B.Tech, Artificial Intelligence, St. Vincent Pallotti College of Engineering, Nagpur, 2023 - 2027, 8.7 CGPA
+Class 12, PCM, St. Paul Junior College, Nagpur, 2021 - 2023, 92%
+
+Skills
+Programming Languages: Python, C++, SQL
+Tools & Frameworks: PyTorch, OpenCV, FastAPI
+
+Projects
+Solar Panel Extraction Model
+GitHub: github.com/akshata/solar-segmentation
+Technologies: Python, PyTorch, OpenCV
+- Built a segmentation model for solar panel extraction.
+- Improved IoU by 14% over the baseline.
 
 Certifications
-- Google UX Certificate (2022)
+Google Data Analytics Professional Certificate | Coursera | 2024
+
+Languages
+English: Fluent
+Hindi: Native
+
+Hobbies & Interests
+Reading, Sketching, Hackathons
 `.trim();
 
-const EXAMPLE_ONE_OUTPUT = {
-  awards: [],
+const EXAMPLE_OUTPUT = {
+  achievements: { entries: [], label: "Achievements" },
   certifications: [
     {
-      date: "2022",
-      description: "Google UX Certificate",
-      link: null
+      date: {
+        endMonth: "",
+        endYear: "",
+        isOngoing: false,
+        mode: "yyyy",
+        startMonth: "",
+        startYear: "2024"
+      },
+      description: "",
+      issuer: "Coursera",
+      link: { displayMode: "plain-url", displayText: null, url: null },
+      title: "Google Data Analytics Professional Certificate"
     }
   ],
+  competitions: { entries: [], label: "Competitions" },
   education: [
     {
-      degree: "B.Des",
-      endYear: "2018",
-      field: "Industrial Design",
-      gpa: null,
-      institution: "RISD",
-      location: "Providence",
-      startYear: "2014"
+      boardOrUniversity: "",
+      date: {
+        endMonth: "",
+        endYear: "2027",
+        isOngoing: false,
+        mode: "yyyy-range",
+        startMonth: "",
+        startYear: "2023"
+      },
+      degree: "B.Tech",
+      field: "Artificial Intelligence",
+      institution: "St. Vincent Pallotti College of Engineering",
+      level: "degree-diploma",
+      location: "Nagpur",
+      result: "8.7 CGPA",
+      resultType: "cgpa-10"
     }
   ],
-  experience: [
-    {
-      bullets: [
-        "Led redesign of onboarding flow, improving activation by 18%.",
-        "Built component library adopted by 3 product squads."
-      ],
-      company: "Acme Corp",
-      current: true,
-      description: null,
-      endDate: null,
-      id: null,
-      location: "Austin, TX",
-      role: "Senior Product Designer",
-      startDate: "2022-01"
-    }
-  ],
-  extracurricular: [],
-  header: {
-    email: "jane@example.com",
-    github: "github.com/janedoe",
-    linkedin: "linkedin.com/in/janedoe",
-    location: "Austin, TX",
-    name: "Jane Doe",
-    phone: "+1 555-0100",
-    portfolio: null,
-    title: "Product Designer",
-    website: null
-  },
-  leadership: [],
-  projects: [],
-  skills: ["Figma", "UX Research", "Design Systems"],
-  summary: "Product designer with 5 years of experience designing SaaS workflows."
-} as const;
-
-const EXAMPLE_TWO_INPUT = `
-Michael Chen
-Software Engineer
-michael@example.com | Seattle, WA | michaelchen.dev
-
-SUMMARY
-Backend engineer focused on APIs, cloud platforms, and observability.
-
-TECHNICAL SKILLS
-Languages: Python, Go
-Tools: Docker, Kubernetes, PostgreSQL
-
-PROJECTS
-Resume Formatter
-- Built a FastAPI service for parsing resume documents.
-- Used Docker to compile LaTeX into PDFs.
-Technologies: Python, FastAPI, Docker
-
-Leadership & Responsibilities
-- Led a 10-member engineering club (2023)
-
-Hackathons / Competitions
-- Top 8 finalist, City AI Hackathon (2024)
-`.trim();
-
-const EXAMPLE_TWO_OUTPUT = {
-  awards: [],
-  certifications: [],
-  education: [],
   experience: [],
-  extracurricular: [
-    {
-      date: "2024",
-      description: "Top 8 finalist, City AI Hackathon",
-      link: null
-    }
-  ],
+  extracurricular: { entries: [], label: "Extra-Curricular" },
   header: {
-    email: "michael@example.com",
-    github: null,
-    linkedin: null,
-    location: "Seattle, WA",
-    name: "Michael Chen",
-    phone: null,
-    portfolio: null,
-    title: "Software Engineer",
-    website: "michaelchen.dev"
+    address: "Nagpur, Maharashtra",
+    email: "akshata@example.com",
+    github: { displayMode: "plain-url", displayText: null, url: "github.com/akshata" },
+    linkedin: { displayMode: "plain-url", displayText: null, url: "linkedin.com/in/akshata" },
+    name: "Akshata Patil",
+    phone: "+91 98999 99999",
+    role: "Fresher",
+    website: { displayMode: "plain-url", displayText: null, url: null }
   },
-  leadership: [
-    {
-      date: "2023",
-      description: "Led a 10-member engineering club",
-      link: null
-    }
-  ],
+  hobbies: {
+    groups: [],
+    items: ["Reading", "Sketching", "Hackathons"],
+    mode: "csv"
+  },
+  languages: {
+    groups: [],
+    items: [
+      { language: "English", proficiency: "fluent" },
+      { language: "Hindi", proficiency: "native" }
+    ],
+    mode: "csv"
+  },
+  leadership: { entries: [], label: "Leaderships" },
+  openSource: { entries: [], label: "Open-Source" },
   projects: [
     {
-      bullets: [
-        "Built a FastAPI service for parsing resume documents.",
-        "Used Docker to compile LaTeX into PDFs."
-      ],
-      description: null,
-      endDate: null,
-      link: null,
-      startDate: null,
-      technologies: ["Python", "FastAPI", "Docker"],
-      title: "Resume Formatter"
+      date: {
+        endMonth: "",
+        endYear: "",
+        isOngoing: false,
+        mode: "mm-yyyy-range",
+        startMonth: "",
+        startYear: ""
+      },
+      description: {
+        bullets: [
+          "Built a segmentation model for solar panel extraction.",
+          "Improved IoU by 14% over the baseline."
+        ],
+        mode: "bullets",
+        paragraph: null
+      },
+      githubLink: {
+        displayMode: "plain-url",
+        displayText: null,
+        url: "github.com/akshata/solar-segmentation"
+      },
+      liveLink: { displayMode: "plain-url", displayText: null, url: null },
+      technologies: ["Python", "PyTorch", "OpenCV"],
+      title: "Solar Panel Extraction Model"
     }
   ],
-  skills: [
-    {
-      category: "Languages",
-      items: ["Python", "Go"]
-    },
-    {
-      category: "Tools",
-      items: ["Docker", "Kubernetes", "PostgreSQL"]
-    }
-  ],
-  summary: "Backend engineer focused on APIs, cloud platforms, and observability."
+  publications: { entries: [], label: "Publications" },
+  skills: {
+    groups: [
+      { groupLabel: "Programming Languages", items: ["Python", "C++", "SQL"] },
+      { groupLabel: "Tools & Frameworks", items: ["PyTorch", "OpenCV", "FastAPI"] }
+    ],
+    items: [],
+    mode: "grouped"
+  },
+  summary: {
+    content: "Aspiring AI engineer looking for an entry-level role where I can build real machine learning systems.",
+    mode: "career-objective"
+  }
 } as const;
 
 const SYSTEM_PROMPT = `
 You are a structured resume parser.
 Return only valid JSON.
 Do not wrap JSON in markdown.
-Do not add explanations, commentary, or extra keys.
+Do not add commentary or extra keys.
 Preserve facts from the source resume only.
-Do not invent companies, titles, dates, metrics, links, schools, or skills.
-If data is missing, use null for single values and [] for arrays.
-Resume section order in source text can vary; detect by meaning, not by position.
+If data is missing, use null for scalars and [] for arrays.
+Resume sections can appear in any order.
 
-Allowed sections only:
-1) header
-2) summary
-3) skills
-4) education
-5) experience
+Required section coverage:
+1) header / personal details
+2) career objective or professional summary
+3) education
+4) skills
+5) experience / internships
 6) projects
 7) certifications
-8) awards
-9) leadership
-10) extracurricular
+8) leaderships
+9) achievements
+10) competitions
+11) extra-curricular
+12) publications
+13) open-source
+14) languages known
+15) hobbies & interests
 
-Section mapping rules:
-- "Profile", "Objective", "About" -> summary
-- "Internships", "Work History", "Experience" -> experience
-- "Technical Skills", "Core Competencies" -> skills
-- "Achievements", "Honors" -> awards
-- "Leadership", "Roles & Responsibilities" -> leadership
-- "Extracurricular", "Volunteer Work", "Activities", "Participations", "Hackathons", "Competitions", "Open Source Contributions" -> extracurricular
+Mapping rules:
+- "Objective", "Profile", "Professional Summary", "Career Objective" -> summary
+- "Experience", "Work Experience", "Internships" -> experience
+- "Hackathons", "Contest", "Competitions" -> competitions
+- "Awards", "Honors", "Achievements" -> achievements
+- "Volunteer Work", "Activities", "Extra Curricular" -> extracurricular
+- "Languages", "Languages Known" -> languages
+- "Hobbies", "Interests" -> hobbies
+- "Open Source Contributions" -> openSource
 
-Skills rules:
-- Skills can be either a flat array of strings, or grouped as objects with { "category": "...", "items": ["..."] }.
-- Do not mix grouped and flat skills in the same output unless the source truly requires it.
+Field rules:
+- Use structured link objects for github, linkedin, website, project links, and certificate links.
+- Use structured date objects for date fields.
+- Use description.mode = "bullets" when the source provides bullet points.
+- Use description.mode = "paragraph" when the source is narrative text.
+- For skills, languages, and hobbies choose mode "grouped" only when the source is clearly grouped.
+- Keep section labels human-readable.
 
-Compact sections rules:
-- certifications, awards, leadership, and extracurricular must use items shaped like { "description": "...", "date": "...", "link": "..." }.
-- Keep descriptions concise and one-line where possible.
-
-Experience rules:
-- Include role, company, location, startDate, endDate, current, description, and bullets when available.
-- Use bullets when the source resume provides achievement bullets.
-
-Project rules:
-- Include startDate and endDate when available.
-- Include technologies when explicitly present or clearly inferable from the project block.
-- If bullets are present, keep description null unless there is standalone narrative text.
-
-Ignore publications and unsupported custom sections.
-
-The JSON must match this schema shape exactly:
+The JSON must match this schema exactly:
 `.trim();
 
 function stringifyExample(value: unknown) {
@@ -249,42 +247,14 @@ Return JSON only.
 Schema:
 ${SCHEMA_OVERVIEW}
 
-Example 1 input:
-${EXAMPLE_ONE_INPUT}
+Example input:
+${EXAMPLE_INPUT}
 
-Example 1 output:
-${stringifyExample(EXAMPLE_ONE_OUTPUT)}
-
-Example 2 input:
-${EXAMPLE_TWO_INPUT}
-
-Example 2 output:
-${stringifyExample(EXAMPLE_TWO_OUTPUT)}
+Example output:
+${stringifyExample(EXAMPLE_OUTPUT)}
 
 Resume text:
 ${rawText}
-`.trim()
-  };
-}
-
-export function buildResumeRepairPrompt(rawText: string, previousOutput: string, validationError: string) {
-  return {
-    system: `${SYSTEM_PROMPT}\n${SCHEMA_OVERVIEW}`,
-    user: `
-The previous resume JSON was invalid.
-Fix it so it matches the schema exactly and return JSON only.
-
-Schema:
-${SCHEMA_OVERVIEW}
-
-Validation error:
-${validationError}
-
-Original resume text:
-${rawText}
-
-Previous output:
-${previousOutput}
 `.trim()
   };
 }

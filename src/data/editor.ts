@@ -1,131 +1,190 @@
-import { areSkillsGrouped, type ResumeData, type ResumeSkills } from "../types/resume";
-
-const sampleSkills: ResumeSkills = ["Design Systems", "UI Design", "Interaction Design", "Figma", "Research", "Accessibility"];
+import {
+  createEmptyDateField,
+  createEmptyDescriptionField,
+  createEmptyLinkField,
+  createEmptyResumeData,
+  type ResumeData
+} from "../types/resume";
 
 const sampleResumeData: ResumeData = {
-  meta: {
-    version: "1.0",
-    createdAt: "",
-    updatedAt: "",
-    source: "scratch"
+  ...createEmptyResumeData("scratch"),
+  achievements: {
+    entries: [],
+    label: "Achievements"
   },
-  header: {
-    name: "Alexander Thompson",
-    title: "Senior Product Designer",
-    email: "alex@meowfolio.design",
-    phone: "+1 (555) 000-0000",
-    location: "San Francisco, CA",
-    linkedin: "linkedin.com/in/alexthompson",
-    github: "github.com/alexthompson",
-    website: "alexthompson.design",
-    portfolio: "portfolio.alexthompson.design"
-  },
-  summary:
-    "Product designer focused on tactile interfaces, thoughtful systems, and expressive visual language for consumer tools.",
-  skills: sampleSkills,
-  experience: [
+  certifications: [
     {
-      id: "northstar-labs",
-      role: "Senior Product Designer",
-      company: "Northstar Labs",
-      location: "San Francisco, CA",
-      startDate: "2021",
-      endDate: null,
-      current: true,
-      description: null,
-      bullets: [
-        "Led the redesign of a mobile growth platform used by 3M+ monthly users.",
-        "Built a shared component system that reduced UI inconsistency across 5 product teams.",
-        "Improved task completion in onboarding flows by 21% through information architecture changes."
-      ]
-    },
-    {
-      id: "tideframe",
-      role: "Product Designer",
-      company: "Tideframe",
-      location: "Los Angeles, CA",
-      startDate: "2018",
-      endDate: "2021",
-      current: false,
-      description: null,
-      bullets: [
-        "Created dashboard, reporting, and template workflows for early-career job seekers.",
-        "Partnered with engineering to turn high-fidelity prototypes into reusable front-end patterns."
-      ]
+      date: {
+        ...createEmptyDateField("yyyy"),
+        startYear: "2024"
+      },
+      description: "Completed with distinction.",
+      issuer: "Coursera",
+      link: {
+        ...createEmptyLinkField(),
+        url: "https://coursera.org/example"
+      },
+      title: "Google UX Certificate"
     }
   ],
   education: [
     {
-      degree: "B.Des. in Interaction Design",
+      boardOrUniversity: "California Institute of Arts",
+      date: {
+        ...createEmptyDateField("yyyy-range"),
+        endYear: "2018",
+        startYear: "2014"
+      },
+      degree: "B.Des.",
       field: "Interaction Design",
       institution: "California Institute of Arts",
+      level: "degree-diploma",
       location: "Valencia, CA",
-      startYear: "2014",
-      endYear: "2018",
-      gpa: null
+      result: "",
+      resultType: null
     }
   ],
+  experience: [
+    {
+      company: "Northstar Labs",
+      date: {
+        ...createEmptyDateField("yyyy-present"),
+        isOngoing: true,
+        startYear: "2021"
+      },
+      description: {
+        ...createEmptyDescriptionField("bullets"),
+        bullets: [
+          "Led the redesign of a mobile growth platform used by 3M+ monthly users.",
+          "Built a shared component system that reduced UI inconsistency across 5 product teams.",
+          "Improved task completion in onboarding flows by 21% through information architecture changes."
+        ]
+      },
+      isCurrent: true,
+      location: "San Francisco, CA",
+      role: "Senior Product Designer"
+    },
+    {
+      company: "Tideframe",
+      date: {
+        ...createEmptyDateField("yyyy-range"),
+        endYear: "2021",
+        startYear: "2018"
+      },
+      description: {
+        ...createEmptyDescriptionField("bullets"),
+        bullets: [
+          "Created dashboard, reporting, and template workflows for early-career job seekers.",
+          "Partnered with engineering to turn high-fidelity prototypes into reusable front-end patterns."
+        ]
+      },
+      isCurrent: false,
+      location: "Los Angeles, CA",
+      role: "Product Designer"
+    }
+  ],
+  extracurricular: {
+    entries: [],
+    label: "Extra-Curricular"
+  },
+  header: {
+    address: "San Francisco, CA",
+    email: "alex@meowfolio.design",
+    github: {
+      ...createEmptyLinkField(),
+      url: "github.com/alexthompson"
+    },
+    linkedin: {
+      ...createEmptyLinkField(),
+      url: "linkedin.com/in/alexthompson"
+    },
+    name: "Alexander Thompson",
+    phone: "+1 (555) 000-0000",
+    role: "Senior Product Designer",
+    website: {
+      ...createEmptyLinkField(),
+      url: "alexthompson.design"
+    }
+  },
+  hobbies: {
+    groups: [],
+    items: ["Photography", "Climbing", "Film"],
+    mode: "csv"
+  },
+  languages: {
+    groups: [],
+    items: [
+      {
+        language: "English",
+        proficiency: "native"
+      }
+    ],
+    mode: "csv"
+  },
+  leadership: {
+    entries: [
+      {
+        date: {
+          ...createEmptyDateField("yyyy-range"),
+          endYear: "2023",
+          startYear: "2022"
+        },
+        description: {
+          ...createEmptyDescriptionField("paragraph"),
+          mode: "paragraph",
+          paragraph: "Led the design mentorship circle for six junior designers."
+        },
+        link: createEmptyLinkField(),
+        location: "",
+        subtitle: "MeowFolio Design Circle",
+        title: "Mentor Lead"
+      }
+    ],
+    label: "Leaderships"
+  },
+  openSource: {
+    entries: [],
+    label: "Open-Source"
+  },
   projects: [
     {
-      title: "MeowFolio Workspace Redesign",
-      description: null,
-      startDate: "2025",
-      endDate: "2025",
+      date: {
+        ...createEmptyDateField("yyyy"),
+        startYear: "2025"
+      },
+      description: {
+        ...createEmptyDescriptionField("bullets"),
+        bullets: [
+          "Designed a split-screen builder flow for resume editing, ATS review, and JD analysis.",
+          "Created a reusable component language for cards, workspaces, and tactile navigation."
+        ]
+      },
+      githubLink: {
+        ...createEmptyLinkField(),
+        url: "github.com/alexthompson/meowfolio"
+      },
+      liveLink: createEmptyLinkField(),
       technologies: ["React", "TypeScript", "Tailwind", "Figma"],
-      bullets: [
-        "Designed a split-screen builder flow for resume editing, ATS review, and JD analysis.",
-        "Created a reusable component language for cards, workspaces, and tactile navigation."
-      ],
-      link: "github.com/alexthompson/meowfolio"
+      title: "MeowFolio Workspace Redesign"
     }
   ],
-  certifications: [],
-  awards: [],
-  leadership: [],
-  extracurricular: [],
-  customSections: []
+  publications: {
+    entries: [],
+    label: "Publications"
+  },
+  skills: {
+    groups: [],
+    items: ["Design Systems", "UI Design", "Interaction Design", "Figma", "Research", "Accessibility"],
+    mode: "csv"
+  },
+  summary: {
+    content: "Product designer focused on tactile interfaces, thoughtful systems, and expressive visual language for consumer tools.",
+    mode: "professional-summary"
+  }
 };
 
-function cloneSkills(skills: ResumeSkills): ResumeSkills {
-  if (skills.length === 0) {
-    return [];
-  }
-
-  if (!areSkillsGrouped(skills)) {
-    return [...skills];
-  }
-
-  return skills.map((group) => ({ category: group.category, items: [...group.items] }));
-}
-
 export function createMockResumeData(): ResumeData {
-  const now = new Date().toISOString();
-
-  return {
-    meta: {
-      ...sampleResumeData.meta,
-      createdAt: now,
-      updatedAt: now
-    },
-    header: { ...sampleResumeData.header },
-    summary: sampleResumeData.summary,
-    skills: cloneSkills(sampleResumeData.skills),
-    experience: sampleResumeData.experience.map((item) => ({ ...item, bullets: [...item.bullets] })),
-    education: sampleResumeData.education.map((item) => ({ ...item })),
-    projects: sampleResumeData.projects.map((item) => ({
-      ...item,
-      technologies: [...item.technologies],
-      bullets: [...item.bullets]
-    })),
-    certifications: sampleResumeData.certifications.map((item) => ({ ...item })),
-    awards: sampleResumeData.awards.map((item) => ({ ...item })),
-    leadership: sampleResumeData.leadership.map((item) => ({ ...item })),
-    extracurricular: sampleResumeData.extracurricular.map((item) => ({ ...item })),
-    customSections: sampleResumeData.customSections.map((section) => ({
-      ...section,
-      items: section.items.map((item) => ({ ...item }))
-    }))
-  };
+  return structuredClone(sampleResumeData);
 }
 
 export const mockResumeData = createMockResumeData();

@@ -1,112 +1,57 @@
 import type { AtsAnalysisResult, JdAnalysisResult, KeywordBreakdown } from "../types/analysis";
 import type { RenderOptions, ResumeData, ResumeSectionKey } from "../types/resume";
-import { flattenSkills, getResumeContactLines } from "./resume";
+import { flattenDescriptionLines, flattenSkills, formatDateField, getLinkLabel, getResumeContactLines, getSummaryText } from "./resume";
 
 const STOPWORDS = new Set([
   "a",
   "about",
-  "across",
   "an",
   "and",
   "are",
   "as",
   "at",
   "be",
-  "build",
-  "building",
   "by",
-  "candidate",
-  "collaborate",
-  "collaborating",
-  "closely",
-  "company",
-  "consumer",
-  "cross",
-  "crossfunctional",
-  "design",
-  "designer",
-  "develop",
-  "drive",
-  "end-to-end",
-  "endtoend",
-  "experience",
-  "familiarity",
   "for",
   "from",
-  "have",
-  "help",
-  "improve",
-  "improvement",
   "in",
   "into",
   "is",
-  "job",
-  "lead",
-  "looking",
-  "modern",
-  "must",
+  "of",
   "on",
   "or",
   "our",
-  "partner",
-  "presentation",
-  "proficiency",
-  "product",
-  "requirements",
   "role",
-  "senior",
-  "shape",
   "skills",
-  "scale",
-  "strong",
-  "team",
-  "teams",
   "that",
   "the",
-  "their",
   "this",
   "to",
-  "use",
-  "we",
-  "will",
   "with",
   "work",
-  "worked",
-  "working",
-  "workflows",
-  "years",
   "you",
   "your"
 ]);
 
 const SHORT_TOKEN_ALLOWLIST = new Set(["ai", "ml", "qa", "sql", "ui", "ux"]);
-const ACTION_VERBS = [
-  "built",
-  "created",
-  "delivered",
-  "designed",
-  "drove",
-  "executed",
-  "improved",
-  "increased",
-  "launched",
-  "led",
-  "optimized",
-  "reduced",
-  "shipped"
-];
+const ACTION_VERBS = ["built", "created", "delivered", "designed", "drove", "improved", "launched", "led", "optimized", "reduced", "shipped"];
 
 const SECTION_LABELS: Record<ResumeSectionKey | "header", string> = {
-  awards: "Awards",
+  achievements: "Achievements",
   certifications: "Certifications",
+  competitions: "Competitions",
   education: "Education",
   experience: "Experience",
-  extracurricular: "Extracurricular",
+  extracurricular: "Extra-Curricular",
   header: "Header",
+  hobbies: "Hobbies & Interests",
+  languages: "Languages Known",
   leadership: "Leadership",
+  openSource: "Open-Source",
   projects: "Projects",
+  publications: "Publications",
   skills: "Skills",
-  summary: "Summary"
+  summary: "Professional Summary"
 };
 
 type SectionEntryMap = Record<ResumeSectionKey, string[]>;
@@ -116,10 +61,7 @@ function clampScore(value: number) {
 }
 
 function wordCount(value: string) {
-  return value
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean).length;
+  return value.trim().split(/\s+/).filter(Boolean).length;
 }
 
 function normalizeToken(token: string) {
@@ -154,22 +96,44 @@ function titleizeKeyword(keyword: string) {
     .join(" ");
 }
 
+function getCustomSectionLineCount(resume: ResumeData) {
+  return [
+    resume.leadership.entries.length,
+    resume.achievements.entries.length,
+    resume.competitions.entries.length,
+    resume.extracurricular.entries.length,
+    resume.publications.entries.length,
+    resume.openSource.entries.length
+  ].reduce((total, count) => total + count, 0);
+}
+
 function getResumeSectionsCount(resume: ResumeData) {
   return [
-    resume.summary?.trim(),
+    getSummaryText(resume),
     flattenSkills(resume.skills).length > 0,
     resume.education.length > 0,
     resume.experience.length > 0,
     resume.projects.length > 0,
     resume.certifications.length > 0,
-    resume.awards.length > 0,
-    resume.leadership.length > 0,
-    resume.extracurricular.length > 0
+    getCustomSectionLineCount(resume) > 0,
+    resume.languages.items.length > 0 || resume.languages.groups.length > 0,
+    resume.hobbies.items.length > 0 || resume.hobbies.groups.length > 0
   ].filter(Boolean).length;
 }
 
 function getResumeBullets(resume: ResumeData) {
-  return [...resume.experience.flatMap((item) => item.bullets), ...resume.projects.flatMap((item) => item.bullets)]
+  return [
+    ...resume.experience.flatMap((item) => item.description.mode === "bullets" ? item.description.bullets : []),
+    ...resume.projects.flatMap((item) => item.description.mode === "bullets" ? item.description.bullets : []),
+    ...[
+      resume.leadership,
+      resume.achievements,
+      resume.competitions,
+      resume.extracurricular,
+      resume.publications,
+      resume.openSource
+    ].flatMap((section) => section.entries.flatMap((entry) => (entry.description.mode === "bullets" ? entry.description.bullets : [])))
+  ]
     .map((bullet) => bullet.trim())
     .filter(Boolean);
 }
@@ -178,22 +142,47 @@ function collectResumeText(resume: ResumeData) {
   return normalizeText(
     [
       resume.header.name,
-      resume.header.title,
-      resume.header.location,
+      resume.header.role,
+      resume.header.address,
       resume.header.email,
-      resume.header.linkedin,
-      resume.header.github,
-      resume.header.website,
-      resume.header.portfolio,
-      resume.summary,
+      getLinkLabel(resume.header.linkedin),
+      getLinkLabel(resume.header.github),
+      getLinkLabel(resume.header.website),
+      getSummaryText(resume),
       ...flattenSkills(resume.skills),
-      ...resume.experience.flatMap((item) => [item.role, item.company, item.location, item.description, ...item.bullets]),
-      ...resume.education.flatMap((item) => [item.degree, item.field, item.institution, item.location]),
-      ...resume.projects.flatMap((item) => [item.title, item.description, item.link, ...item.technologies, ...item.bullets]),
-      ...resume.certifications.map((item) => item.description),
-      ...resume.awards.map((item) => item.description),
-      ...resume.leadership.map((item) => item.description),
-      ...resume.extracurricular.map((item) => item.description)
+      ...resume.experience.flatMap((item) => [item.role, item.company, item.location, formatDateField(item.date), ...flattenDescriptionLines(item.description)]),
+      ...resume.education.flatMap((item) => [item.degree, item.field, item.institution, item.location, item.result, formatDateField(item.date)]),
+      ...resume.projects.flatMap((item) => [
+        item.title,
+        getLinkLabel(item.githubLink),
+        getLinkLabel(item.liveLink),
+        formatDateField(item.date),
+        ...item.technologies,
+        ...flattenDescriptionLines(item.description)
+      ]),
+      ...resume.certifications.flatMap((item) => [item.title, item.issuer, item.description, getLinkLabel(item.link), formatDateField(item.date)]),
+      ...[
+        resume.leadership,
+        resume.achievements,
+        resume.competitions,
+        resume.extracurricular,
+        resume.publications,
+        resume.openSource
+      ].flatMap((section) =>
+        section.entries.flatMap((entry) => [
+          section.label,
+          entry.title,
+          entry.subtitle,
+          entry.location,
+          formatDateField(entry.date),
+          getLinkLabel(entry.link),
+          ...flattenDescriptionLines(entry.description)
+        ])
+      ),
+      ...resume.languages.items.flatMap((item) => [item.language, item.proficiency]),
+      ...resume.languages.groups.flatMap((group) => [group.groupLabel, ...group.items]),
+      ...resume.hobbies.items,
+      ...resume.hobbies.groups.flatMap((group) => [group.groupLabel, ...group.items])
     ]
       .filter((value): value is string => Boolean(value && value.trim()))
       .join(" ")
@@ -260,31 +249,27 @@ function buildJdSummary(score: number, totalKeywords: number) {
 
   if (score >= 85) {
     return {
-      summaryCopy:
-        "The current resume language overlaps strongly with the role. Focus next on sharpening the strongest evidence and quantified outcomes.",
+      summaryCopy: "The current resume language overlaps strongly with the role. Focus next on sharpening the strongest evidence and quantified outcomes.",
       summaryTitle: "Strong role alignment"
     };
   }
 
   if (score >= 70) {
     return {
-      summaryCopy:
-        "The resume is already aligned with the job description, but a few missing terms are holding back the match score.",
+      summaryCopy: "The resume is already aligned with the job description, but a few missing terms are holding back the match score.",
       summaryTitle: "Good match with room to sharpen"
     };
   }
 
   if (score >= 55) {
     return {
-      summaryCopy:
-        "There is clear overlap, but the resume still needs stronger language around the target role's required skills and responsibilities.",
+      summaryCopy: "There is clear overlap, but the resume still needs stronger language around the target role's required skills and responsibilities.",
       summaryTitle: "Partial match so far"
     };
   }
 
   return {
-    summaryCopy:
-      "The resume and job description are not aligned yet. Start by surfacing the exact skills and responsibilities that genuinely match your background.",
+    summaryCopy: "The resume and job description are not aligned yet. Start by surfacing the exact skills and responsibilities that genuinely match your background.",
     summaryTitle: "Low match right now"
   };
 }
@@ -313,32 +298,49 @@ function parseMarginToCentimeters(value: string) {
 
 function buildSectionEntryMap(resume: ResumeData): SectionEntryMap {
   return {
-    awards: resume.awards.map((item) => item.description ?? "").filter(Boolean),
-    certifications: resume.certifications.map((item) => item.description ?? "").filter(Boolean),
+    achievements: resume.achievements.entries
+      .flatMap((entry) => [entry.title, entry.subtitle, entry.location, ...flattenDescriptionLines(entry.description)])
+      .filter(Boolean) as string[],
+    certifications: resume.certifications
+      .flatMap((item) => [item.title, item.issuer, item.description, getLinkLabel(item.link), formatDateField(item.date)])
+      .filter(Boolean) as string[],
+    competitions: resume.competitions.entries
+      .flatMap((entry) => [entry.title, entry.subtitle, entry.location, ...flattenDescriptionLines(entry.description)])
+      .filter(Boolean) as string[],
     education: resume.education
-      .map((item) => [item.degree, item.field, item.institution, item.location].filter(Boolean).join(" | "))
+      .map((item) => [item.degree, item.field, item.institution, item.location, item.result, formatDateField(item.date)].filter(Boolean).join(" | "))
       .filter(Boolean),
     experience: resume.experience
-      .map((item) => [item.role, item.company, item.location, item.description, ...item.bullets].filter(Boolean).join(" | "))
+      .map((item) => [item.role, item.company, item.location, formatDateField(item.date), ...flattenDescriptionLines(item.description)].filter(Boolean).join(" | "))
       .filter(Boolean),
-    extracurricular: resume.extracurricular.map((item) => item.description ?? "").filter(Boolean),
-    leadership: resume.leadership.map((item) => item.description ?? "").filter(Boolean),
+    extracurricular: resume.extracurricular.entries
+      .flatMap((entry) => [entry.title, entry.subtitle, entry.location, ...flattenDescriptionLines(entry.description)])
+      .filter(Boolean) as string[],
+    hobbies: [...resume.hobbies.items, ...resume.hobbies.groups.flatMap((group) => group.items)].filter(Boolean),
+    languages: [
+      ...resume.languages.items.map((item) => [item.language, item.proficiency].filter(Boolean).join(" | ")),
+      ...resume.languages.groups.flatMap((group) => group.items)
+    ].filter(Boolean),
+    leadership: resume.leadership.entries
+      .flatMap((entry) => [entry.title, entry.subtitle, entry.location, ...flattenDescriptionLines(entry.description)])
+      .filter(Boolean) as string[],
+    openSource: resume.openSource.entries
+      .flatMap((entry) => [entry.title, entry.subtitle, entry.location, ...flattenDescriptionLines(entry.description)])
+      .filter(Boolean) as string[],
     projects: resume.projects
-      .map((item) => [item.title, item.description, item.link, ...item.technologies, ...item.bullets].filter(Boolean).join(" | "))
+      .map((item) => [item.title, getLinkLabel(item.githubLink), getLinkLabel(item.liveLink), ...item.technologies, ...flattenDescriptionLines(item.description)].filter(Boolean).join(" | "))
       .filter(Boolean),
+    publications: resume.publications.entries
+      .flatMap((entry) => [entry.title, entry.subtitle, entry.location, ...flattenDescriptionLines(entry.description)])
+      .filter(Boolean) as string[],
     skills: flattenSkills(resume.skills),
-    summary: resume.summary?.trim() ? [resume.summary.trim()] : []
+    summary: getSummaryText(resume) ? [getSummaryText(resume)] : []
   };
 }
 
 function truncateEvidence(value: string) {
   const trimmed = value.replace(/\s+/g, " ").trim();
-
-  if (trimmed.length <= 120) {
-    return trimmed;
-  }
-
-  return `${trimmed.slice(0, 117).trim()}...`;
+  return trimmed.length <= 120 ? trimmed : `${trimmed.slice(0, 117).trim()}...`;
 }
 
 function buildKeywordBreakdown(keywords: string[], entries: SectionEntryMap): KeywordBreakdown[] {
@@ -403,10 +405,10 @@ function buildKeywordBreakdown(keywords: string[], entries: SectionEntryMap): Ke
 }
 
 function buildAtsSectionSignals(resume: ResumeData) {
-  const summaryWords = wordCount(resume.summary ?? "");
+  const summaryWords = wordCount(getSummaryText(resume));
   const skillsCount = flattenSkills(resume.skills).length;
-  const experienceBullets = resume.experience.flatMap((item) => item.bullets).filter((bullet) => bullet.trim()).length;
-  const projectBullets = resume.projects.flatMap((item) => item.bullets).filter((bullet) => bullet.trim()).length;
+  const experienceBullets = resume.experience.flatMap((item) => flattenDescriptionLines(item.description)).length;
+  const projectBullets = resume.projects.flatMap((item) => flattenDescriptionLines(item.description)).length;
 
   return [
     {
@@ -510,7 +512,7 @@ export function analyzeResumeForAts(resume: ResumeData, renderOptions: RenderOpt
   const contactLines = getResumeContactLines(resume);
   const skills = flattenSkills(resume.skills);
   const bullets = getResumeBullets(resume);
-  const summaryWords = wordCount(resume.summary ?? "");
+  const summaryWords = wordCount(getSummaryText(resume));
   const bulletsWithMetrics = bullets.filter((bullet) => /\b\d+(?:\.\d+)?(?:%|x|k|m|b|\+)?\b/i.test(bullet)).length;
   const bulletsWithAction = bullets.filter((bullet) => ACTION_VERBS.some((verb) => bullet.toLowerCase().includes(verb))).length;
   const longBullets = bullets.filter((bullet) => wordCount(bullet) > 28).length;
@@ -523,13 +525,11 @@ export function analyzeResumeForAts(resume: ResumeData, renderOptions: RenderOpt
       (resume.header.name?.trim() ? 0 : 40) -
       (resume.header.email?.trim() ? 0 : 20) -
       (resume.header.phone?.trim() ? 0 : 8) -
-      (resume.header.location?.trim() ? 0 : 6) -
+      (resume.header.address?.trim() ? 0 : 6) -
       Math.max(0, longBullets - 1) * 5 -
       failedRenderChecks * 5
   );
-  const keywords = clampScore(
-    32 + Math.min(skills.length * 6, 30) + Math.min(bulletsWithAction * 6, 20) + Math.min(bulletsWithMetrics * 7, 18)
-  );
+  const keywords = clampScore(32 + Math.min(skills.length * 6, 30) + Math.min(bulletsWithAction * 6, 20) + Math.min(bulletsWithMetrics * 7, 18));
   const structure = clampScore(
     24 +
       sectionsCount * 8 +
@@ -552,7 +552,7 @@ export function analyzeResumeForAts(resume: ResumeData, renderOptions: RenderOpt
   const sectionSignals = buildAtsSectionSignals(resume);
 
   const issues = [
-    !resume.summary?.trim()
+    !getSummaryText(resume)
       ? {
           detail: "Add a concise summary that anchors the role, strengths, and target direction near the top of the resume.",
           severity: "Moderate" as const,
@@ -629,7 +629,7 @@ export function analyzeResumeForAts(resume: ResumeData, renderOptions: RenderOpt
       {
         detail: "A short top summary helps anchor target role language before the scan reaches deeper sections.",
         label: "Role-focused summary",
-        passed: Boolean(resume.summary?.trim())
+        passed: Boolean(getSummaryText(resume))
       },
       {
         detail: "Experience bullets provide the strongest raw material for deterministic ATS checks.",

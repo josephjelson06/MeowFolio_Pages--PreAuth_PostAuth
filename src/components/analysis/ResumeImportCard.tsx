@@ -2,9 +2,8 @@ import { useRef, useState, type ChangeEvent } from "react";
 import type { ResumeImportResult } from "../../types/import";
 import type { ResumeData, ResumeSectionKey } from "../../types/resume";
 import { createMockResumeData } from "../../data/editor";
-import { requestImportedResumeFile } from "../../lib/import-client";
-import { importResumeFromText } from "../../lib/resume-import";
-import { flattenSkills } from "../../lib/resume";
+import { requestImportedResumeFile, requestImportedResumeText } from "../../lib/import-client";
+import { flattenSkills, getSummaryText } from "../../lib/resume";
 import { Chip } from "../ui/Chip";
 
 interface ResumeImportCardProps {
@@ -16,15 +15,20 @@ const fieldClassName =
   "w-full rounded-2xl border border-outline-variant/20 bg-surface-container-highest px-4 py-3 text-sm text-on-surface outline-none transition focus:border-primary/40 focus:bg-white";
 
 const sectionLabels: Record<ResumeSectionKey, string> = {
-  summary: "Summary",
-  skills: "Skills",
+  achievements: "Achievements",
+  certifications: "Certifications",
+  competitions: "Competitions",
   education: "Education",
   experience: "Experience",
-  projects: "Projects",
-  certifications: "Certifications",
-  awards: "Awards",
+  extracurricular: "Extra-Curricular",
+  hobbies: "Hobbies & Interests",
+  languages: "Languages Known",
   leadership: "Leadership",
-  extracurricular: "Extracurricular"
+  openSource: "Open-Source",
+  projects: "Projects",
+  publications: "Publications",
+  skills: "Skills",
+  summary: "Professional Summary"
 };
 
 function FieldLabel({ children }: { children: string }) {
@@ -108,7 +112,7 @@ export function ResumeImportCard({ onResumeChange, resume }: ResumeImportCardPro
     }
   }
 
-  function handleImportText() {
+  async function handleImportText() {
     if (!importText.trim()) {
       setImportStatus("error");
       setImportMessage("Paste resume text before importing.");
@@ -118,29 +122,37 @@ export function ResumeImportCard({ onResumeChange, resume }: ResumeImportCardPro
       return;
     }
 
-    const result = importResumeFromText(importText);
-    const hasImportedData = Boolean(
-      result.resume.header.name ||
-        result.resume.summary ||
-        result.resume.experience.length ||
-        result.resume.education.length ||
-        result.resume.projects.length
-    );
+    try {
+      const response = await requestImportedResumeText(importText);
+      const result = response.result;
+      const hasImportedData = Boolean(
+        result.resume.header.name ||
+          getSummaryText(result.resume) ||
+          result.resume.experience.length ||
+          result.resume.education.length ||
+          result.resume.projects.length
+      );
 
-    if (!hasImportedData) {
+      if (!hasImportedData) {
+        setImportStatus("error");
+        setImportMessage("No structured resume content could be detected from that pasted text.");
+        setImportWarnings(result.warnings);
+        setImportSections(result.summary.detectedSections);
+        setImportSourceLabel("Pasted text");
+        return;
+      }
+
+      applyImportedResume(
+        result,
+        `Imported ${result.summary.experienceCount} experience, ${result.summary.educationCount} education, ${result.summary.projectCount} projects, and ${result.summary.skillCount} skills.`,
+        "Pasted text"
+      );
+    } catch (error) {
       setImportStatus("error");
-      setImportMessage("No structured resume content could be detected from that pasted text.");
-      setImportWarnings(result.warnings);
-      setImportSections(result.summary.detectedSections);
-      setImportSourceLabel("Pasted text");
-      return;
+      setImportMessage(error instanceof Error ? error.message : "Failed to import pasted text.");
+      setImportWarnings([]);
+      setImportSections([]);
     }
-
-    applyImportedResume(
-      result,
-      `Imported ${result.summary.experienceCount} experience, ${result.summary.educationCount} education, ${result.summary.projectCount} projects, and ${result.summary.skillCount} skills.`,
-      "Pasted text"
-    );
   }
 
   async function handleImportFile(event: ChangeEvent<HTMLInputElement>) {
@@ -182,11 +194,9 @@ export function ResumeImportCard({ onResumeChange, resume }: ResumeImportCardPro
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="font-label text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Active Resume</p>
-            <p className="mt-2 font-headline text-xl font-bold text-on-surface">
-              {resume.header.name?.trim() || "No resume loaded yet"}
-            </p>
+            <p className="mt-2 font-headline text-xl font-bold text-on-surface">{resume.header.name?.trim() || "No resume loaded yet"}</p>
             <p className="mt-1 text-sm text-on-surface-variant">
-              {resume.header.title?.trim() || "Import a resume to analyze the canonical schema output."}
+              {resume.header.role?.trim() || "Import a resume to analyze the canonical schema output."}
             </p>
           </div>
           <Chip tone="soft">v{resume.meta.version}</Chip>
@@ -252,9 +262,7 @@ export function ResumeImportCard({ onResumeChange, resume }: ResumeImportCardPro
         />
       </div>
 
-      <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
-        Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB.
-      </p>
+      <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">Supports `.txt`, `.md`, `.pdf`, and `.docx` under 5 MB.</p>
 
       {importMessage ? (
         <div

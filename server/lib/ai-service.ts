@@ -1,16 +1,23 @@
 import { analyzeResumeForAts } from "../../src/lib/analysis";
-import { flattenSkills, getResumeContactLines } from "../../src/lib/resume";
+import {
+  flattenDescriptionLines,
+  flattenSkills,
+  formatDateField,
+  getLinkLabel,
+  getResumeContactLines,
+  getSummaryText
+} from "../../src/lib/resume";
 import type { AtsAnalysisResult, JdAnalysisResult, KeywordBreakdown } from "../../src/types/analysis";
 import type { ResumeImportMeta, ResumeImportResult, ResumeImportSummary } from "../../src/types/import";
-import { createEmptyResumeData, type RenderOptions, type ResumeData, type ResumeSectionKey } from "../../src/types/resume";
+import { MONTH_OPTIONS, createEmptyResumeData, type CustomEntriesSection, type DateField, type DescriptionField, type RenderOptions, type ResumeData, type ResumeSectionKey } from "../../src/types/resume";
 import { atsCoachingSchema, type AiResumeParse, aiResumeParseSchema, jdParseSchema } from "./ai-schemas";
-import { buildResumeParsePrompt, buildResumeRepairPrompt } from "./ai-resume-prompts";
-import { createEmbeddings, extractJsonObject, generateJsonText, generateStructuredObject, getAiServiceHealth } from "./ai-client";
+import { buildResumeParsePrompt } from "./ai-resume-prompts";
+import { extractJsonObject, generateJsonText, generateStructuredObject, getAiServiceHealth } from "./ai-client";
 import { createCacheKey, readJsonCache, writeJsonCache } from "./cache";
 
 export class AiResumeParsingUnavailableError extends Error {
   constructor() {
-    super("AI resume parsing is not configured. Add GROQ_API_KEY or OPENAI_API_KEY before importing resumes.");
+    super("AI resume parsing is not configured. Add GROQ_API_KEY before importing resumes.");
     this.name = "AiResumeParsingUnavailableError";
   }
 }
@@ -22,7 +29,7 @@ function countSkills(resume: ResumeData) {
 function hasContent(resume: ResumeData) {
   return Boolean(
     resume.header.name?.trim() ||
-      resume.summary?.trim() ||
+      getSummaryText(resume) ||
       resume.experience.length ||
       resume.education.length ||
       resume.projects.length ||
@@ -74,7 +81,7 @@ function hasMeaningfulValue(values: Array<string | undefined | null | boolean>) 
 function createResumeSummary(resume: ResumeData): ResumeImportSummary {
   const detectedSections: ResumeSectionKey[] = [];
 
-  if (resume.summary?.trim()) {
+  if (getSummaryText(resume)) {
     detectedSections.push("summary");
   }
 
@@ -98,16 +105,36 @@ function createResumeSummary(resume: ResumeData): ResumeImportSummary {
     detectedSections.push("certifications");
   }
 
-  if (resume.awards.length > 0) {
-    detectedSections.push("awards");
-  }
-
-  if (resume.leadership.length > 0) {
+  if (resume.leadership.entries.length > 0) {
     detectedSections.push("leadership");
   }
 
-  if (resume.extracurricular.length > 0) {
+  if (resume.achievements.entries.length > 0) {
+    detectedSections.push("achievements");
+  }
+
+  if (resume.competitions.entries.length > 0) {
+    detectedSections.push("competitions");
+  }
+
+  if (resume.extracurricular.entries.length > 0) {
     detectedSections.push("extracurricular");
+  }
+
+  if (resume.publications.entries.length > 0) {
+    detectedSections.push("publications");
+  }
+
+  if (resume.openSource.entries.length > 0) {
+    detectedSections.push("openSource");
+  }
+
+  if (resume.languages.items.length > 0 || resume.languages.groups.length > 0) {
+    detectedSections.push("languages");
+  }
+
+  if (resume.hobbies.items.length > 0 || resume.hobbies.groups.length > 0) {
+    detectedSections.push("hobbies");
   }
 
   return {
@@ -124,49 +151,82 @@ function dedupeWarnings(warnings: string[]) {
 }
 
 function normalizeSkills(skills: AiResumeParse["skills"]): ResumeData["skills"] {
-  const generalSkills: string[] = [];
-  const groupedSkills: Array<{ category: string; items: string[] }> = [];
-
-  skills.forEach((item) => {
-    if (typeof item === "string") {
-      generalSkills.push(...item.split(/[\n,]+/).map((skill) => skill.trim()).filter(Boolean));
-      return;
-    }
-
-    const items = item.items.map((skill) => skill.trim()).filter(Boolean);
-
-    if (items.length === 0) {
-      return;
-    }
-
-    groupedSkills.push({
-      category: cleanText(item.category) || "General",
-      items: dedupeList(items)
-    });
-  });
-
-  if (groupedSkills.length > 0) {
-    if (generalSkills.length > 0) {
-      groupedSkills.unshift({
-        category: "General",
-        items: dedupeList(generalSkills)
-      });
-    }
-
-    return groupedSkills;
-  }
-
-  return dedupeList(generalSkills);
+  return {
+    groups: skills.groups
+      .map((group) => ({
+        groupLabel: cleanText(group.groupLabel),
+        items: dedupeList(group.items.map((skill) => skill.trim()).filter(Boolean))
+      }))
+      .filter((group) => Boolean(group.groupLabel || group.items.length)),
+    items: dedupeList(skills.items.map((skill) => skill.trim()).filter(Boolean)),
+    mode: skills.mode
+  };
 }
 
-function normalizeCompactItems(items: AiResumeParse["awards"]) {
+function normalizeLinkField(link: AiResumeParse["header"]["github"]): ResumeData["header"]["github"] {
+  return {
+    displayMode: link.displayMode,
+    displayText: cleanText(link.displayText),
+    url: normalizeUrl(link.url)
+  };
+}
+
+function normalizeDateField(date: AiResumeParse["experience"][number]["date"]): DateField {
+  return {
+    endMonth: MONTH_OPTIONS.includes(date.endMonth as (typeof MONTH_OPTIONS)[number]) ? (date.endMonth as (typeof MONTH_OPTIONS)[number]) : "",
+    endYear: cleanText(date.endYear),
+    isOngoing: Boolean(date.isOngoing),
+    mode: date.mode,
+    startMonth: MONTH_OPTIONS.includes(date.startMonth as (typeof MONTH_OPTIONS)[number]) ? (date.startMonth as (typeof MONTH_OPTIONS)[number]) : "",
+    startYear: cleanText(date.startYear)
+  };
+}
+
+function normalizeDescriptionField(description: AiResumeParse["experience"][number]["description"]): DescriptionField {
+  return {
+    bullets: description.bullets.map((bullet) => bullet.trim()).filter(Boolean),
+    mode: description.mode,
+    paragraph: cleanText(description.paragraph)
+  };
+}
+
+function normalizeCertificationItems(items: AiResumeParse["certifications"]): ResumeData["certifications"] {
   return items
-    .map((item) => ({
-      date: cleanText(item.date),
+    .map((item): ResumeData["certifications"][number] => ({
+      date: normalizeDateField(item.date),
       description: cleanText(item.description),
-      link: normalizeUrl(item.link)
+      issuer: cleanText(item.issuer),
+      link: normalizeLinkField(item.link),
+      title: cleanText(item.title)
     }))
-    .filter((item) => hasMeaningfulValue([item.description, item.date, item.link]));
+    .filter((item) => hasMeaningfulValue([item.title, item.issuer, item.description, item.link.url]));
+}
+
+function normalizeCustomSection(section: AiResumeParse["leadership"], fallbackLabel: string): CustomEntriesSection {
+  return {
+    entries: section.entries
+      .map((entry): CustomEntriesSection["entries"][number] => ({
+        date: normalizeDateField(entry.date),
+        description: normalizeDescriptionField(entry.description),
+        link: normalizeLinkField(entry.link),
+        location: cleanText(entry.location),
+        subtitle: cleanText(entry.subtitle),
+        title: cleanText(entry.title)
+      }))
+      .filter((entry) =>
+        hasMeaningfulValue([
+          entry.title,
+          entry.subtitle,
+          entry.location,
+          entry.description.paragraph,
+          entry.description.bullets.length > 0,
+          entry.link.url,
+          entry.date.startYear,
+          entry.date.endYear
+        ])
+      ),
+    label: cleanText(section.label) || fallbackLabel
+  };
 }
 
 function buildImportWarnings(resume: ResumeData) {
@@ -207,9 +267,436 @@ function getImportConfidence(summary: ResumeImportSummary, warnings: string[]): 
   return "low";
 }
 
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+function toArray(value: unknown): unknown[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return [value];
+}
+
+function toText(value: unknown) {
+  if (typeof value === "string") {
+    return value.trim();
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value).trim();
+  }
+  return "";
+}
+
+function toNullableText(value: unknown) {
+  const text = toText(value);
+  return text || null;
+}
+
+function normalizedToken(value: unknown) {
+  return toText(value).toLowerCase().replace(/[\s_]+/g, "-");
+}
+
+function pickValue(record: Record<string, unknown> | null, keys: string[]) {
+  if (!record) {
+    return undefined;
+  }
+  for (const key of keys) {
+    const value = record[key];
+    if (value !== undefined && value !== null) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function pickMode<T extends string>(value: unknown, allowed: readonly T[], fallback: T, aliases?: Record<string, T>) {
+  const token = normalizedToken(value);
+  if (aliases?.[token]) {
+    return aliases[token];
+  }
+  const direct = allowed.find((item) => item === token);
+  return direct ?? fallback;
+}
+
+function extractYears(value: unknown) {
+  return toText(value).match(/(?:19|20)\d{2}/g) ?? [];
+}
+
+type AiDateField = AiResumeParse["experience"][number]["date"];
+type AiLinkField = AiResumeParse["header"]["github"];
+type AiDescriptionField = AiResumeParse["experience"][number]["description"];
+type AiCustomSection = AiResumeParse["leadership"];
+type AiCustomEntry = AiResumeParse["leadership"]["entries"][number];
+type AiSkillGroup = AiResumeParse["skills"]["groups"][number];
+type AiSkillsSection = AiResumeParse["skills"];
+type AiLanguagesSection = AiResumeParse["languages"];
+type AiHobbiesSection = AiResumeParse["hobbies"];
+
+function coerceDateField(value: unknown, fallbackMode: AiDateField["mode"] = "mm-yyyy-range"): AiDateField {
+  const record = asRecord(value);
+  const fromStringYears = extractYears(value);
+  const startDate = pickValue(record, ["startDate", "from"]);
+  const endDate = pickValue(record, ["endDate", "to"]);
+  const startYears = extractYears(startDate);
+  const endYears = extractYears(endDate);
+  const mergedYears = [...startYears, ...endYears, ...fromStringYears];
+  const startYear = toNullableText(pickValue(record, ["startYear", "fromYear"])) ?? mergedYears[0] ?? null;
+  const endYear = toNullableText(pickValue(record, ["endYear", "toYear"])) ?? mergedYears[1] ?? null;
+  const currentToken = normalizedToken(pickValue(record, ["isOngoing", "current", "isCurrent"]));
+  const stringToken = normalizedToken(value);
+  const isOngoing =
+    currentToken === "true" ||
+    currentToken === "1" ||
+    stringToken.includes("present") ||
+    stringToken.includes("ongoing") ||
+    normalizedToken(endDate).includes("present");
+  const mode = pickMode(
+    pickValue(record, ["mode"]),
+    ["mm-yyyy", "yyyy", "mm-yyyy-range", "yyyy-range", "mm-yyyy-present", "yyyy-present"] as const,
+    isOngoing ? "yyyy-present" : endYear ? "yyyy-range" : "yyyy"
+  );
+
+  return {
+    endMonth: null,
+    endYear,
+    isOngoing,
+    mode: mode || fallbackMode,
+    startMonth: null,
+    startYear
+  };
+}
+
+function coerceLinkField(value: unknown): AiLinkField {
+  const record = asRecord(value);
+  const url = toNullableText(pickValue(record, ["url", "link", "href", "value"])) ?? toNullableText(value);
+  const displayText = toNullableText(pickValue(record, ["displayText", "label", "text"]));
+  const displayMode = pickMode(
+    pickValue(record, ["displayMode"]),
+    ["plain-url", "hyperlinked-text"] as const,
+    "plain-url",
+    { hyperlink: "hyperlinked-text", "hyperlinked": "hyperlinked-text", plain: "plain-url" }
+  );
+
+  return {
+    displayMode,
+    displayText,
+    url
+  };
+}
+
+function splitLines(value: unknown) {
+  return toText(value)
+    .split(/\r?\n|;/)
+    .map((item) => item.replace(/^[•\-*]\s*/, "").trim())
+    .filter(Boolean);
+}
+
+function coerceDescriptionField(value: unknown): AiDescriptionField {
+  const record = asRecord(value);
+  const rawBullets = pickValue(record, ["bullets", "items", "points"]);
+  const bullets =
+    Array.isArray(rawBullets) ? rawBullets.map((item) => toText(item)).filter(Boolean) : splitLines(rawBullets);
+  const paragraph = toNullableText(pickValue(record, ["paragraph", "text", "summary", "description"])) ?? toNullableText(value);
+  const mode = pickMode(
+    pickValue(record, ["mode"]),
+    ["bullets", "paragraph"] as const,
+    bullets.length > 0 && !paragraph ? "bullets" : "paragraph"
+  );
+
+  return {
+    bullets,
+    mode,
+    paragraph
+  };
+}
+
+function coerceSkillGroup(value: unknown): AiSkillGroup {
+  const record = asRecord(value);
+  const label = toNullableText(pickValue(record, ["groupLabel", "category", "label", "title"]));
+  const rawItems = pickValue(record, ["items", "skills", "list", "values"]);
+  const items = Array.isArray(rawItems)
+    ? rawItems.map((item) => toText(item)).filter(Boolean)
+    : splitLines(rawItems || value);
+
+  return {
+    groupLabel: label,
+    items
+  };
+}
+
+function coerceSkillsSection(value: unknown): AiSkillsSection {
+  const record = asRecord(value);
+
+  if (Array.isArray(value)) {
+    const stringItems = value.map((item) => toText(item)).filter(Boolean);
+    return { groups: [], items: stringItems, mode: "csv" };
+  }
+
+  const items = toArray(pickValue(record, ["items"]))
+    .map((item) => toText(item))
+    .filter(Boolean);
+  const groups = toArray(pickValue(record, ["groups", "categories", "grouped"])).map(coerceSkillGroup).filter((group) => group.items.length > 0 || group.groupLabel);
+
+  if (items.length === 0 && groups.length === 0 && record) {
+    const inferredGroups = Object.entries(record)
+      .filter(([key]) => !["mode", "items", "groups", "categories", "grouped"].includes(key))
+      .map(([key, itemValue]) => coerceSkillGroup({ groupLabel: key, items: toArray(itemValue) }))
+      .filter((group) => group.items.length > 0);
+    if (inferredGroups.length > 0) {
+      return { groups: inferredGroups, items: [], mode: "grouped" };
+    }
+  }
+
+  const mode = pickMode(pickValue(record, ["mode"]), ["csv", "grouped"] as const, groups.length > 0 ? "grouped" : "csv");
+  return { groups, items, mode };
+}
+
+function coerceCustomEntry(value: unknown): AiCustomEntry {
+  const record = asRecord(value);
+
+  return {
+    date: coerceDateField(
+      pickValue(record, ["date", "duration"]) ?? {
+        current: pickValue(record, ["current", "isCurrent", "isOngoing"]),
+        endDate: pickValue(record, ["endDate", "to"]),
+        endYear: pickValue(record, ["endYear"]),
+        startDate: pickValue(record, ["startDate", "from"]),
+        startYear: pickValue(record, ["startYear"])
+      }
+    ),
+    description: coerceDescriptionField(pickValue(record, ["description", "details", "summary", "bullets"]) ?? value),
+    link: coerceLinkField(pickValue(record, ["link", "url", "href"])),
+    location: toNullableText(pickValue(record, ["location", "place"])),
+    subtitle: toNullableText(pickValue(record, ["subtitle", "organization", "org", "company"])),
+    title: toNullableText(pickValue(record, ["title", "name", "role"]))
+  };
+}
+
+function coerceCustomSection(value: unknown, fallbackLabel: string): AiCustomSection {
+  const record = asRecord(value);
+  const entries = toArray(pickValue(record, ["entries", "items", "list"]) ?? value).map(coerceCustomEntry);
+
+  return {
+    entries,
+    label: toNullableText(pickValue(record, ["label", "title"])) ?? fallbackLabel
+  };
+}
+
+function coerceEducationLevel(value: unknown): AiResumeParse["education"][number]["level"] {
+  return pickMode(
+    value,
+    ["degree-diploma", "class-12", "class-10", "other"] as const,
+    "degree-diploma",
+    {
+      "12th": "class-12",
+      "class12": "class-12",
+      intermediate: "class-12",
+      "10th": "class-10",
+      "class10": "class-10",
+      matriculation: "class-10",
+      degree: "degree-diploma",
+      diploma: "degree-diploma"
+    }
+  );
+}
+
+function coerceResultType(value: unknown, fallbackFromResult?: unknown): AiResumeParse["education"][number]["resultType"] {
+  const direct = pickMode(
+    value,
+    ["cgpa-10", "gpa-4", "percentage", "grade", "not-disclosed"] as const,
+    "not-disclosed",
+    {
+      cgpa: "cgpa-10",
+      gpa: "gpa-4",
+      percent: "percentage",
+      "notdisclosed": "not-disclosed",
+      na: "not-disclosed"
+    }
+  );
+  if (value !== undefined && value !== null && toText(value)) {
+    return direct;
+  }
+  const resultText = normalizedToken(fallbackFromResult);
+  if (resultText.includes("%") || resultText.includes("percent")) {
+    return "percentage";
+  }
+  if (resultText.includes("cgpa")) {
+    return "cgpa-10";
+  }
+  if (resultText.includes("gpa")) {
+    return "gpa-4";
+  }
+  if (resultText.includes("grade")) {
+    return "grade";
+  }
+  return null;
+}
+
+function coerceResumePayloadShape(value: unknown): AiResumeParse {
+  const root = asRecord(value);
+  const headerSource = asRecord(pickValue(root, ["header", "personalDetails", "personal"]));
+
+  const education = toArray(pickValue(root, ["education", "academics"])).map((item) => {
+    const record = asRecord(item);
+    const result = pickValue(record, ["result", "gpa", "cgpa", "percentage", "grade"]);
+    return {
+      boardOrUniversity: toNullableText(pickValue(record, ["boardOrUniversity", "board", "university"])),
+      date: coerceDateField(
+        pickValue(record, ["date", "duration"]) ?? {
+          endDate: pickValue(record, ["endDate"]),
+          endYear: pickValue(record, ["endYear"]),
+          startDate: pickValue(record, ["startDate"]),
+          startYear: pickValue(record, ["startYear"])
+        },
+        "yyyy-range"
+      ),
+      degree: toNullableText(pickValue(record, ["degree", "qualification"]) ?? item),
+      field: toNullableText(pickValue(record, ["field", "stream", "specialization"])),
+      institution: toNullableText(pickValue(record, ["institution", "school", "college"])),
+      level: coerceEducationLevel(pickValue(record, ["level", "type"])),
+      location: toNullableText(pickValue(record, ["location"])),
+      result: toNullableText(result),
+      resultType: coerceResultType(pickValue(record, ["resultType"]), result)
+    };
+  });
+
+  const experience = toArray(pickValue(root, ["experience", "internships", "workExperience"])).map((item) => {
+    const record = asRecord(item);
+    return {
+      company: toNullableText(pickValue(record, ["company", "organization"])),
+      date: coerceDateField(
+        pickValue(record, ["date", "duration"]) ?? {
+          current: pickValue(record, ["current", "isCurrent"]),
+          endDate: pickValue(record, ["endDate"]),
+          endYear: pickValue(record, ["endYear"]),
+          startDate: pickValue(record, ["startDate"]),
+          startYear: pickValue(record, ["startYear"])
+        }
+      ),
+      description: coerceDescriptionField(pickValue(record, ["description", "details", "bullets"]) ?? item),
+      isCurrent: Boolean(pickValue(record, ["isCurrent", "current", "isOngoing"])),
+      location: toNullableText(pickValue(record, ["location"])),
+      role: toNullableText(pickValue(record, ["role", "title", "position"]))
+    };
+  });
+
+  const projects = toArray(pickValue(root, ["projects", "project"])).map((item) => {
+    const record = asRecord(item);
+    return {
+      date: coerceDateField(
+        pickValue(record, ["date", "duration"]) ?? {
+          endDate: pickValue(record, ["endDate"]),
+          endYear: pickValue(record, ["endYear"]),
+          startDate: pickValue(record, ["startDate"]),
+          startYear: pickValue(record, ["startYear"])
+        }
+      ),
+      description: coerceDescriptionField(pickValue(record, ["description", "details", "bullets"]) ?? item),
+      githubLink: coerceLinkField(pickValue(record, ["githubLink", "github", "repo", "repository"])),
+      liveLink: coerceLinkField(pickValue(record, ["liveLink", "live", "demo", "url", "link"])),
+      technologies: toArray(pickValue(record, ["technologies", "tech", "stack"]))
+        .flatMap((entry) => splitLines(entry))
+        .filter(Boolean),
+      title: toNullableText(pickValue(record, ["title", "name"]) ?? item)
+    };
+  });
+
+  const certifications = toArray(pickValue(root, ["certifications", "certification"])).map((item) => {
+    const record = asRecord(item);
+    const title = toNullableText(pickValue(record, ["title", "name"]) ?? item);
+    return {
+      date: coerceDateField(
+        pickValue(record, ["date", "issuedOn", "issueDate"]) ?? {
+          startYear: pickValue(record, ["year"]),
+          startDate: pickValue(record, ["date"])
+        },
+        "yyyy"
+      ),
+      description: toNullableText(pickValue(record, ["description"])),
+      issuer: toNullableText(pickValue(record, ["issuer", "organization", "platform"])),
+      link: coerceLinkField(pickValue(record, ["link", "url"])),
+      title
+    };
+  });
+
+  const summarySource = pickValue(root, ["summary", "objective", "profile"]);
+  const summaryRecord = asRecord(summarySource);
+  const summaryContent = toNullableText(pickValue(summaryRecord, ["content", "text"]) ?? summarySource);
+
+  const skills = coerceSkillsSection(pickValue(root, ["skills", "technicalSkills", "skillset"]));
+  const languagesSource = pickValue(root, ["languages", "languagesKnown"]);
+  const languagesRecord = asRecord(languagesSource);
+  const languageItems = toArray(pickValue(languagesRecord, ["items", "list"]) ?? languagesSource).map((item) => {
+    const record = asRecord(item);
+    return {
+      language: toNullableText(pickValue(record, ["language", "name"]) ?? item),
+      proficiency: pickMode(
+        pickValue(record, ["proficiency", "level"]),
+        ["native", "fluent", "conversational", "basic"] as const,
+        "basic",
+        { advanced: "fluent", intermediate: "conversational", beginner: "basic" }
+      )
+    };
+  });
+  const languages: AiLanguagesSection = {
+    groups: toArray(pickValue(languagesRecord, ["groups"])).map(coerceSkillGroup),
+    items: languageItems,
+    mode: pickMode(pickValue(languagesRecord, ["mode"]), ["csv", "grouped"] as const, "csv")
+  };
+
+  const hobbiesSource = pickValue(root, ["hobbies", "interests"]);
+  const hobbiesRecord = asRecord(hobbiesSource);
+  const hobbies: AiHobbiesSection = {
+    groups: toArray(pickValue(hobbiesRecord, ["groups"])).map(coerceSkillGroup),
+    items: toArray(pickValue(hobbiesRecord, ["items", "list"]) ?? hobbiesSource).flatMap((item) => splitLines(item)),
+    mode: pickMode(pickValue(hobbiesRecord, ["mode"]), ["csv", "grouped"] as const, "csv")
+  };
+
+  return {
+    achievements: coerceCustomSection(pickValue(root, ["achievements", "awards"]), "Achievements"),
+    certifications,
+    competitions: coerceCustomSection(pickValue(root, ["competitions", "hackathons"]), "Competitions"),
+    education,
+    experience,
+    extracurricular: coerceCustomSection(pickValue(root, ["extracurricular", "activities", "volunteerWork"]), "Extra-Curricular"),
+    header: {
+      address: toNullableText(pickValue(headerSource, ["address", "location"]) ?? pickValue(root, ["address", "location"])),
+      email: toNullableText(pickValue(headerSource, ["email"]) ?? pickValue(root, ["email"])),
+      github: coerceLinkField(pickValue(headerSource, ["github"]) ?? pickValue(root, ["github"])),
+      linkedin: coerceLinkField(pickValue(headerSource, ["linkedin"]) ?? pickValue(root, ["linkedin"])),
+      name: toNullableText(pickValue(headerSource, ["name"]) ?? pickValue(root, ["name"])),
+      phone: toNullableText(pickValue(headerSource, ["phone"]) ?? pickValue(root, ["phone"])),
+      role: toNullableText(pickValue(headerSource, ["role", "title"]) ?? pickValue(root, ["role", "title"])),
+      website: coerceLinkField(pickValue(headerSource, ["website", "portfolio"]) ?? pickValue(root, ["website", "portfolio"]))
+    },
+    hobbies,
+    languages,
+    leadership: coerceCustomSection(pickValue(root, ["leadership", "positionsOfResponsibility"]), "Leaderships"),
+    openSource: coerceCustomSection(pickValue(root, ["openSource", "opensource", "open_source"]), "Open-Source"),
+    projects,
+    publications: coerceCustomSection(pickValue(root, ["publications"]), "Publications"),
+    skills,
+    summary: {
+      content: summaryContent,
+      mode: pickMode(
+        pickValue(summaryRecord, ["mode"]) ?? (normalizedToken(pickValue(root, ["objective"])) ? "career-objective" : "professional-summary"),
+        ["career-objective", "professional-summary"] as const,
+        "professional-summary",
+        { objective: "career-objective", "career-objective": "career-objective" }
+      )
+    }
+  };
+}
+
 function parseAiResumePayload(content: string) {
   try {
-    const parsed = aiResumeParseSchema.safeParse(JSON.parse(extractJsonObject(content)));
+    const raw = JSON.parse(extractJsonObject(content));
+    const coerced = coerceResumePayloadShape(raw);
+    const parsed = aiResumeParseSchema.safeParse(coerced);
 
     if (parsed.success) {
       return {
@@ -220,7 +707,7 @@ function parseAiResumePayload(content: string) {
     }
 
     return {
-      error: parsed.error.issues.map((issue) => `${issue.path.join(".") || "root"}: ${issue.message}`).join("; "),
+      error: parsed.error.issues.slice(0, 40).map((issue) => `${issue.path.join(".") || "root"}: ${issue.message}`).join("; "),
       success: false as const,
       value: null
     };
@@ -235,7 +722,7 @@ function parseAiResumePayload(content: string) {
 
 async function requestAiParsedResume(text: string) {
   const initialPrompt = buildResumeParsePrompt(text);
-  const initialResponse = await generateJsonText(initialPrompt);
+  const initialResponse = await generateJsonText({ ...initialPrompt, debugLabel: "resume-parse-initial" });
 
   if (!initialResponse) {
     throw new AiResumeParsingUnavailableError();
@@ -246,29 +733,11 @@ async function requestAiParsedResume(text: string) {
   if (initialParse.success) {
     return {
       modelUsed: initialResponse.modelUsed,
-      repairApplied: false,
       value: initialParse.value
     };
   }
 
-  const repairPrompt = buildResumeRepairPrompt(text, initialResponse.content, initialParse.error);
-  const repairedResponse = await generateJsonText(repairPrompt);
-
-  if (!repairedResponse) {
-    throw new Error("AI resume repair could not be completed.");
-  }
-
-  const repairedParse = parseAiResumePayload(repairedResponse.content);
-
-  if (!repairedParse.success) {
-    throw new Error(`AI resume parsing returned invalid JSON after repair. ${repairedParse.error}`);
-  }
-
-  return {
-    modelUsed: repairedResponse.modelUsed,
-    repairApplied: true,
-    value: repairedParse.value
-  };
+  throw new Error(`AI resume parsing returned invalid JSON. ${initialParse.error}`);
 }
 
 function normalizeAiResume(parsed: AiResumeParse): ResumeData {
@@ -276,62 +745,111 @@ function normalizeAiResume(parsed: AiResumeParse): ResumeData {
 
   return {
     ...base,
-    awards: normalizeCompactItems(parsed.awards),
-    certifications: normalizeCompactItems(parsed.certifications),
+    achievements: normalizeCustomSection(parsed.achievements, "Achievements"),
+    certifications: normalizeCertificationItems(parsed.certifications),
+    competitions: normalizeCustomSection(parsed.competitions, "Competitions"),
     education:
       parsed.education.map((item) => ({
+        boardOrUniversity: cleanText(item.boardOrUniversity),
+        date: normalizeDateField(item.date),
         degree: cleanText(item.degree),
-        endYear: cleanText(item.endYear),
         field: cleanText(item.field),
-        gpa: cleanText(item.gpa),
         institution: cleanText(item.institution),
+        level: item.level,
         location: cleanText(item.location),
-        startYear: cleanText(item.startYear)
+        result: cleanText(item.result),
+        resultType: item.resultType ?? null
       }))
-      .filter((item) => hasMeaningfulValue([item.degree, item.field, item.institution, item.location, item.startYear, item.endYear])),
+      .filter((item) => hasMeaningfulValue([item.degree, item.field, item.institution, item.location, item.result, item.date.startYear, item.date.endYear])),
     experience:
-      parsed.experience.map((item, index) => ({
-        bullets: item.bullets.map((bullet) => bullet.trim()).filter(Boolean),
+      parsed.experience.map((item) => ({
         company: cleanText(item.company),
-        current: Boolean(item.current),
-        description: cleanText(item.description),
-        endDate: cleanText(item.endDate),
-        id: cleanText(item.id) || `ai-experience-${index + 1}`,
+        date: normalizeDateField(item.date),
+        description: normalizeDescriptionField(item.description),
+        isCurrent: Boolean(item.isCurrent),
         location: cleanText(item.location),
-        role: cleanText(item.role),
-        startDate: cleanText(item.startDate)
+        role: cleanText(item.role)
       }))
-      .filter((item) => hasMeaningfulValue([item.role, item.company, item.location, item.description, item.startDate, item.endDate, item.current, item.bullets.length > 0])),
-    extracurricular: normalizeCompactItems(parsed.extracurricular),
+      .filter((item) =>
+        hasMeaningfulValue([
+          item.role,
+          item.company,
+          item.location,
+          item.description.paragraph,
+          item.description.bullets.length > 0,
+          item.date.startYear,
+          item.date.endYear,
+          item.isCurrent
+        ])
+      ),
+    extracurricular: normalizeCustomSection(parsed.extracurricular, "Extra-Curricular"),
     header: {
+      address: cleanText(parsed.header.address),
       email: cleanText(parsed.header.email),
-      github: normalizeUrl(parsed.header.github),
-      linkedin: normalizeUrl(parsed.header.linkedin),
-      location: cleanText(parsed.header.location),
+      github: normalizeLinkField(parsed.header.github),
+      linkedin: normalizeLinkField(parsed.header.linkedin),
       name: cleanText(parsed.header.name),
       phone: cleanText(parsed.header.phone),
-      portfolio: normalizeUrl(parsed.header.portfolio),
-      title: cleanText(parsed.header.title),
-      website: normalizeUrl(parsed.header.website)
+      role: cleanText(parsed.header.role),
+      website: normalizeLinkField(parsed.header.website)
     },
-    leadership: normalizeCompactItems(parsed.leadership),
+    hobbies: {
+      groups: parsed.hobbies.groups
+        .map((group) => ({
+          groupLabel: cleanText(group.groupLabel),
+          items: dedupeList(group.items.map((item) => item.trim()).filter(Boolean))
+        }))
+        .filter((group) => Boolean(group.groupLabel || group.items.length)),
+      items: dedupeList(parsed.hobbies.items.map((item) => item.trim()).filter(Boolean)),
+      mode: parsed.hobbies.mode
+    },
+    languages: {
+      groups: parsed.languages.groups
+        .map((group) => ({
+          groupLabel: cleanText(group.groupLabel),
+          items: dedupeList(group.items.map((item) => item.trim()).filter(Boolean))
+        }))
+        .filter((group) => Boolean(group.groupLabel || group.items.length)),
+      items: parsed.languages.items
+        .map((item) => ({
+          language: cleanText(item.language),
+          proficiency: item.proficiency ?? null
+        }))
+        .filter((item) => Boolean(item.language)),
+      mode: parsed.languages.mode
+    },
+    leadership: normalizeCustomSection(parsed.leadership, "Leaderships"),
     meta: {
       ...base.meta,
       source: "ai"
     },
+    openSource: normalizeCustomSection(parsed.openSource, "Open-Source"),
     projects:
       parsed.projects.map((item) => ({
-        bullets: item.bullets.map((bullet) => bullet.trim()).filter(Boolean),
-        description: cleanText(item.description),
-        endDate: cleanText(item.endDate),
-        link: normalizeUrl(item.link),
-        startDate: cleanText(item.startDate),
+        date: normalizeDateField(item.date),
+        description: normalizeDescriptionField(item.description),
+        githubLink: normalizeLinkField(item.githubLink),
+        liveLink: normalizeLinkField(item.liveLink),
         technologies: item.technologies.map((tech) => tech.trim()).filter(Boolean),
         title: cleanText(item.title)
       }))
-      .filter((item) => hasMeaningfulValue([item.title, item.description, item.link, item.startDate, item.endDate, item.bullets.length > 0, item.technologies.length > 0])),
+      .filter((item) =>
+        hasMeaningfulValue([
+          item.title,
+          item.description.paragraph,
+          item.description.bullets.length > 0,
+          item.githubLink.url,
+          item.liveLink.url,
+          item.date.startYear,
+          item.technologies.length > 0
+        ])
+      ),
+    publications: normalizeCustomSection(parsed.publications, "Publications"),
     skills: normalizeSkills(parsed.skills),
-    summary: cleanText(parsed.summary)
+    summary: {
+      content: cleanText(parsed.summary.content),
+      mode: parsed.summary.mode
+    }
   };
 }
 
@@ -361,7 +879,7 @@ export async function parseResumeTextWithAi(text: string): Promise<ResumeImportR
     throw new AiResumeParsingUnavailableError();
   }
 
-  const cacheKey = createCacheKey(JSON.stringify({ kind: "resume-parse", text: trimmedText, version: 3 }));
+  const cacheKey = createCacheKey(JSON.stringify({ kind: "resume-parse", text: trimmedText, version: 4 }));
   const cached = await readJsonCache<ResumeImportResult>("resume-parse", cacheKey);
 
   if (cached) {
@@ -383,11 +901,7 @@ export async function parseResumeTextWithAi(text: string): Promise<ResumeImportR
       meta: buildResumeImportMeta("ai", false, getImportConfidence(summary, warnings)),
       resume: parsedResume,
       summary,
-      warnings: dedupeWarnings(
-        completion.repairApplied
-          ? [...warnings, `AI resume JSON needed one repair pass before it fit the schema.`]
-          : warnings
-      )
+      warnings: dedupeWarnings(warnings)
     };
 
     await writeJsonCache("resume-parse", cacheKey, result);
@@ -404,22 +918,38 @@ export async function parseResumeTextWithAi(text: string): Promise<ResumeImportR
 function resumeToAnalysisText(resume: ResumeData) {
   return [
     resume.header.name,
-    resume.header.title,
+    resume.header.role,
     getResumeContactLines(resume).join(" | "),
-    resume.summary,
+    getSummaryText(resume),
     flattenSkills(resume.skills).join(", "),
     ...resume.experience.flatMap((item) => [
-      [item.role, item.company, item.location].filter(Boolean).join(" | "),
-      item.description,
-      item.bullets.join(" ")
+      [item.role, item.company, item.location, formatDateField(item.date)].filter(Boolean).join(" | "),
+      ...flattenDescriptionLines(item.description)
     ]),
-    ...resume.education.map((item) => [item.degree, item.field, item.institution, item.location].filter(Boolean).join(" | ")),
+    ...resume.education.map((item) => [item.degree, item.field, item.institution, item.location, item.result, formatDateField(item.date)].filter(Boolean).join(" | ")),
     ...resume.projects.flatMap((item) => [
-      [item.title, item.link].filter(Boolean).join(" | "),
-      item.description,
+      [item.title, getLinkLabel(item.githubLink), getLinkLabel(item.liveLink), formatDateField(item.date)].filter(Boolean).join(" | "),
+      ...flattenDescriptionLines(item.description),
       item.technologies.join(", "),
-      item.bullets.join(" ")
-    ])
+    ]),
+    ...resume.certifications.map((item) => [item.title, item.issuer, item.description, getLinkLabel(item.link), formatDateField(item.date)].filter(Boolean).join(" | ")),
+    ...[
+      resume.leadership,
+      resume.achievements,
+      resume.competitions,
+      resume.extracurricular,
+      resume.publications,
+      resume.openSource
+    ].flatMap((section) =>
+      section.entries.flatMap((entry) => [
+        [section.label, entry.title, entry.subtitle, entry.location, formatDateField(entry.date), getLinkLabel(entry.link)].filter(Boolean).join(" | "),
+        ...flattenDescriptionLines(entry.description)
+      ])
+    ),
+    ...resume.languages.items.map((item) => [item.language, item.proficiency].filter(Boolean).join(" | ")),
+    ...resume.languages.groups.map((group) => `${group.groupLabel}: ${group.items.join(", ")}`),
+    ...resume.hobbies.items,
+    ...resume.hobbies.groups.map((group) => `${group.groupLabel}: ${group.items.join(", ")}`)
   ]
     .filter((value): value is string => Boolean(value && value.trim()))
     .join("\n");
@@ -446,6 +976,7 @@ export async function analyzeResumeForAtsWithAi(resume: ResumeData, options: Ren
 
   try {
     const completion = await generateStructuredObject({
+      debugLabel: "ats-coaching",
       schema: atsCoachingSchema,
       system:
         "You are an ATS resume coach. Use the deterministic signals provided to write a concise summary and up to six actionable issues. Do not invent experience. Stay grounded in the supplied resume and checks. Return only JSON.",
@@ -513,8 +1044,8 @@ function clampPercent(value: number) {
 function buildResumeChunks(resume: ResumeData) {
   const chunks: Array<{ section: ResumeSectionKey | null; text: string }> = [];
 
-  if (resume.summary?.trim()) {
-    chunks.push({ section: "summary", text: resume.summary.trim() });
+  if (getSummaryText(resume)) {
+    chunks.push({ section: "summary", text: getSummaryText(resume) });
   }
 
   const skillLines = flattenSkills(resume.skills);
@@ -524,7 +1055,9 @@ function buildResumeChunks(resume: ResumeData) {
   }
 
   resume.experience.forEach((item) => {
-    const text = [item.role, item.company, item.location, item.description, ...item.bullets].filter(Boolean).join(" | ");
+    const text = [item.role, item.company, item.location, formatDateField(item.date), ...flattenDescriptionLines(item.description)]
+      .filter(Boolean)
+      .join(" | ");
 
     if (text.trim()) {
       chunks.push({ section: "experience", text });
@@ -532,7 +1065,16 @@ function buildResumeChunks(resume: ResumeData) {
   });
 
   resume.projects.forEach((item) => {
-    const text = [item.title, item.description, item.link, ...item.technologies, ...item.bullets].filter(Boolean).join(" | ");
+    const text = [
+      item.title,
+      getLinkLabel(item.githubLink),
+      getLinkLabel(item.liveLink),
+      formatDateField(item.date),
+      ...item.technologies,
+      ...flattenDescriptionLines(item.description)
+    ]
+      .filter(Boolean)
+      .join(" | ");
 
     if (text.trim()) {
       chunks.push({ section: "projects", text });
@@ -540,12 +1082,68 @@ function buildResumeChunks(resume: ResumeData) {
   });
 
   resume.education.forEach((item) => {
-    const text = [item.degree, item.field, item.institution, item.location].filter(Boolean).join(" | ");
+    const text = [item.degree, item.field, item.institution, item.location, item.result, formatDateField(item.date)].filter(Boolean).join(" | ");
 
     if (text.trim()) {
       chunks.push({ section: "education", text });
     }
   });
+
+  resume.certifications.forEach((item) => {
+    const text = [item.title, item.issuer, item.description, getLinkLabel(item.link), formatDateField(item.date)].filter(Boolean).join(" | ");
+
+    if (text.trim()) {
+      chunks.push({ section: "certifications", text });
+    }
+  });
+
+  ([
+    ["leadership", resume.leadership],
+    ["achievements", resume.achievements],
+    ["competitions", resume.competitions],
+    ["extracurricular", resume.extracurricular],
+    ["publications", resume.publications],
+    ["openSource", resume.openSource]
+  ] as Array<[ResumeSectionKey, CustomEntriesSection]>).forEach(([sectionKey, section]) => {
+    section.entries.forEach((entry) => {
+      const text = [
+        section.label,
+        entry.title,
+        entry.subtitle,
+        entry.location,
+        formatDateField(entry.date),
+        getLinkLabel(entry.link),
+        ...flattenDescriptionLines(entry.description)
+      ]
+        .filter(Boolean)
+        .join(" | ");
+
+      if (text.trim()) {
+        chunks.push({ section: sectionKey as ResumeSectionKey, text });
+      }
+    });
+  });
+
+  if (resume.languages.items.length > 0 || resume.languages.groups.length > 0) {
+    chunks.push({
+      section: "languages",
+      text: [
+        ...resume.languages.items.map((item) => [item.language, item.proficiency].filter(Boolean).join(" | ")),
+        ...resume.languages.groups.map((group) => `${group.groupLabel}: ${group.items.join(", ")}`)
+      ]
+        .filter(Boolean)
+        .join(" | ")
+    });
+  }
+
+  if (resume.hobbies.items.length > 0 || resume.hobbies.groups.length > 0) {
+    chunks.push({
+      section: "hobbies",
+      text: [...resume.hobbies.items, ...resume.hobbies.groups.map((group) => `${group.groupLabel}: ${group.items.join(", ")}`)]
+        .filter(Boolean)
+        .join(" | ")
+    });
+  }
 
   return chunks;
 }
@@ -740,6 +1338,7 @@ export async function analyzeResumeAgainstJdWithAi(resume: ResumeData, jobDescri
 
   try {
     const parsedJd = await generateStructuredObject({
+      debugLabel: "jd-parse",
       schema: jdParseSchema,
       system:
         "You extract structured job requirements from a job description. Return only the essential must-have and preferred requirements, with concise titles, supporting keywords, and weights from 1 to 10. Do not invent requirements that are not grounded in the JD. Return only JSON.",
@@ -795,36 +1394,15 @@ export async function analyzeResumeAgainstJdWithAi(resume: ResumeData, jobDescri
       resumeVectors: number[][];
     }>("embeddings", jdEmbeddingKey);
 
-    if (cachedEmbeddings || aiHealth.embeddingProvider === "openai") {
-      const embeddingPayload =
-        cachedEmbeddings ??
-        (async () => {
-          const inputs = [
-            ...requirements.map((requirement) => `${requirement.title}: ${requirement.keywords.join(", ")}`),
-            ...resumeChunks.map((chunk) => chunk.text)
-          ];
-          const embeddingResponse = await createEmbeddings(inputs);
-
-          if (!embeddingResponse) {
-            return null;
-          }
-
-          const requirementVectors = embeddingResponse.vectors.slice(0, requirements.length);
-          const resumeVectors = embeddingResponse.vectors.slice(requirements.length);
-          const payload = { requirementVectors, resumeVectors };
-
-          await writeJsonCache("embeddings", jdEmbeddingKey, payload);
-          return payload;
-        })();
-
-      const resolvedEmbeddings = embeddingPayload instanceof Promise ? await embeddingPayload : embeddingPayload;
+    if (cachedEmbeddings) {
+      const resolvedEmbeddings = cachedEmbeddings;
 
       if (resolvedEmbeddings) {
         embeddingStatus = "ready";
-        semanticScores = resolvedEmbeddings.requirementVectors.map((vector, requirementIndex) => {
+        semanticScores = resolvedEmbeddings.requirementVectors.map((vector: number[], requirementIndex: number) => {
           let best = { score: 0, section: null as ResumeSectionKey | null };
 
-          resolvedEmbeddings.resumeVectors.forEach((resumeVector, chunkIndex) => {
+          resolvedEmbeddings.resumeVectors.forEach((resumeVector: number[], chunkIndex: number) => {
             const similarity = cosineSimilarity(vector, resumeVector);
 
             if (similarity > best.score) {
@@ -953,3 +1531,5 @@ export async function analyzeResumeAgainstJdWithAi(resume: ResumeData, jobDescri
     };
   }
 }
+
+

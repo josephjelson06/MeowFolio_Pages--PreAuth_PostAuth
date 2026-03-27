@@ -1,4 +1,4 @@
-import { flattenSkills } from "../../lib/resume";
+import { flattenDescriptionLines, flattenSkills, getSummaryText } from "../../lib/resume";
 import type { ResumeData } from "../../types/resume";
 import type { AnalysisResumeOption } from "../../data/analysis-resumes";
 import { Chip } from "../ui/Chip";
@@ -16,23 +16,23 @@ interface ResumeSelectorPanelProps {
 
 function countResumeSections(resume: ResumeData) {
   return [
-    resume.summary?.trim(),
+    getSummaryText(resume),
     flattenSkills(resume.skills).length > 0,
     resume.education.length > 0,
     resume.experience.length > 0,
     resume.projects.length > 0,
     resume.certifications.length > 0,
-    resume.awards.length > 0,
-    resume.leadership.length > 0,
-    resume.extracurricular.length > 0
+    resume.achievements.entries.length > 0,
+    resume.leadership.entries.length > 0,
+    resume.extracurricular.entries.length > 0
   ].filter(Boolean).length;
 }
 
 function ResumeFrame({ resume }: { resume: ResumeData }) {
   const name = resume.header.name?.trim() || "Your Name";
-  const title = resume.header.title?.trim() || "Target Role";
-  const summary = resume.summary?.trim();
-  const bullets = resume.experience.flatMap((item) => item.bullets).slice(0, 4);
+  const title = resume.header.role?.trim() || "Target Role";
+  const summary = getSummaryText(resume);
+  const bullets = resume.experience.flatMap((item) => flattenDescriptionLines(item.description)).slice(0, 4);
 
   return (
     <div className="aspect-[3/4] rounded-[1.75rem] border border-outline-variant/20 bg-white p-5 shadow-ambient">
@@ -50,7 +50,7 @@ function ResumeFrame({ resume }: { resume: ResumeData }) {
           </div>
           <div className="mt-2 space-y-2">
             <div className="h-2 w-1/4 rounded-full bg-outline-variant/25" />
-            {(summary ? [summary, ...bullets] : bullets.length > 0 ? bullets : new Array(4).fill("")).slice(0, 4).map((line, index) => (
+            {(summary ? [summary, ...bullets] : bullets.length > 0 ? bullets : new Array(4).fill("")).slice(0, 4).map((line, index: number) => (
               <div
                 key={`${line}-${index}`}
                 className="h-2 rounded-full bg-outline-variant/15"
@@ -127,7 +127,7 @@ export function ResumeSelectorPanel({
         <div className="mt-6 grid gap-3">
           <div className="rounded-[1.25rem] bg-surface-container-lowest px-4 py-3">
             <p className="font-label text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Current role</p>
-            <p className="mt-2 text-sm font-semibold text-on-surface">{activeResume.resume.header.title?.trim() || "No title set yet"}</p>
+            <p className="mt-2 text-sm font-semibold text-on-surface">{activeResume.resume.header.role?.trim() || "No title set yet"}</p>
           </div>
           <div className="rounded-[1.25rem] bg-surface-container-lowest px-4 py-3">
             <p className="font-label text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Switch resumes</p>

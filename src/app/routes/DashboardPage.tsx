@@ -7,7 +7,7 @@ import { createAnalysisResumeDeck } from "../../data/analysis-resumes";
 import { quickActions } from "../../data/dashboard";
 import { getTemplateDefinition } from "../../data/templates";
 import { analyzeResumeAgainstJobDescription, analyzeResumeForAts } from "../../lib/analysis";
-import { flattenSkills } from "../../lib/resume";
+import { flattenSkills, getLinkUrl, getSummaryText } from "../../lib/resume";
 import { useWorkspace } from "../workspace/WorkspaceContext";
 
 export function DashboardPage() {
@@ -18,15 +18,15 @@ export function DashboardPage() {
   const resumeDeck = createAnalysisResumeDeck(resume).slice(0, 2);
   const skillsCount = flattenSkills(resume.skills).length;
   const filledSections = [
-    resume.summary?.trim(),
+    getSummaryText(resume),
     skillsCount > 0,
     resume.education.length > 0,
     resume.experience.length > 0,
     resume.projects.length > 0,
     resume.certifications.length > 0,
-    resume.awards.length > 0,
-    resume.leadership.length > 0,
-    resume.extracurricular.length > 0
+    resume.achievements.entries.length > 0,
+    resume.leadership.entries.length > 0,
+    resume.extracurricular.entries.length > 0
   ].filter(Boolean).length;
 
   const metrics = [
@@ -92,7 +92,7 @@ export function DashboardPage() {
                   <ResumeGalleryCard
                     key={item.id}
                     resume={item.resume}
-                    title={item.resume.header.title?.trim() || item.tag}
+                    title={item.resume.header.role?.trim() || item.tag}
                     subtitle={index === 0 ? "Last edited 2 hours ago" : "Updated yesterday"}
                     badge={`MATCH ${index === 0 ? 94 : 88}%`}
                     badgeTone={index === 0 ? "mint" : item.accentTone}
@@ -187,7 +187,7 @@ export function DashboardPage() {
                 </li>
                 <li className="flex items-center gap-2 font-label text-on-surface-variant">
                   <span className="material-symbols-outlined text-sm text-outline">circle</span>
-                  {resume.header.github?.trim() ? "Social portfolio connected" : "Link social portfolios (GitHub/Portfolio)"}
+                  {getLinkUrl(resume.header.github) ? "Social portfolio connected" : "Link social portfolios (GitHub/Portfolio)"}
                 </li>
               </ul>
             </section>
