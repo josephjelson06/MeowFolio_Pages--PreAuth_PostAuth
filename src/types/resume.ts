@@ -1,5 +1,5 @@
 export type ResumeSource = "scratch" | "upload" | "ai" | "import";
-export type RenderTemplateId = "classic" | "modern" | "compact" | "editorial";
+export type RenderTemplateId = "template1" | "template2" | "template3" | "template4" | "template5";
 
 export type MonthValue =
   | "Jan"
@@ -256,7 +256,7 @@ export const DEFAULT_RESUME_SECTION_ORDER: ResumeSectionKey[] = [
 ];
 
 export const DEFAULT_RENDER_OPTIONS: RenderOptions = {
-  templateId: "modern",
+  templateId: "template1",
   fontSize: 11,
   maxBulletsPerEntry: 4,
   margin: "1cm",

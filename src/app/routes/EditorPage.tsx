@@ -27,6 +27,7 @@ export function EditorPage() {
   const [lastCompiledFingerprint, setLastCompiledFingerprint] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const compileRunRef = useRef(0);
+  const previousTemplateIdRef = useRef(renderOptions.templateId);
   const compileFingerprint = useMemo(() => JSON.stringify({ renderOptions, resume }), [renderOptions, resume]);
   const previewStale = lastCompiledFingerprint !== null && lastCompiledFingerprint !== compileFingerprint;
 
@@ -68,6 +69,22 @@ export function EditorPage() {
       }
     };
   }, [pdfUrl]);
+
+  useEffect(() => {
+    if (previousTemplateIdRef.current === renderOptions.templateId) {
+      return;
+    }
+
+    previousTemplateIdRef.current = renderOptions.templateId;
+
+    setPdfUrl((current) => {
+      if (current) {
+        URL.revokeObjectURL(current);
+      }
+
+      return null;
+    });
+  }, [renderOptions.templateId]);
 
   function updateSearch(next: Partial<Record<"tab" | "template", string | null>>) {
     const updated = new URLSearchParams(searchParams);

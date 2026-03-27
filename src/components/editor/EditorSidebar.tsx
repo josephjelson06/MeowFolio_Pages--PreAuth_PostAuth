@@ -339,7 +339,6 @@ export function EditorSidebar({ activeTab, onResumeChange, onRenderOptionsChange
   const [importWarnings, setImportWarnings] = useState<string[]>([]);
   const [importSections, setImportSections] = useState<ResumeSectionKey[]>([]);
   const [importSourceLabel, setImportSourceLabel] = useState<string | null>(null);
-  const [templateFilter, setTemplateFilter] = useState<"all" | "balanced" | "tight" | "airy">("all");
 
   function resetImportFeedback() { setImportStatus("idle"); setImportMessage(null); setImportWarnings([]); setImportSections([]); setImportSourceLabel(null); }
   function applyImportedResume(result: ResumeImportResult, successMessage: string, sourceLabel: string, nextImportText?: string) {
@@ -370,7 +369,6 @@ export function EditorSidebar({ activeTab, onResumeChange, onRenderOptionsChange
     } catch (error) { setImportStatus("error"); setImportMessage(error instanceof Error ? error.message : `Failed to import ${file.name}.`); setImportWarnings([]); setImportSections([]); } finally { event.target.value = ""; }
   }
 
-  const filteredTemplates = templateCatalog.filter((template) => (templateFilter === "all" ? true : template.density === templateFilter));
   const marginValue = Number.parseFloat(renderOptions.margin) || 1;
   const contentSections: AccordionWorkspaceItem[] = [
     {
@@ -638,10 +636,22 @@ export function EditorSidebar({ activeTab, onResumeChange, onRenderOptionsChange
 
   if (activeTab === "templates") {
     return (
-      <WorkspaceSurface title="Template Library" description="Choose a layout.">
+      <WorkspaceSurface title="Template Library" description="Editor is now wired to a single active template.">
         <div className="flex h-full min-h-0 flex-col">
-          <div className="shrink-0 pb-3"><div className="flex items-center gap-2 overflow-x-auto pb-1"><SegmentedButton active={templateFilter === "all"} onClick={() => setTemplateFilter("all")}>All</SegmentedButton><SegmentedButton active={templateFilter === "balanced"} onClick={() => setTemplateFilter("balanced")}>Balanced</SegmentedButton><SegmentedButton active={templateFilter === "tight"} onClick={() => setTemplateFilter("tight")}>One-page</SegmentedButton><SegmentedButton active={templateFilter === "airy"} onClick={() => setTemplateFilter("airy")}>Story-led</SegmentedButton></div></div>
-          <div className="workspace-scroll h-[30rem] max-h-full overflow-y-auto pr-1"><div className="grid gap-3 xl:grid-cols-2">{filteredTemplates.map((template) => <TemplateCard key={template.id} compact template={template} selected={template.id === renderOptions.templateId} actionLabel="Use" onSelect={onTemplateChange} />)}</div></div>
+          <div className="workspace-scroll h-[26rem] max-h-full overflow-y-auto pr-1">
+            <div className="grid gap-3">
+              {templateCatalog.map((template) => (
+                <TemplateCard
+                  key={template.id}
+                  compact
+                  template={template}
+                  selected={template.id === renderOptions.templateId}
+                  actionLabel="Use"
+                  onSelect={onTemplateChange}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </WorkspaceSurface>
     );

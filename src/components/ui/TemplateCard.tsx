@@ -16,49 +16,50 @@ interface TemplateCardProps {
 }
 
 function PreviewFrame({ compact = false, template }: { compact?: boolean; template: TemplateDefinition }) {
-  const previewToneClassName =
-    template.id === "compact"
-      ? "bg-secondary-fixed/70"
-      : template.id === "editorial"
-        ? "bg-tertiary-fixed/70"
-        : "bg-primary-fixed/70";
-
+  const previewToneClassName = "bg-primary-fixed/70";
   const headerClassName = template.headerLayout === "center" ? "items-center text-center" : "items-start text-left";
-  const bodyGridClassName =
-    template.id === "compact" ? "grid-cols-[1.35fr_0.65fr]" : template.id === "editorial" ? "grid-cols-1" : "grid-cols-[1.1fr_0.9fr]";
 
   return (
     <div className={cx("resume-paper rounded-[1.1rem] p-4", compact && "p-3")}>
       <div className={cx("rounded-[0.95rem] bg-white shadow-ambient", compact ? "p-3" : "p-4")}>
-        <div className={cx("flex gap-3", headerClassName)}>
-          <div className={cx("space-y-2", template.headerLayout === "center" && "mx-auto")}>
-            <div className={cx(compact ? "h-2.5" : "h-3", "rounded-full bg-primary/80", template.id === "compact" ? "w-24" : "w-32")} />
-            <div className={cx("h-2 rounded-full bg-outline-variant/50", template.id === "editorial" ? "w-28" : "w-20")} />
+        <div className={cx("grid grid-cols-[1fr_1.15fr_1fr] items-start gap-3", headerClassName)}>
+          <div className="space-y-2">
+            <div className="h-2 w-20 rounded-full bg-outline-variant/40" />
+            <div className="h-2 w-24 rounded-full bg-outline-variant/40" />
+            <div className="h-2 w-28 rounded-full bg-outline-variant/40" />
+          </div>
+          <div className={cx("space-y-2", template.headerLayout === "center" && "mx-auto w-full max-w-[9rem]")}>
+            <div className={cx(compact ? "h-2.5" : "h-3", "mx-auto rounded-full bg-primary/80 w-32")} />
+            <div className="mx-auto h-2 w-24 rounded-full bg-outline-variant/50" />
+          </div>
+          <div className="space-y-2 justify-self-end">
+            <div className="ml-auto h-2 w-28 rounded-full bg-outline-variant/40" />
+            <div className="ml-auto h-2 w-24 rounded-full bg-outline-variant/40" />
           </div>
         </div>
 
-        <div className={cx(compact ? "mt-3 gap-3" : "mt-4 gap-4", "grid", bodyGridClassName)}>
+        <div className="mt-3 h-px w-full bg-primary/40" />
+
+        <div className={cx(compact ? "mt-3 gap-3" : "mt-4 gap-4", "grid grid-cols-1")}>
           <div className="space-y-2">
-            <div className="h-2 w-full rounded-full bg-outline-variant/30" />
-            <div className="h-2 w-11/12 rounded-full bg-outline-variant/30" />
-            <div className="h-2 w-4/5 rounded-full bg-outline-variant/30" />
-            <div className={cx(compact ? "pt-2" : "pt-3", "space-y-2")}>
+            <div className="space-y-1.5">
+              <div className="h-2 w-16 rounded-full bg-primary/65" />
+              <div className="h-2 w-full rounded-full bg-outline-variant/30" />
+              <div className="h-2 w-11/12 rounded-full bg-outline-variant/30" />
+            </div>
+            <div className={cx(compact ? "pt-1" : "pt-2", "space-y-2")}>
+              <div className="h-2 w-20 rounded-full bg-primary/65" />
               <div className={cx("h-8 rounded-xl", previewToneClassName)} />
               <div className="h-2 w-5/6 rounded-full bg-outline-variant/30" />
               <div className="h-2 w-4/5 rounded-full bg-outline-variant/30" />
             </div>
-          </div>
-
-          {template.id === "editorial" ? null : (
-            <div className="rounded-[0.9rem] bg-surface-container-low p-3">
-              <div className="h-2 w-12 rounded-full bg-outline-variant/30" />
-              <div className="mt-3 space-y-2">
-                <div className="h-8 rounded-lg bg-white" />
-                <div className="h-8 rounded-lg bg-white/80" />
-                <div className="h-8 rounded-lg bg-white/70" />
-              </div>
+            <div className={cx(compact ? "pt-1" : "pt-2", "space-y-2")}>
+              <div className="h-2 w-20 rounded-full bg-primary/65" />
+              <div className="h-2 w-full rounded-full bg-outline-variant/30" />
+              <div className="h-2 w-10/12 rounded-full bg-outline-variant/30" />
+              <div className="h-2 w-9/12 rounded-full bg-outline-variant/30" />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

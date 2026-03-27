@@ -98,7 +98,7 @@ app.post("/api/render/pdf", async (request, response) => {
 
   try {
     const texSource = renderResumeToTex(request.body.resume, request.body.options);
-    const pdfBuffer = await compileLatexToPdf(texSource);
+    const pdfBuffer = await compileLatexToPdf(texSource, request.body.options.templateId);
 
     response.setHeader("Content-Type", "application/pdf");
     response.setHeader("Content-Disposition", 'inline; filename="resume.pdf"');
